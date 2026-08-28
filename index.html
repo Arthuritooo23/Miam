@@ -31,7 +31,7 @@
 
 /* --- 1. Jetons : thème clair (état par défaut) -------------------------- */
 :root{
-  --bg:#EEF0F4;
+  --bg:#E7EAEF;
   --surface:#FFFFFF;
   --surface-2:#F5F7FA;
   --surface-3:#E8ECF1;
@@ -54,7 +54,20 @@
   --ombre-1:0 1px 2px rgba(16,20,24,.05), 0 1px 3px rgba(16,20,24,.04);
   --ombre-2:0 2px 4px rgba(16,20,24,.05), 0 12px 28px rgba(16,20,24,.08);
 
+  /* La carte du jour est inversée en thème clair : c'est l'objet qui commande. */
+  --jour-bg:#12171E;
+  --jour-ink:#FFFFFF;
+  --jour-ink-2:#A6B1BF;
+  --jour-ligne:#28313D;
+  --jour-piste:#2B3542;
+
+  /* Teintes des macros posées sur fond sombre : même famille, lisibles. */
+  --prot-j:#7BA5F5;
+  --gluc-j:#DDAA43;
+  --lip-j:#E381B3;
+
   --r:10px;
+  --r-g:15px;
   --r-s:7px;
   --nav-h:60px;
 }
@@ -81,6 +94,11 @@
     --ok-doux:#132420;
     --alerte-doux:#2A1917;
 
+    --jour-bg:#1B222C;
+    --jour-ink:#F2F5F9;
+    --jour-ink-2:#98A3B1;
+    --jour-ligne:#2B3542;
+    --jour-piste:#303B49;
     --focus:#7BA5F5;
     --ombre-1:0 1px 2px rgba(0,0,0,.5);
     --ombre-2:0 2px 6px rgba(0,0,0,.5), 0 14px 32px rgba(0,0,0,.4);
@@ -108,6 +126,11 @@
   --ok-doux:#132420;
   --alerte-doux:#2A1917;
 
+  --jour-bg:#1B222C;
+  --jour-ink:#F2F5F9;
+  --jour-ink-2:#98A3B1;
+  --jour-ligne:#2B3542;
+  --jour-piste:#303B49;
   --focus:#7BA5F5;
   --ombre-1:0 1px 2px rgba(0,0,0,.5);
   --ombre-2:0 2px 6px rgba(0,0,0,.5), 0 14px 32px rgba(0,0,0,.4);
@@ -147,8 +170,11 @@ h2{font-size:15px;font-weight:600;letter-spacing:-.005em}
   max-width:640px;margin:0 auto;min-height:100vh;
   padding:calc(10px + env(safe-area-inset-top,0px)) 10px calc(var(--nav-h) + 20px + env(safe-area-inset-bottom,0px));
 }
+/* Un conteneur vide ne doit pas laisser un intervalle dans la colonne. */
+#j-alerte:empty,#j-recap:empty,#h-poids:empty{display:none}
 .ecran{display:none}
-.ecran.actif{display:flex;flex-direction:column;gap:10px}
+.ecran.actif{display:flex;flex-direction:column;gap:10px;animation:apparait .18s ease}
+@keyframes apparait{from{opacity:0;transform:translateY(5px)}to{opacity:1;transform:none}}
 
 /* La carte est l'unité de base : tout ce qui est posé sur le fond en est une. */
 .carte{
@@ -200,79 +226,129 @@ input:focus,select:focus,textarea:focus{outline:2px solid var(--focus);outline-o
 }
 .segments button[aria-pressed="true"]{background:var(--ink);border-color:var(--ink);color:var(--surface);font-weight:600}
 
-/* --- 9. Carte du jour --------------------------------------------------- */
-.entete{position:sticky;top:env(safe-area-inset-top,0px);z-index:30;display:flex;flex-direction:column;gap:10px;
-        padding-top:6px;background:linear-gradient(var(--bg) 72%, transparent)}
-.carte-jour{padding:13px 14px 12px}
-.jour-tete{display:flex;align-items:flex-start;justify-content:space-between;gap:10px;margin-bottom:11px}
-.jour-tete .date{font-size:13.5px;font-weight:600;letter-spacing:-.005em}
+/* --- 9. Carte du jour ---------------------------------------------------
+   Objet dominant de l'écran : fond encre dans les deux thèmes, angles plus
+   généreux, ombre plus marquée. Tout le reste de l'écran doit reculer. */
+/* La carte du jour défile ; une barre compacte prend le relais en haut. */
+.barre-collante{position:sticky;top:env(safe-area-inset-top,0px);z-index:30;display:flex;flex-direction:column;gap:8px;
+                padding:8px 0 10px;margin-top:-8px;
+                background:linear-gradient(var(--bg) 76%, transparent)}
+.mini{
+  display:flex;align-items:center;gap:12px;padding:10px 14px;
+  background:var(--jour-bg);color:var(--jour-ink);border-radius:var(--r);box-shadow:var(--ombre-2);
+  animation:apparait .18s ease;
+}
+.mini-chiffres{display:flex;align-items:baseline;gap:7px;flex:none}
+.mini-chiffres .nb{font-size:21px;line-height:1}
+.mini-chiffres .sur{font-size:11.5px;color:var(--jour-ink-2);font-variant-numeric:tabular-nums}
+.mini-chiffres .reste{font-size:11.5px;color:var(--jour-ink-2);font-variant-numeric:tabular-nums;
+                      padding-left:7px;border-left:1px solid var(--jour-ligne)}
+.mini .barre-empilee{height:6px}
+.mini.atteint .mini-chiffres .nb{color:var(--ok)}
+.mini.depasse .mini-chiffres .nb{color:var(--alerte)}
+.carte-jour{
+  padding:15px 16px 13px;background:var(--jour-bg);color:var(--jour-ink);
+  border:0;border-radius:var(--r-g);box-shadow:var(--ombre-2);
+}
+.jour-tete{display:flex;align-items:flex-start;justify-content:space-between;gap:10px;margin-bottom:13px}
+.jour-tete .date{font-size:14px;font-weight:600;letter-spacing:-.005em;color:var(--jour-ink)}
 .jour-tete .date::first-letter{text-transform:uppercase}
-.jour-tete .sous{font-size:11.5px;color:var(--ink-3);margin-top:1px}
+.jour-tete .sous{font-size:11.5px;color:var(--jour-ink-2);margin-top:2px}
 .puces{display:flex;flex-direction:column;align-items:flex-end;gap:5px;flex:none}
 .pastille{
   display:inline-flex;align-items:center;gap:5px;padding:3px 9px;border-radius:99px;
   font-family:"IBM Plex Mono",monospace;font-size:10.5px;font-weight:500;letter-spacing:.03em;
   border:1px solid var(--line-fort);color:var(--ink-3);background:var(--surface-2);white-space:nowrap;
 }
-.pastille.on{background:var(--ok-doux);border-color:var(--ok);color:var(--ok)}
-.pastille.serie{background:var(--surface-3);border-color:transparent;color:var(--ink-2)}
-.pastille.serie strong{font-weight:700;color:var(--ink)}
+.carte-jour .pastille{background:rgba(255,255,255,.07);border-color:rgba(255,255,255,.16);color:var(--jour-ink-2)}
+.carte-jour .pastille.on{background:rgba(84,186,141,.15);border-color:var(--ok);color:#7FD3AC}
+.carte-jour .pastille.serie strong{color:var(--jour-ink);font-weight:700}
 
-/* Anneau des calories + colonne des macros */
-.bloc-kcal{display:flex;gap:15px;align-items:center}
-.anneau{position:relative;width:104px;height:104px;flex:none}
+/* Anneau + chiffre d'action */
+.bloc-kcal{display:flex;gap:16px;align-items:center}
+.anneau{position:relative;width:128px;height:128px;flex:none}
 .anneau svg{width:100%;height:100%;transform:rotate(-90deg)}
-.anneau circle{fill:none;stroke-width:9;stroke-linecap:round}
-.anneau .piste{stroke:var(--surface-3)}
-.anneau .trait{stroke:var(--ink);transition:stroke-dashoffset .55s cubic-bezier(.22,.9,.3,1),stroke .3s ease}
-.anneau.depasse .trait{stroke:var(--alerte)}
-.anneau-centre{position:absolute;inset:0;display:flex;flex-direction:column;align-items:center;justify-content:center;gap:0}
-.anneau-centre .nb{font-size:29px;line-height:1}
-.anneau-centre .etiq{font-size:9.5px;margin-top:2px}
-.col-macros{flex:1;min-width:0;display:flex;flex-direction:column;gap:9px}
-.reste{font-size:12.5px;color:var(--ink-2);font-variant-numeric:tabular-nums}
-.reste b{font-weight:600;color:var(--ink)}
-.reste.sur{color:var(--alerte)}
+.anneau circle{fill:none;stroke-width:8.5;stroke-linecap:round}
+.anneau .piste{stroke:var(--jour-piste)}
+.anneau .trait{stroke:var(--jour-ink);transition:stroke-dashoffset .6s cubic-bezier(.22,.9,.3,1),stroke .35s ease}
+.carte-jour.atteint .anneau .trait{stroke:var(--ok)}
+.carte-jour.depasse .anneau .trait{stroke:var(--alerte)}
+.anneau-centre{position:absolute;inset:0;display:flex;flex-direction:column;align-items:center;justify-content:center}
+.anneau-centre .nb{font-size:36px;line-height:1;color:var(--jour-ink)}
+.anneau-centre .etiq{font-size:9.5px;margin-top:3px;color:var(--jour-ink-2)}
 
+.reste-bloc{flex:1;min-width:0}
+.reste-bloc .etiq{color:var(--jour-ink-2)}
+.reste-nb{display:flex;align-items:baseline;gap:6px;margin-top:1px}
+.reste-nb .nb{font-size:33px;line-height:1.02;color:var(--jour-ink);transition:color .35s ease}
+.reste-nb .u{font-size:13px;color:var(--jour-ink-2)}
+.carte-jour.atteint .reste-nb .nb{color:var(--ok)}
+.carte-jour.depasse .reste-nb .nb{color:var(--alerte)}
+.reste-sous{font-size:11.5px;color:var(--jour-ink-2);margin-top:3px;font-variant-numeric:tabular-nums}
+
+@keyframes battement{
+  0%{transform:scale(1)} 40%{transform:scale(1.045)} 100%{transform:scale(1)}
+}
+.carte-jour.felicite .anneau{animation:battement .6s cubic-bezier(.22,.9,.3,1)}
+
+/* Macros, sur toute la largeur */
+.macros-jour{margin-top:14px;display:flex;flex-direction:column;gap:11px}
 .macro-l{display:grid;grid-template-columns:auto 1fr auto;align-items:center;gap:0 7px}
 .macro-l .puce{width:8px;height:8px;border-radius:2.5px}
-.macro-l .nom{font-size:12px;color:var(--ink-2)}
-.macro-l .val{font-size:12.5px;font-variant-numeric:tabular-nums;color:var(--ink-3);white-space:nowrap}
-.macro-l .val b{font-family:"IBM Plex Sans Condensed",sans-serif;font-weight:700;font-size:14.5px;color:var(--ink)}
-.macro-l .jauge{grid-column:1/-1;height:4px;border-radius:3px;background:var(--surface-3);margin-top:4px;overflow:hidden}
-.macro-l .jauge i{display:block;height:100%;border-radius:3px;transition:width .5s cubic-bezier(.22,.9,.3,1)}
-.puce.p,.jauge i.p{background:var(--prot)}
-.puce.g,.jauge i.g{background:var(--gluc)}
-.puce.l,.jauge i.l{background:var(--lip)}
+.macro-l .nom{font-size:12.5px;color:var(--jour-ink-2)}
+.macro-l .val{font-size:12.5px;font-variant-numeric:tabular-nums;color:var(--jour-ink-2);white-space:nowrap}
+.macro-l .val b{font-family:"IBM Plex Sans Condensed",sans-serif;font-weight:700;font-size:15px;color:var(--jour-ink)}
+.macro-l .jauge{grid-column:1/-1;height:4px;border-radius:3px;background:var(--jour-piste);margin-top:5px;overflow:hidden}
+.macro-l .jauge i{display:block;height:100%;border-radius:3px;transition:width .55s cubic-bezier(.22,.9,.3,1)}
+.puce.p,.jauge i.p{background:var(--prot-j)}
+.puce.g,.jauge i.g{background:var(--gluc-j)}
+.puce.l,.jauge i.l{background:var(--lip-j)}
 .macro-l.depasse .val b{color:var(--alerte)}
 
-.pied-jour{display:flex;align-items:center;justify-content:space-between;gap:10px;margin-top:12px;padding-top:11px;border-top:1px solid var(--line)}
-.barre-empilee{display:flex;height:7px;border-radius:4px;overflow:hidden;background:var(--surface-3);flex:1}
-.barre-empilee span{display:block;height:100%;transition:width .5s cubic-bezier(.22,.9,.3,1)}
-.seg-prot{background:var(--prot)} .seg-gluc{background:var(--gluc)} .seg-lip{background:var(--lip)}
-.fibres{font-size:11.5px;color:var(--ink-3);white-space:nowrap;font-variant-numeric:tabular-nums}
-.fibres b{color:var(--ink-2);font-weight:600}
+.pied-jour{display:flex;align-items:center;justify-content:space-between;gap:11px;margin-top:14px;
+           padding-top:12px;border-top:1px solid var(--jour-ligne)}
+.barre-empilee{display:flex;height:7px;border-radius:4px;overflow:hidden;background:var(--jour-piste);flex:1}
+.barre-empilee span{display:block;height:100%;transition:width .55s cubic-bezier(.22,.9,.3,1)}
+.seg-prot{background:var(--prot-j)} .seg-gluc{background:var(--gluc-j)} .seg-lip{background:var(--lip-j)}
+.fibres{font-size:11.5px;color:var(--jour-ink-2);white-space:nowrap;font-variant-numeric:tabular-nums}
+.fibres b{color:var(--jour-ink);font-weight:600}
+
+/* Hors de la carte du jour, les barres reprennent les couleurs du thème. */
+.modale .barre-empilee,.case .mini{background:var(--surface-3)}
+.modale .seg-prot,.case .mini .seg-prot{background:var(--prot)}
+.modale .seg-gluc,.case .mini .seg-gluc{background:var(--gluc)}
+.modale .seg-lip,.case .mini .seg-lip{background:var(--lip)}
 
 /* Recherche */
-.recherche{display:flex;gap:8px;padding:9px 10px;background:var(--surface);border:1px solid var(--line);border-radius:var(--r);box-shadow:var(--ombre-1)}
+.recherche{display:flex;gap:8px;padding:9px 10px;background:var(--surface);border:1px solid var(--line);
+           border-radius:var(--r);box-shadow:var(--ombre-1)}
 .recherche input{background:var(--surface-2);border-color:var(--line)}
 
-/* --- 10. Sections d'aliments -------------------------------------------- */
-.section-cat{background:var(--surface);border:1px solid var(--line);border-radius:var(--r);box-shadow:var(--ombre-1);overflow:hidden}
-.section-cat + .section-cat{margin-top:8px}
+/* --- 10. Listes : une seule carte, des lignes dedans -------------------
+   Quinze cartes blanches empilées faisaient papier peint. Une carte, des
+   séparateurs : l'œil suit une liste au lieu de compter des objets. */
+.liste-carte{background:var(--surface);border:1px solid var(--line);border-radius:var(--r);
+             box-shadow:var(--ombre-1);overflow:hidden}
+.section-cat + .section-cat{border-top:1px solid var(--line)}
 .tete-cat{
   display:flex;align-items:center;gap:10px;width:100%;
-  min-height:46px;padding:9px 14px;border:0;background:var(--surface);text-align:left;
-  transition:background .14s ease;
+  min-height:46px;padding:9px 14px 9px 12px;border:0;background:var(--surface);text-align:left;
+  border-left:3px solid transparent;transition:background .14s ease;
 }
 button.tete-cat:hover{background:var(--surface-2)}
-.tete-cat[aria-expanded="true"]{border-bottom:1px solid var(--line)}
+button.tete-cat:active{background:var(--surface-3)}
+.tete-cat[aria-expanded="true"]{border-bottom:1px solid var(--line);background:var(--surface-2)}
+.tete-cat.cp{border-left-color:var(--prot)}
+.tete-cat.cg{border-left-color:var(--gluc)}
+.tete-cat.cl{border-left-color:var(--lip)}
+.tete-cat.cn{border-left-color:var(--line-fort)}
+.tete-cat.cf{border-left-color:var(--ink)}
 .chev{width:8px;height:8px;border-right:2px solid var(--ink-3);border-bottom:2px solid var(--ink-3);
       transform:rotate(45deg);transition:transform .2s ease;flex:none;margin-top:-3px}
 .tete-cat[aria-expanded="false"] .chev{transform:rotate(-45deg)}
 .nom-cat{font-weight:600;font-size:13.5px;flex:1;letter-spacing:-.005em}
 .compte{font-family:"IBM Plex Mono",monospace;font-size:11px;color:var(--ink-3);
-        background:var(--surface-2);border-radius:99px;padding:2px 8px}
+        background:var(--surface-3);border-radius:99px;padding:2px 8px}
 .tete-cat .compte.actif{background:var(--ink);color:var(--surface)}
 
 /* --- 11. Ligne d'aliment ------------------------------------------------ */
@@ -283,6 +359,7 @@ button.tete-cat:hover{background:var(--surface-2)}
   transition:background .18s ease;
 }
 .ligne + .ligne{border-top:1px solid var(--line)}
+.ligne:active{background:var(--surface-3)}
 .ligne.rempli{background:var(--surface-2);box-shadow:inset 3px 0 0 var(--ink)}
 .ligne .ident{grid-area:ident;min-width:0}
 .ligne .nom{font-size:14.5px;font-weight:500;line-height:1.3}
@@ -407,6 +484,7 @@ button.case.notee:hover{transform:translateY(-1px);box-shadow:var(--ombre-1)}
 
 /* --- 16. Mes aliments --------------------------------------------------- */
 .ali{display:flex;align-items:center;gap:10px;padding:10px 14px}
+.ali:active{background:var(--surface-2)}
 .ali + .ali{border-top:1px solid var(--line)}
 .ali .info{flex:1;min-width:0}
 .ali .info .n{font-size:14px;font-weight:500;overflow:hidden;text-overflow:ellipsis;white-space:nowrap}
@@ -530,9 +608,10 @@ hr.sep{border:0;border-top:1px solid var(--line);margin:0}
   .nav button{font-size:10.5px}
   .app{padding-inline:7px}
   .carte-jour{padding:12px}
-  .anneau{width:88px;height:88px}
-  .anneau-centre .nb{font-size:25px}
-  .bloc-kcal{gap:11px}
+  .anneau{width:104px;height:104px}
+  .anneau-centre .nb{font-size:29px}
+  .reste-nb .nb{font-size:27px}
+  .bloc-kcal{gap:12px}
   .ligne{padding:10px 11px}
   input.qte{width:56px}
   select.unite{min-width:82px}
@@ -553,12 +632,13 @@ hr.sep{border:0;border-top:1px solid var(--line);margin:0}
   .entete{top:calc(var(--nav-h) - 4px)}
   .actions-jour{bottom:14px}
   .toast{bottom:84px}
-  .bloc-kcal{gap:24px}
-  .col-macros{max-width:560px}
-  .anneau{width:124px;height:124px}
-  .anneau-centre .nb{font-size:35px}
-  .col-macros{gap:11px}
+  .bloc-kcal{gap:26px}
+  .anneau{width:150px;height:150px}
+  .anneau-centre .nb{font-size:43px}
+  .reste-nb .nb{font-size:40px}
+  .macros-jour{display:grid;grid-template-columns:repeat(3,1fr);gap:16px;margin-top:16px}
   .macro-l .nom{font-size:13px}
+  .carte-jour{padding:18px 20px 16px}
   .ligne{
     grid-template-columns:minmax(0,1fr) auto minmax(150px,auto) auto;
     grid-template-areas:"ident saisie macros kcal";gap:0 14px;padding:9px 15px;
@@ -585,8 +665,7 @@ hr.sep{border:0;border-top:1px solid var(--line);margin:0}
   <section class="ecran actif" id="ecran-journal" aria-labelledby="t-journal">
     <h1 class="sr" id="t-journal">Journal du jour</h1>
 
-    <div class="entete">
-      <div class="carte carte-jour">
+    <div class="carte carte-jour" id="j-carte">
 
         <div class="jour-tete">
           <div>
@@ -600,7 +679,7 @@ hr.sep{border:0;border-top:1px solid var(--line);margin:0}
         </div>
 
         <div class="bloc-kcal">
-          <div class="anneau" id="j-anneau">
+          <div class="anneau">
             <svg viewBox="0 0 120 120" aria-hidden="true">
               <circle class="piste" cx="60" cy="60" r="52"></circle>
               <circle class="trait" id="j-trait" cx="60" cy="60" r="52"
@@ -612,27 +691,31 @@ hr.sep{border:0;border-top:1px solid var(--line);margin:0}
             </div>
           </div>
 
-          <div class="col-macros">
-            <div class="reste" id="j-reste">Aucune cible définie</div>
+          <div class="reste-bloc">
+            <div class="etiq" id="j-reste-titre">Il reste</div>
+            <div class="reste-nb"><span class="nb" id="j-reste">0</span><span class="u">kcal</span></div>
+            <div class="reste-sous" id="j-reste-sous">aucune cible définie</div>
+          </div>
+        </div>
 
-            <div class="macro-l" id="j-m-prot">
-              <i class="puce p"></i>
-              <span class="nom">Protéines</span>
-              <span class="val"><b id="j-prot">0</b> / <span id="j-prot-cible">0</span> g</span>
-              <div class="jauge"><i class="p" id="j-prot-jauge" style="width:0%"></i></div>
-            </div>
-            <div class="macro-l" id="j-m-gluc">
-              <i class="puce g"></i>
-              <span class="nom">Glucides</span>
-              <span class="val"><b id="j-gluc">0</b> / <span id="j-gluc-cible">0</span> g</span>
-              <div class="jauge"><i class="g" id="j-gluc-jauge" style="width:0%"></i></div>
-            </div>
-            <div class="macro-l" id="j-m-lip">
-              <i class="puce l"></i>
-              <span class="nom">Lipides</span>
-              <span class="val"><b id="j-lip">0</b> / <span id="j-lip-cible">0</span> g</span>
-              <div class="jauge"><i class="l" id="j-lip-jauge" style="width:0%"></i></div>
-            </div>
+        <div class="macros-jour">
+          <div class="macro-l" id="j-m-prot">
+            <i class="puce p"></i>
+            <span class="nom">Protéines</span>
+            <span class="val"><b id="j-prot">0</b> / <span id="j-prot-cible">0</span> g</span>
+            <div class="jauge"><i class="p" id="j-prot-jauge" style="width:0%"></i></div>
+          </div>
+          <div class="macro-l" id="j-m-gluc">
+            <i class="puce g"></i>
+            <span class="nom">Glucides</span>
+            <span class="val"><b id="j-gluc">0</b> / <span id="j-gluc-cible">0</span> g</span>
+            <div class="jauge"><i class="g" id="j-gluc-jauge" style="width:0%"></i></div>
+          </div>
+          <div class="macro-l" id="j-m-lip">
+            <i class="puce l"></i>
+            <span class="nom">Lipides</span>
+            <span class="val"><b id="j-lip">0</b> / <span id="j-lip-cible">0</span> g</span>
+            <div class="jauge"><i class="l" id="j-lip-jauge" style="width:0%"></i></div>
           </div>
         </div>
 
@@ -643,6 +726,20 @@ hr.sep{border:0;border-top:1px solid var(--line);margin:0}
             <span class="seg-lip" style="width:0%"></span>
           </div>
           <div class="fibres">Fibres <b id="j-fibres">0</b> g</div>
+        </div>
+      </div>
+
+    <div class="barre-collante">
+      <div class="mini" id="j-mini" hidden>
+        <div class="mini-chiffres">
+          <span class="nb" id="m-kcal">0</span>
+          <span class="sur" id="m-cible">/ 0</span>
+          <span class="reste" id="m-reste"></span>
+        </div>
+        <div class="barre-empilee" id="m-barre" aria-hidden="true">
+          <span class="seg-prot" style="width:0%"></span>
+          <span class="seg-gluc" style="width:0%"></span>
+          <span class="seg-lip" style="width:0%"></span>
         </div>
       </div>
 
@@ -822,7 +919,7 @@ function libelleCourt(iso){
 function indexLundi(d){ return (d.getDay() + 6) % 7; }
 
 /** Version affichée dans l'écran Profil : sert à vérifier ce qui est en ligne. */
-const VERSION = '6';
+const VERSION = '7';
 
 /* =========================================================================
    2. MODULE DONNÉES — constantes du domaine
@@ -1730,14 +1827,38 @@ function majEntete(){
   $('#j-kcal').textContent = fmt(Math.round(t.kcal));
   $('#j-kcal-cible').textContent = '/ ' + fmt(c.kcal);
   $('#j-trait').setAttribute('stroke-dashoffset', (CIRCONFERENCE * (1 - Math.min(1, part))).toFixed(1));
-  $('#j-anneau').classList.toggle('depasse', part > 1.02);
 
+  // Le chiffre sur lequel on agit : ce qu'il reste à manger.
   const reste = Math.round(c.kcal - t.kcal);
-  const zone = $('#j-reste');
-  zone.innerHTML = reste >= 0
-    ? 'Il reste <b>' + fmt(reste) + '</b> kcal'
-    : '<b>' + fmt(Math.abs(reste)) + '</b> kcal au-dessus de la cible';
-  zone.classList.toggle('sur', reste < 0);
+  $('#j-reste-titre').textContent = reste >= 0 ? 'Il reste' : 'Au-dessus de la cible';
+  $('#j-reste').textContent = fmt(Math.abs(reste));
+  $('#j-reste-sous').textContent = ETAT.journal.entrees.length
+    ? fmt(Math.round(t.kcal)) + ' sur ' + fmt(c.kcal) + ' kcal'
+    : 'cible ' + fmt(c.kcal) + ' kcal';
+
+  // Récompense : l'anneau vire au vert dans la zone, avec un battement au moment
+  // où on y entre. Rien ne bouge si le lecteur a demandé moins d'animations.
+  const carte = $('#j-carte');
+  const atteint = c.kcal > 0 && part >= 0.93 && part <= 1.07;
+  const depasse = part > 1.07;
+  if(atteint && !carte.classList.contains('atteint')){
+    carte.classList.add('felicite');
+    setTimeout(function(){ carte.classList.remove('felicite'); }, 700);
+  }
+  carte.classList.toggle('atteint', atteint);
+  carte.classList.toggle('depasse', depasse);
+
+  // Barre compacte, visible seulement quand la carte du jour est sortie de l'écran.
+  const mini = $('#j-mini');
+  $('#m-kcal').textContent = fmt(Math.round(t.kcal));
+  $('#m-cible').textContent = '/ ' + fmt(c.kcal);
+  $('#m-reste').textContent = reste >= 0 ? 'reste ' + fmt(reste) : '+' + fmt(Math.abs(reste));
+  mini.classList.toggle('atteint', atteint);
+  mini.classList.toggle('depasse', depasse);
+  const segsM = $('#m-barre').children;
+  segsM[0].style.width = r.prot.toFixed(1) + '%';
+  segsM[1].style.width = r.gluc.toFixed(1) + '%';
+  segsM[2].style.width = r.lip.toFixed(1) + '%';
 
   // --- Date, compte, série
   $('#j-date').textContent = libelleLong(ETAT.journal.date);
@@ -1942,6 +2063,31 @@ function htmlLigne(a){
   '</div>';
 }
 
+/**
+ * Couleur d'orientation d'une catégorie : le macronutriment qui pèse le plus
+ * dans ses calories. Ce n'est pas de la décoration, c'est une information.
+ */
+const COULEURS_CAT = {};
+function couleurCategorie(cat){
+  if(COULEURS_CAT[cat]) return COULEURS_CAT[cat];
+  let p = 0, g = 0, l = 0, n = 0;
+  ETAT.aliments.forEach(function(a){
+    if((a.categorie || 'Sans catégorie') !== cat) return;
+    p += a.pour100g.prot * 4; g += a.pour100g.gluc * 4; l += a.pour100g.lip * 9; n++;
+  });
+  let c = 'cn';
+  if(n){
+    const total = p + g + l;
+    if(total > 0){
+      const max = Math.max(p, g, l);
+      // Une couleur seulement si un macro domine nettement ; sinon, neutre.
+      if(max / total >= 0.45) c = max === p ? 'cp' : (max === g ? 'cg' : 'cl');
+    }
+  }
+  COULEURS_CAT[cat] = c;
+  return c;
+}
+
 function rendreListeJournal(){
   const hote = $('#j-liste');
   majHabituels();
@@ -1950,7 +2096,7 @@ function rendreListeJournal(){
 
   if(!ETAT.aliments.length){
     hote.innerHTML =
-      '<div class="carte vide-msg"><strong>Votre liste est vide</strong>' +
+      '<div class="vide-msg"><strong>Votre liste est vide</strong>' +
       'Ajoutez les aliments que vous mangez réellement — une trentaine suffit pour couvrir vos semaines.' +
       '<div class="rangee-actions" style="margin-top:14px;justify-content:center">' +
         '<button class="btn primaire" data-act="nouvel-aliment">Ajouter un aliment</button>' +
@@ -1968,7 +2114,7 @@ function rendreListeJournal(){
   });
 
   if(!visibles.length){
-    hote.innerHTML = '<div class="carte vide-msg"><strong>Aucun résultat</strong>' +
+    hote.innerHTML = '<div class="vide-msg"><strong>Aucun résultat</strong>' +
       'Rien ne correspond à « ' + esc(ETAT.ui.recherche) + ' » dans votre liste.' +
       '<div class="rangee-actions" style="margin-top:14px;justify-content:center">' +
         '<button class="btn" data-act="en-ligne">Chercher « ' + esc(ETAT.ui.recherche) + ' » en ligne</button>' +
@@ -1993,7 +2139,7 @@ function rendreListeJournal(){
       const saisis = freq.filter(function(f){ const e = entreeDe(f.aliment.id); return e && num(e.quantite) > 0; }).length;
       html +=
         '<section class="section-cat frequents">' +
-          '<button class="tete-cat" aria-expanded="' + (replie ? 'false' : 'true') + '" data-cat="__frequents">' +
+          '<button class="tete-cat cf" aria-expanded="' + (replie ? 'false' : 'true') + '" data-cat="__frequents">' +
             '<i class="chev"></i>' +
             '<span class="nom-cat">Fréquents</span>' +
             '<span class="compte' + (saisis ? ' actif' : '') + '">' + (saisis ? saisis + ' / ' : '') + freq.length + '</span>' +
@@ -2011,7 +2157,7 @@ function rendreListeJournal(){
     const saisis = liste.filter(function(a){ const e = entreeDe(a.id); return e && num(e.quantite) > 0; }).length;
     html +=
       '<section class="section-cat">' +
-        '<button class="tete-cat" aria-expanded="' + (replie ? 'false' : 'true') + '" data-cat="' + esc(cat) + '">' +
+        '<button class="tete-cat ' + couleurCategorie(cat) + '" aria-expanded="' + (replie ? 'false' : 'true') + '" data-cat="' + esc(cat) + '">' +
           '<i class="chev"></i>' +
           '<span class="nom-cat">' + esc(cat) + '</span>' +
           '<span class="compte' + (saisis ? ' actif' : '') + '">' + (saisis ? saisis + ' / ' : '') + liste.length + '</span>' +
@@ -2020,6 +2166,7 @@ function rendreListeJournal(){
       '</section>';
   });
   hote.innerHTML = html;
+  hote.className = 'liste-carte';
 }
 
 /** Met à jour une seule ligne après saisie (sans reconstruire la liste). */
@@ -2153,6 +2300,14 @@ function brancherJournal(){
     }
   });
 
+  // La barre compacte n'apparaît qu'une fois la carte du jour passée.
+  if('IntersectionObserver' in window){
+    const obs = new IntersectionObserver(function(entrees){
+      $('#j-mini').hidden = entrees[0].isIntersecting;
+    }, {rootMargin: '-72px 0px 0px 0px', threshold: 0});
+    obs.observe($('#j-carte'));
+  }
+
   $('#j-enregistrer').addEventListener('click', enregistrerJournee);
   $('#j-menu').addEventListener('click', menuJournal);
 }
@@ -2275,13 +2430,14 @@ function rendreAliments(){
   const hote = $('#a-liste');
   if(!total){
     hote.innerHTML =
-      '<div class="carte vide-msg"><strong>Aucun aliment enregistré</strong>' +
+      '<div class="vide-msg"><strong>Aucun aliment enregistré</strong>' +
       'Chargez la base fournie, ou commencez par ceux que vous mangez chaque semaine.' +
       '<div class="rangee-actions" style="margin-top:14px;justify-content:center">' +
         '<button class="btn primaire" data-act="nouvel-aliment">Nouvel aliment</button>' +
         '<button class="btn" data-act="en-ligne">Chercher en ligne</button>' +
         '<button class="btn" data-act="base-exemple">Charger la base d’aliments</button>' +
       '</div></div>';
+    hote.className = 'liste-carte';
     return;
   }
 
@@ -2290,7 +2446,7 @@ function rendreAliments(){
     return !q || normaliser(a.nom).indexOf(q) >= 0 || normaliser(a.categorie).indexOf(q) >= 0;
   });
   if(!visibles.length){
-    hote.innerHTML = '<div class="carte vide-msg"><strong>Aucun résultat</strong>Rien dans votre liste ne correspond.' +
+    hote.innerHTML = '<div class="vide-msg"><strong>Aucun résultat</strong>Rien dans votre liste ne correspond.' +
       '<div class="rangee-actions" style="margin-top:14px;justify-content:center">' +
         '<button class="btn" data-act="en-ligne">Chercher en ligne</button></div></div>';
     return;
@@ -2303,7 +2459,7 @@ function rendreAliments(){
   ordreCategories(visibles).forEach(function(cat){
     const liste = parCat[cat];
     if(!liste || !liste.length) return;
-    html += '<section class="section-cat"><div class="tete-cat" style="cursor:default">' +
+    html += '<section class="section-cat"><div class="tete-cat ' + couleurCategorie(cat) + '" style="cursor:default">' +
       '<span class="nom-cat">' + esc(cat) + '</span><span class="compte">' + liste.length + '</span></div>';
     liste.forEach(function(a){
       const p = a.pour100g;
@@ -2324,7 +2480,10 @@ function rendreAliments(){
     html += '</section>';
   });
   hote.innerHTML = html;
+  hote.className = 'liste-carte';
 }
+
+function oublierCouleurs(){ Object.keys(COULEURS_CAT).forEach(function(k){ delete COULEURS_CAT[k]; }); }
 
 function menuAliment(id){
   const a = INDEX[id];
@@ -3912,7 +4071,7 @@ function confirmerBaseExemple(){
       // Avec près de 300 aliments, on replie les catégories : le journal reste
       // un sommaire lisible, et la recherche donne l'accès direct.
       ETAT.categories.forEach(function(c){ ETAT.ui.repliees[c] = true; });
-      reindexer(); sauver('aliments'); sauver('categories'); sauver('ui');
+      reindexer(); oublierCouleurs(); sauver('aliments'); sauver('categories'); sauver('ui');
       rendreTout();
       toast(nouveaux.length + ' aliments ajoutés.');
     });

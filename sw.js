@@ -6,7 +6,7 @@
    suite), cache d'abord pour les icônes. Rien du domaine des polices ni
    d'Open Food Facts n'est mis en cache.
    ========================================================================= */
-const VERSION = 'macro-carnet-v6';
+const VERSION = 'macro-carnet-v7';
 const RESSOURCES = [
   './',
   './index.html',
