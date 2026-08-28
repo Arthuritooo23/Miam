@@ -491,6 +491,7 @@ hr.sep{border:0;border-top:1px solid var(--line);margin:0}
       </div>
       <div class="rangee-actions">
         <button class="btn primaire" id="a-nouveau">Nouvel aliment</button>
+        <button class="btn" id="a-en-ligne">Chercher en ligne</button>
         <button class="btn" id="a-categories">Catégories</button>
         <button class="btn" id="a-donnees">Données</button>
       </div>
@@ -577,9 +578,10 @@ function uid(prefixe){
   return (prefixe || 'x') + '_' + Math.random().toString(36).slice(2, 9) + Date.now().toString(36).slice(-4);
 }
 
-/** Retire accents et casse : sert à la recherche instantanée. */
+/** Retire accents, ligatures et casse : « oeuf » doit trouver « Œuf ». */
 function normaliser(s){
-  return String(s || '').toLowerCase().normalize('NFD').replace(/[\u0300-\u036f]/g, '');
+  return String(s || '').toLowerCase().normalize('NFD').replace(/[\u0300-\u036f]/g, '')
+    .replace(/\u0153/g, 'oe').replace(/\u00e6/g, 'ae').replace(/\u2019/g, "'");
 }
 
 /** Date locale au format ISO court (sans décalage UTC). */
@@ -605,6 +607,9 @@ function libelleCourt(iso){
 }
 /** Index lundi = 0 … dimanche = 6 */
 function indexLundi(d){ return (d.getDay() + 6) % 7; }
+
+/** Version affichée dans l'écran Profil : sert à vérifier ce qui est en ligne. */
+const VERSION = '3';
 
 /* =========================================================================
    2. MODULE DONNÉES — constantes du domaine
@@ -642,85 +647,377 @@ const UNITES_SUGGEREES = [
 
 /** Catégories fournies au démarrage (la liste d'aliments, elle, est vide). */
 const CATEGORIES_DEFAUT = [
-  'Viandes et poissons',
+  'Viandes et volailles',
+  'Poissons et fruits de mer',
   'Œufs et protéines en poudre',
   'Produits laitiers',
-  'Féculents et pains',
-  'Fruits',
+  'Féculents et céréales',
+  'Pains et biscottes',
+  'Légumineuses et végétal',
   'Légumes',
-  'Matières grasses et oléagineux',
-  'Condiments'
+  'Fruits',
+  'Fruits secs et oléagineux',
+  'Matières grasses',
+  'Plats préparés',
+  'Sucré et encas',
+  'Boissons',
+  'Condiments et sauces',
 ];
 
 /**
- * Base d'exemple, non chargée par défaut : l'utilisateur la charge depuis
- * l'écran « Mes aliments » s'il ne veut pas tout saisir à la main.
- * Valeurs pour 100 g d'après les tables CIQUAL et USDA (arrondies).
+ * Base d'aliments courants, NON chargée par défaut : l'utilisateur la charge
+ * depuis « Mes aliments » s'il ne veut pas tout saisir à la main.
+ * Format compact : [nom, kcal, prot, gluc, lip, fibres, unités].
+ * Valeurs pour 100 g, ordres de grandeur usuels des tables de composition —
+ * ce sont des repères, pas des données officielles. Chaque aliment reste
+ * modifiable, et l'étiquette d'un produit précis prime toujours.
  */
+const TABLE_ALIMENTS = {
+  'Viandes et volailles': [
+    ['Blanc de poulet cru',108,23,0,1.7,0,[['filet',150]]],
+    ['Cuisse de poulet crue sans peau',121,19,0,5,0,[['cuisse',130]]],
+    ['Poulet rôti avec peau',200,26,0,11,0],
+    ['Escalope de dinde crue',104,23.5,0,1.1,0,[['escalope',120]]],
+    ['Steak haché 5 % cru',121,21,0,4.5,0,[['steak',100]]],
+    ['Steak haché 15 % cru',215,19,0,15,0,[['steak',100]]],
+    ['Steak haché 20 % cru',255,18,0,20,0,[['steak',100]]],
+    ['Bavette de bœuf crue',160,21,0,8,0],
+    ['Rumsteck cru',130,22,0,4.5,0],
+    ['Entrecôte crue',240,19,0,18,0],
+    ['Filet mignon de porc cru',116,22,0,3,0],
+    ['Côte de porc crue',175,20,0,10,0,[['côte',150]]],
+    ['Rôti de porc cuit',180,25,0,9,0,[['tranche',60]]],
+    ['Lardons fumés',250,16,1,20,0,[['portion',50]]],
+    ['Jambon blanc découenné',117,20,0.8,3.6,0,[['tranche',40]]],
+    ['Jambon cru',240,26,0.5,15,0,[['tranche',25]]],
+    ['Bacon grillé',300,28,1,20,0,[['tranche',15]]],
+    ['Chorizo',450,24,2,38,0,[['tranche',10]]],
+    ['Saucisson sec',460,25,2,38,0,[['tranche',8]]],
+    ['Merguez crue',300,15,2,25,0,[['pièce',70]]],
+    ['Saucisse de Strasbourg',280,12,1,25,0,[['pièce',50]]],
+    ['Escalope de veau crue',110,21,0,2.5,0,[['escalope',120]]],
+    ['Gigot d’agneau cru',160,20,0,9,0],
+    ['Magret de canard cru',200,19,0,14,0,[['magret',300]]],
+    ['Foie de volaille cru',125,20,1,5,0],
+    ['Viande hachée de dinde 5 %',130,21,0,5,0,[['steak',100]]],
+    ['Boudin noir',380,14,2,35,0],
+    ['Pâté de campagne',320,14,2,28,0,[['tranche',30]]],
+  ],
+  'Poissons et fruits de mer': [
+    ['Saumon cru',180,20,0,11,0,[['pavé',130]]],
+    ['Saumon fumé',200,22,0,12,0,[['tranche',30]]],
+    ['Truite crue',130,20,0,5.5,0,[['filet',120]]],
+    ['Cabillaud cru',76,17.5,0,0.7,0,[['dos',130]]],
+    ['Colin lieu cru',80,18,0,0.8,0,[['filet',120]]],
+    ['Merlu cru',85,18,0,1.2,0],
+    ['Sole crue',80,17,0,1.2,0],
+    ['Dorade crue',110,20,0,3.5,0],
+    ['Bar cru',100,19,0,2.5,0],
+    ['Thon rouge cru',145,23,0,5,0],
+    ['Thon au naturel égoutté',116,26,0,1.2,0,[['boîte',112]]],
+    ['Thon à l’huile égoutté',190,25,0,10,0,[['boîte',112]]],
+    ['Sardines à l’huile égouttées',220,24,0,13,0,[['boîte',90]]],
+    ['Sardines au naturel',165,25,0,7,0,[['boîte',90]]],
+    ['Maquereau cru',190,19,0,12,0,[['filet',100]]],
+    ['Maquereau au vin blanc',200,18,2,13,0,[['boîte',110]]],
+    ['Hareng fumé',210,20,0,14,0],
+    ['Anchois à l’huile',210,25,0,12,0,[['filet',5]]],
+    ['Crevettes cuites',100,21,0,1.5,0,[['portion',100]]],
+    ['Gambas crues',90,19,0,1,0,[['pièce',20]]],
+    ['Moules cuites',115,20,4,2.5,0,[['portion',200]]],
+    ['Huîtres',70,9,4,2,0,[['pièce',20]]],
+    ['Noix de Saint-Jacques',85,17,2,0.8,0,[['pièce',20]]],
+    ['Calamar cru',80,16,1,1.2,0],
+    ['Poulpe cuit',110,22,2,2,0],
+    ['Surimi',95,9,12,1,0,[['bâtonnet',17]]],
+    ['Œufs de lompe',110,13,2,5,0,[['cuillère à soupe',15]]],
+    ['Tarama',480,8,6,48,0,[['cuillère à soupe',20]]],
+  ],
+  'Œufs et protéines en poudre': [
+    ['Œuf entier',145,12.7,0.3,10.3,0,[['pièce',50]]],
+    ['Blanc d’œuf',48,10.7,0.3,0.2,0,[['pièce',33]]],
+    ['Jaune d’œuf',320,16,0.6,28,0,[['pièce',17]]],
+    ['Œuf dur',155,13,1,11,0,[['pièce',50]]],
+    ['Omelette nature',180,13,1,14,0],
+    ['Whey (poudre)',380,78,8,5,0,[['dose',30]]],
+    ['Whey isolate (poudre)',370,85,3,2,0,[['dose',30]]],
+    ['Caséine (poudre)',360,75,6,3,0,[['dose',30]]],
+    ['Protéine de pois (poudre)',370,78,5,5,2,[['dose',30]]],
+    ['Gainer (poudre)',380,25,60,5,2,[['dose',100]]],
+    ['Barre protéinée',350,33,32,10,5,[['barre',60]]],
+  ],
+  'Produits laitiers': [
+    ['Fromage blanc 0 %',47,8,4.5,0.2,0,[['portion',100]]],
+    ['Fromage blanc 3 %',76,7.5,4.5,3,0,[['portion',100]]],
+    ['Fromage blanc 8 %',115,7,4,8,0,[['portion',100]]],
+    ['Skyr nature',63,11,4,0.2,0,[['pot',150]]],
+    ['Yaourt nature',61,3.5,4.7,3.2,0,[['pot',125]]],
+    ['Yaourt grec',115,5,4,9,0,[['pot',150]]],
+    ['Yaourt 0 % aux fruits',50,4,8,0.1,0,[['pot',125]]],
+    ['Petit-suisse 20 %',145,9,3,10,0,[['pièce',60]]],
+    ['Cottage cheese',100,12,3,4,0,[['portion',100]]],
+    ['Ricotta',145,9,3,11,0,[['portion',100]]],
+    ['Lait entier',65,3.2,4.8,3.6,0,[['verre',200]]],
+    ['Lait demi-écrémé',46,3.2,4.8,1.6,0,[['verre',200]]],
+    ['Lait écrémé',34,3.4,5,0.1,0,[['verre',200]]],
+    ['Lait d’amande sans sucre',15,0.5,0.3,1.2,0,[['verre',200]]],
+    ['Boisson au soja nature',40,3.5,1,2,0,[['verre',200]]],
+    ['Boisson à l’avoine',45,0.8,7,1.5,0,[['verre',200]]],
+    ['Crème fraîche 30 %',290,2.5,3,30,0,[['cuillère à soupe',15]]],
+    ['Crème légère 15 %',155,3,4,15,0,[['cuillère à soupe',15]]],
+    ['Beurre',750,0.7,0.6,82,0,[['noisette',10]]],
+    ['Beurre allégé 40 %',400,3,1,40,0,[['noisette',10]]],
+    ['Emmental',380,28,1,29.5,0,[['tranche',25]]],
+    ['Comté',410,27,0,33,0,[['portion',30]]],
+    ['Parmesan',400,33,0,28,0,[['cuillère à soupe',6]]],
+    ['Mozzarella',250,18,1.5,19,0,[['boule',125]]],
+    ['Feta',265,14,1.5,22,0,[['portion',30]]],
+    ['Chèvre frais',210,12,3,16,0,[['portion',30]]],
+    ['Camembert',290,20,1,23,0,[['portion',30]]],
+    ['Roquefort',370,19,2,31,0,[['portion',25]]],
+    ['Raclette',350,23,0,28,0,[['tranche',30]]],
+    ['Mascarpone',400,4,4,41,0,[['cuillère à soupe',20]]],
+    ['Fromage à tartiner allégé',130,9,5,8,0,[['portion',30]]],
+  ],
+  'Féculents et céréales': [
+    ['Riz blanc cru',350,7,78,0.9,1.3,[['portion',80]]],
+    ['Riz blanc cuit',130,2.6,28,0.3,0.5,[['portion',200]]],
+    ['Riz complet cru',350,8,72,2.5,3.5,[['portion',80]]],
+    ['Riz complet cuit',120,2.7,25,1,1.5,[['portion',200]]],
+    ['Riz basmati cuit',130,3,28,0.4,0.6,[['portion',200]]],
+    ['Pâtes crues',355,12,71,1.5,3,[['portion',80]]],
+    ['Pâtes cuites',158,5.5,30,0.9,2.4,[['portion',220]]],
+    ['Pâtes complètes crues',350,13,65,2.5,7,[['portion',80]]],
+    ['Pâtes complètes cuites',145,6,27,1.2,4,[['portion',220]]],
+    ['Semoule de blé crue',350,12,72,1,3.5,[['portion',60]]],
+    ['Semoule cuite',120,4,25,0.4,1.4,[['portion',200]]],
+    ['Boulgour cuit',130,4.5,26,0.4,4,[['portion',200]]],
+    ['Quinoa cru',370,14,58,6,7,[['portion',70]]],
+    ['Quinoa cuit',120,4.4,21,1.9,2.8,[['portion',200]]],
+    ['Flocons d’avoine',372,13,60,7,9,[['portion',60],['cuillère à soupe',12]]],
+    ['Muesli sans sucre ajouté',380,11,60,9,8,[['portion',50]]],
+    ['Corn flakes',380,7,84,1,3,[['portion',30]]],
+    ['Céréales chocolatées',400,7,75,7,4,[['portion',40]]],
+    ['Pomme de terre cuite',87,2,18,0.1,2,[['pièce',150]]],
+    ['Purée de pomme de terre',85,2,13,2.5,1.5,[['portion',200]]],
+    ['Frites au four',190,3,28,7,3,[['portion',150]]],
+    ['Frites de friture',290,3.5,36,14,3,[['portion',150]]],
+    ['Patate douce cuite',90,1.6,20,0.1,3,[['pièce',150]]],
+    ['Polenta cuite',85,2,18,0.4,1,[['portion',200]]],
+    ['Blé précuit',340,12,68,1.5,4,[['portion',60]]],
+    ['Nouilles chinoises cuites',140,4.5,28,0.6,1.5,[['portion',200]]],
+    ['Gnocchis',170,4,33,2,2,[['portion',250]]],
+    ['Galette de riz soufflé',385,8,81,2.8,2,[['pièce',9]]],
+  ],
+  'Pains et biscottes': [
+    ['Baguette',270,9,55,1,2.5,[['tranche',25]]],
+    ['Pain de campagne',260,8.5,52,1.2,3,[['tranche',40]]],
+    ['Pain complet',250,9,42,2.5,6,[['tranche',35]]],
+    ['Pain aux céréales',265,10,40,5,6,[['tranche',35]]],
+    ['Pain de mie',280,8,48,6,3,[['tranche',30]]],
+    ['Pain de mie complet',245,9,40,3.5,5,[['tranche',30]]],
+    ['Pain à burger',280,9,48,5,3,[['pièce',60]]],
+    ['Tortilla / wrap',300,8,48,8,3,[['pièce',60]]],
+    ['Biscotte',400,11,75,6,4,[['pièce',8]]],
+    ['Cracker',380,10,75,4,3,[['pièce',6]]],
+    ['Croissant',420,8,45,23,2,[['pièce',55]]],
+    ['Pain au chocolat',440,8,48,24,3,[['pièce',65]]],
+    ['Brioche',380,8,50,16,2,[['tranche',35]]],
+  ],
+  'Légumineuses et végétal': [
+    ['Lentilles cuites',116,9,16,0.5,5,[['portion',150]]],
+    ['Lentilles corail cuites',120,9,17,0.6,4,[['portion',150]]],
+    ['Pois chiches cuits',139,8,19,2.5,6.5,[['portion',150]]],
+    ['Haricots rouges cuits',125,8,18,0.5,7,[['portion',150]]],
+    ['Haricots blancs cuits',130,8,19,0.6,6,[['portion',150]]],
+    ['Flageolets cuits',115,7,17,0.5,6,[['portion',150]]],
+    ['Fèves cuites',110,8,15,0.6,5,[['portion',150]]],
+    ['Petits pois cuits',80,5,12,0.4,5,[['portion',150]]],
+    ['Houmous',300,8,14,24,6,[['cuillère à soupe',25]]],
+    ['Tofu nature',120,13,2,7,1,[['portion',100]]],
+    ['Tofu fumé',145,16,2,8,1,[['portion',100]]],
+    ['Tempeh',190,19,8,11,5,[['portion',100]]],
+    ['Protéines de soja texturées',340,50,16,2,16,[['portion',30]]],
+    ['Steak de soja',180,16,8,9,4,[['pièce',90]]],
+  ],
+  'Légumes': [
+    ['Brocoli cuit',35,2.8,3.1,0.4,3,[['portion',200]]],
+    ['Chou-fleur cuit',25,1.8,2.5,0.3,2.2,[['portion',200]]],
+    ['Chou vert cuit',30,2,3,0.5,3,[['portion',200]]],
+    ['Choux de Bruxelles cuits',45,3.5,5,0.6,4,[['portion',200]]],
+    ['Haricots verts cuits',31,1.8,3.4,0.2,3,[['portion',200]]],
+    ['Courgette cuite',20,1.2,2,0.3,1.2,[['portion',200]]],
+    ['Aubergine cuite',30,1,4,0.4,2.5,[['portion',200]]],
+    ['Poivron rouge',30,1,5,0.3,2,[['pièce',150]]],
+    ['Poivron vert',22,0.9,3,0.2,1.8,[['pièce',150]]],
+    ['Tomate',18,0.8,2.6,0.2,1.2,[['pièce',120]]],
+    ['Tomates concassées',25,1.2,3.5,0.2,1.2,[['boîte',400]]],
+    ['Carotte crue',36,0.6,7.6,0.2,2.6,[['pièce',80]]],
+    ['Carottes cuites',33,0.7,6,0.3,2.8,[['portion',200]]],
+    ['Épinards cuits',24,2.7,1.2,0.5,2.6,[['portion',200]]],
+    ['Salade verte',15,1.2,1,0.2,1.5,[['portion',50]]],
+    ['Roquette',25,2.6,2,0.7,1.6,[['portion',40]]],
+    ['Concombre',12,0.6,1.8,0.1,0.7,[['pièce',300]]],
+    ['Champignons de Paris',22,2.5,1,0.3,1.5,[['portion',150]]],
+    ['Oignon',40,1.2,7,0.2,1.7,[['pièce',100]]],
+    ['Ail',130,6,28,0.5,2,[['gousse',5]]],
+    ['Poireau cuit',25,1.3,3,0.3,2.5,[['portion',200]]],
+    ['Céleri branche',15,0.7,1.5,0.2,1.6,[['branche',40]]],
+    ['Betterave cuite',45,1.8,8,0.1,2.5,[['portion',100]]],
+    ['Radis',15,0.7,2,0.1,1.5,[['pièce',10]]],
+    ['Asperges cuites',22,2.4,1.5,0.3,2,[['portion',150]]],
+    ['Endive',17,1,2,0.2,2,[['pièce',120]]],
+    ['Fenouil',25,1.2,3,0.3,2.5,[['pièce',250]]],
+    ['Maïs doux en conserve',90,3,15,1.5,3,[['portion',150]]],
+    ['Potiron cuit',25,1,4,0.3,1.6,[['portion',200]]],
+    ['Ratatouille',60,1.2,5,3.5,2,[['portion',250]]],
+    ['Poêlée de légumes surgelés',50,2.5,6,0.5,3,[['portion',250]]],
+  ],
+  'Fruits': [
+    ['Banane',94,1.1,20,0.3,2.1,[['pièce',120]]],
+    ['Pomme',54,0.3,11.5,0.2,2,[['pièce',150]]],
+    ['Poire',55,0.4,12,0.2,3,[['pièce',160]]],
+    ['Orange',47,1,9,0.2,2,[['pièce',180]]],
+    ['Clémentine',46,0.8,9,0.2,1.7,[['pièce',70]]],
+    ['Pamplemousse',40,0.7,8,0.1,1.5,[['pièce',250]]],
+    ['Kiwi',58,1.1,10,0.5,2.5,[['pièce',75]]],
+    ['Fraises',33,0.7,5.6,0.3,2,[['portion',150]]],
+    ['Framboises',45,1.2,5,0.6,6,[['portion',125]]],
+    ['Myrtilles',57,0.7,12,0.3,2.4,[['portion',100]]],
+    ['Mûres',43,1.4,5,0.5,5,[['portion',125]]],
+    ['Cerises',63,1,13,0.3,1.6,[['portion',150]]],
+    ['Raisin',70,0.6,16,0.2,1,[['portion',150]]],
+    ['Pêche',40,0.9,8,0.2,1.8,[['pièce',150]]],
+    ['Abricot',45,0.9,9,0.2,2,[['pièce',50]]],
+    ['Prune',45,0.7,10,0.2,1.7,[['pièce',60]]],
+    ['Melon',35,0.8,8,0.2,1,[['portion',200]]],
+    ['Pastèque',30,0.6,7,0.2,0.4,[['portion',250]]],
+    ['Ananas',50,0.5,11,0.2,1.4,[['portion',150]]],
+    ['Mangue',60,0.8,13,0.4,1.8,[['pièce',200]]],
+    ['Papaye',43,0.5,10,0.3,1.7,[['portion',150]]],
+    ['Grenade',75,1.7,16,1.2,4,[['pièce',200]]],
+    ['Figue fraîche',70,0.8,15,0.3,2.5,[['pièce',50]]],
+    ['Compote sans sucre ajouté',50,0.3,11,0.2,1.3,[['gourde',90]]],
+  ],
+  'Fruits secs et oléagineux': [
+    ['Amandes',634,25,5,53,12,[['poignée',30]]],
+    ['Noix',698,15,5,65,6,[['poignée',30]]],
+    ['Noisettes',660,15,7,61,9,[['poignée',30]]],
+    ['Noix de cajou',580,18,26,44,3,[['poignée',30]]],
+    ['Pistaches',580,20,17,45,10,[['poignée',30]]],
+    ['Cacahuètes',590,25,8,49,8,[['poignée',30]]],
+    ['Noix de pécan',690,9,4,72,9,[['poignée',30]]],
+    ['Noix du Brésil',660,14,4,66,8,[['pièce',5]]],
+    ['Graines de courge',560,30,10,49,6,[['cuillère à soupe',10]]],
+    ['Graines de tournesol',585,21,12,51,9,[['cuillère à soupe',10]]],
+    ['Graines de chia',490,17,8,31,34,[['cuillère à soupe',12]]],
+    ['Graines de lin',530,18,2,42,27,[['cuillère à soupe',10]]],
+    ['Beurre de cacahuète',620,25,10,50,6,[['cuillère à soupe',16]]],
+    ['Purée d’amande',640,21,8,56,10,[['cuillère à soupe',16]]],
+    ['Avocat',169,2,3,16,6,[['pièce',140]]],
+    ['Olives vertes',145,1,1,15,3,[['pièce',4]]],
+    ['Raisins secs',300,3,70,0.5,4,[['poignée',30]]],
+    ['Abricots secs',240,3.5,50,0.5,7,[['pièce',8]]],
+    ['Dattes',285,2.5,65,0.4,7,[['pièce',8]]],
+    ['Pruneaux',240,2,57,0.4,7,[['pièce',10]]],
+    ['Figues sèches',250,3.5,50,1,10,[['pièce',20]]],
+    ['Noix de coco râpée',620,6,6,62,16,[['cuillère à soupe',8]]],
+  ],
+  'Matières grasses': [
+    ['Huile d’olive',900,0,0,100,0,[['cuillère à soupe',10],['cuillère à café',5]]],
+    ['Huile de colza',900,0,0,100,0,[['cuillère à soupe',10]]],
+    ['Huile de tournesol',900,0,0,100,0,[['cuillère à soupe',10]]],
+    ['Huile de coco',900,0,0,100,0,[['cuillère à soupe',10]]],
+    ['Margarine',700,0.2,0.5,78,0,[['noisette',10]]],
+    ['Crème de coco',200,2,3,20,1,[['cuillère à soupe',15]]],
+  ],
+  'Plats préparés': [
+    ['Pizza margherita',250,11,30,9,2,[['part',120]]],
+    ['Lasagnes bolognaise',140,8,13,6,1,[['portion',300]]],
+    ['Hachis parmentier',120,7,12,5,1.5,[['portion',300]]],
+    ['Couscous royal',150,9,16,5,2,[['portion',350]]],
+    ['Paella',130,8,15,4,1,[['portion',300]]],
+    ['Quiche lorraine',300,11,22,19,1,[['part',130]]],
+    ['Croque-monsieur',280,15,22,15,1.5,[['pièce',150]]],
+    ['Sandwich jambon-beurre',250,10,30,10,2,[['pièce',200]]],
+    ['Burger classique',250,13,22,12,1.5,[['pièce',200]]],
+    ['Kebab',220,14,18,10,2,[['pièce',350]]],
+    ['Sushi au saumon',150,7,28,2,0.6,[['pièce',25]]],
+    ['Nems',230,8,25,11,1.5,[['pièce',40]]],
+    ['Riz cantonais',160,6,23,4.5,1,[['portion',300]]],
+    ['Soupe de légumes',40,1.2,6,1,1.5,[['bol',250]]],
+    ['Gratin dauphinois',160,3.5,13,10,1.5,[['portion',200]]],
+    ['Raviolis en conserve',100,4,13,3,1,[['boîte',400]]],
+    ['Salade César',180,10,6,13,1,[['portion',250]]],
+    ['Falafel',330,13,32,17,5,[['pièce',25]]],
+  ],
+  'Sucré et encas': [
+    ['Chocolat noir 70 %',570,9,32,43,10,[['carré',10]]],
+    ['Chocolat au lait',545,7,57,31,3,[['carré',10]]],
+    ['Pâte à tartiner',540,6,57,31,3,[['cuillère à soupe',20]]],
+    ['Miel',320,0.4,80,0,0,[['cuillère à café',8]]],
+    ['Confiture',260,0.5,62,0.2,1,[['cuillère à café',10]]],
+    ['Sucre blanc',400,0,100,0,0,[['morceau',5],['cuillère à café',5]]],
+    ['Sirop d’érable',260,0,67,0,0,[['cuillère à soupe',20]]],
+    ['Biscuit sec',450,7,72,15,2,[['pièce',8]]],
+    ['Cookie',470,6,60,23,2,[['pièce',40]]],
+    ['Madeleine',450,6,50,25,1,[['pièce',25]]],
+    ['Chips',540,6,50,34,4,[['portion',30]]],
+    ['Pop-corn nature',400,10,60,12,12,[['portion',30]]],
+    ['Glace vanille',200,3.5,24,10,0,[['boule',50]]],
+    ['Crêpe',200,6,28,7,1,[['pièce',60]]],
+    ['Gaufre',320,7,40,15,1.5,[['pièce',40]]],
+    ['Riz au lait',120,3.5,20,3,0,[['pot',120]]],
+    ['Crème dessert au chocolat',140,3,22,4.5,1,[['pot',100]]],
+    ['Barre chocolatée',480,6,60,23,2,[['barre',45]]],
+  ],
+  'Boissons': [
+    ['Eau',0,0,0,0,0,[['verre',250]]],
+    ['Café noir',2,0.2,0,0,0,[['tasse',100]]],
+    ['Thé nature',1,0,0,0,0,[['tasse',200]]],
+    ['Soda cola',42,0,10.6,0,0,[['canette',330]]],
+    ['Soda light',0.3,0,0,0,0,[['canette',330]]],
+    ['Jus de pomme',46,0.1,11,0.1,0.2,[['verre',200]]],
+    ['Jus d’orange',45,0.7,10,0.2,0.2,[['verre',200]]],
+    ['Smoothie aux fruits',60,0.8,13,0.3,1.5,[['bouteille',250]]],
+    ['Bière blonde',43,0.5,3.5,0,0,[['demi',250]]],
+    ['Vin rouge',85,0.1,2.6,0,0,[['verre',125]]],
+    ['Boisson énergisante',45,0,11,0,0,[['canette',250]]],
+    ['Boisson isotonique',25,0,6,0,0,[['bouteille',500]]],
+  ],
+  'Condiments et sauces': [
+    ['Sauce soja',60,6,5.5,0.1,0,[['cuillère à soupe',15]]],
+    ['Ketchup',102,1.3,23,0.2,1,[['cuillère à soupe',15]]],
+    ['Moutarde',145,7,4,11,3,[['cuillère à café',5]]],
+    ['Mayonnaise',700,1,2,76,0,[['cuillère à soupe',15]]],
+    ['Mayonnaise allégée',300,1,6,30,0,[['cuillère à soupe',15]]],
+    ['Sauce tomate cuisinée',55,1.5,7,2,1.5,[['portion',100]]],
+    ['Pesto',450,5,6,45,2,[['cuillère à soupe',15]]],
+    ['Vinaigrette',450,0.5,5,48,0,[['cuillère à soupe',15]]],
+    ['Sauce sans matière grasse',25,1,4,0.2,0,[['cuillère à soupe',15]]],
+    ['Vinaigre balsamique',90,0.5,17,0,0,[['cuillère à soupe',15]]],
+    ['Bouillon cube',200,12,15,10,0,[['cube',10]]],
+    ['Épices moulues',300,12,50,8,25,[['cuillère à café',2]]],
+    ['Levure maltée',350,45,20,5,20,[['cuillère à soupe',5]]],
+    ['Sirop sans sucre',5,0,1,0,0,[['dose',20]]],
+  ],
+};
+
+/** Construit les objets Aliment à partir de la table compacte. */
 function baseExemple(){
-  const g = {label:'g', grammes:1};
-  const A = (nom, categorie, kcal, prot, gluc, lip, fibres, unites) => ({
-    id: uid('al'), nom: nom, categorie: categorie,
-    pour100g: {kcal:kcal, prot:prot, gluc:gluc, lip:lip, fibres:fibres || 0},
-    unites: [g].concat(unites || []), favori: false, masque: false
+  const liste = [];
+  Object.keys(TABLE_ALIMENTS).forEach(function(cat){
+    TABLE_ALIMENTS[cat].forEach(function(t){
+      const unites = [{label:'g', grammes:1}];
+      (t[6] || []).forEach(function(u){ unites.push({label:u[0], grammes:u[1]}); });
+      liste.push({
+        id: uid('al'), nom: t[0], categorie: cat,
+        pour100g: {kcal:t[1], prot:t[2], gluc:t[3], lip:t[4], fibres:t[5]},
+        unites: unites, favori: false, masque: false
+      });
+    });
   });
-  return [
-    // Viandes et poissons
-    A('Blanc de poulet cru','Viandes et poissons',108,23,0,1.7,0,[{label:'filet',grammes:150}]),
-    A('Steak haché 5 % cru','Viandes et poissons',121,21,0,4.5,0,[{label:'steak',grammes:100}]),
-    A('Filet de dinde cru','Viandes et poissons',104,23.5,0,1.1,0,[{label:'escalope',grammes:120}]),
-    A('Saumon cru','Viandes et poissons',180,20,0,11,0,[{label:'pavé',grammes:130}]),
-    A('Thon au naturel égoutté','Viandes et poissons',116,26,0,1.2,0,[{label:'boîte',grammes:112}]),
-    A('Cabillaud cru','Viandes et poissons',76,17.5,0,0.7,0,[{label:'dos',grammes:130}]),
-    A('Jambon blanc découenné','Viandes et poissons',117,20,0.8,3.6,0,[{label:'tranche',grammes:40}]),
-    // Œufs et protéines en poudre
-    A('Œuf entier','Œufs et protéines en poudre',145,12.7,0.3,10.3,0,[{label:'pièce',grammes:50}]),
-    A('Blanc d’œuf','Œufs et protéines en poudre',48,10.7,0.3,0.2,0,[{label:'pièce',grammes:33}]),
-    A('Whey (poudre)','Œufs et protéines en poudre',380,78,8,5,0,[{label:'dose',grammes:30}]),
-    A('Caséine (poudre)','Œufs et protéines en poudre',360,75,6,3,0,[{label:'dose',grammes:30}]),
-    // Produits laitiers
-    A('Fromage blanc 3 %','Produits laitiers',76,7.5,4.5,3,0,[{label:'portion',grammes:100}]),
-    A('Skyr nature','Produits laitiers',63,11,4,0.2,0,[{label:'pot',grammes:150}]),
-    A('Yaourt nature','Produits laitiers',61,3.5,4.7,3.2,0,[{label:'pot',grammes:125}]),
-    A('Lait demi-écrémé','Produits laitiers',46,3.2,4.8,1.6,0,[{label:'verre',grammes:200}]),
-    A('Emmental','Produits laitiers',380,28,1,29.5,0,[{label:'tranche',grammes:25}]),
-    A('Mozzarella','Produits laitiers',250,18,1.5,19,0,[{label:'boule',grammes:125}]),
-    // Féculents et pains
-    A('Riz blanc cru','Féculents et pains',350,7,78,0.9,1.3,[{label:'portion',grammes:80}]),
-    A('Riz blanc cuit','Féculents et pains',130,2.6,28,0.3,0.5,[{label:'portion',grammes:200}]),
-    A('Pâtes complètes crues','Féculents et pains',350,13,65,2.5,7,[{label:'portion',grammes:80}]),
-    A('Pâtes cuites','Féculents et pains',158,5.5,30,0.9,2.4,[{label:'portion',grammes:220}]),
-    A('Pomme de terre cuite','Féculents et pains',87,2,18,0.1,2,[{label:'pièce',grammes:150}]),
-    A('Patate douce cuite','Féculents et pains',90,1.6,20,0.1,3,[{label:'pièce',grammes:150}]),
-    A('Flocons d’avoine','Féculents et pains',372,13,60,7,9,[{label:'portion',grammes:60},{label:'cuillère à soupe',grammes:12}]),
-    A('Pain complet','Féculents et pains',250,9,42,2.5,6,[{label:'tranche',grammes:35}]),
-    A('Lentilles cuites','Féculents et pains',116,9,16,0.5,5,[{label:'portion',grammes:150}]),
-    A('Pois chiches cuits','Féculents et pains',139,8,19,2.5,6.5,[{label:'portion',grammes:150}]),
-    // Fruits
-    A('Banane','Fruits',94,1.1,20,0.3,2.1,[{label:'pièce',grammes:120}]),
-    A('Pomme','Fruits',54,0.3,11.5,0.2,2,[{label:'pièce',grammes:150}]),
-    A('Fraises','Fruits',33,0.7,5.6,0.3,2,[{label:'portion',grammes:150}]),
-    A('Myrtilles','Fruits',57,0.7,12,0.3,2.4,[{label:'portion',grammes:100}]),
-    A('Kiwi','Fruits',58,1.1,10,0.5,2.5,[{label:'pièce',grammes:75}]),
-    // Légumes
-    A('Brocoli cuit','Légumes',35,2.8,3.1,0.4,3,[{label:'portion',grammes:200}]),
-    A('Haricots verts cuits','Légumes',31,1.8,3.4,0.2,3,[{label:'portion',grammes:200}]),
-    A('Courgette cuite','Légumes',20,1.2,2,0.3,1.2,[{label:'portion',grammes:200}]),
-    A('Tomate','Légumes',18,0.8,2.6,0.2,1.2,[{label:'pièce',grammes:120}]),
-    A('Épinards cuits','Légumes',24,2.7,1.2,0.5,2.6,[{label:'portion',grammes:200}]),
-    A('Carotte crue','Légumes',36,0.6,7.6,0.2,2.6,[{label:'pièce',grammes:80}]),
-    // Matières grasses et oléagineux
-    A('Huile d’olive','Matières grasses et oléagineux',900,0,0,100,0,[{label:'cuillère à soupe',grammes:10},{label:'cuillère à café',grammes:5}]),
-    A('Amandes','Matières grasses et oléagineux',634,25,5,53,12,[{label:'poignée',grammes:30}]),
-    A('Beurre de cacahuète','Matières grasses et oléagineux',620,25,10,50,6,[{label:'cuillère à soupe',grammes:16}]),
-    A('Avocat','Matières grasses et oléagineux',169,2,3,16,6,[{label:'pièce',grammes:140}]),
-    A('Noix','Matières grasses et oléagineux',698,15,5,65,6,[{label:'poignée',grammes:30}]),
-    // Condiments
-    A('Sauce soja','Condiments',60,6,5.5,0.1,0,[{label:'cuillère à soupe',grammes:15}]),
-    A('Ketchup','Condiments',102,1.3,23,0.2,1,[{label:'cuillère à soupe',grammes:15}]),
-    A('Moutarde','Condiments',145,7,4,11,3,[{label:'cuillère à café',grammes:5}]),
-    A('Sauce sans matière grasse','Condiments',25,1,4,0.2,0,[{label:'cuillère à soupe',grammes:15}])
-  ];
+  return liste;
 }
 
 /* =========================================================================
@@ -1032,7 +1329,8 @@ function rendreListeJournal(){
       '<div class="vide-msg">Votre liste d’aliments est vide.<br>Ajoutez ceux que vous mangez réellement — une trentaine suffit.' +
       '<div class="rangee-actions" style="margin-top:14px;justify-content:center">' +
         '<button class="btn primaire" data-act="nouvel-aliment">Ajouter un aliment</button>' +
-        '<button class="btn" data-act="base-exemple">Charger une base d’exemple</button>' +
+        '<button class="btn" data-act="en-ligne">Chercher en ligne</button>' +
+        '<button class="btn" data-act="base-exemple">Charger la base d’aliments</button>' +
       '</div></div>';
     return;
   }
@@ -1045,7 +1343,11 @@ function rendreListeJournal(){
   });
 
   if(!visibles.length){
-    hote.innerHTML = '<div class="vide-msg">Aucun aliment ne correspond à « ' + esc(ETAT.ui.recherche) + ' ».</div>';
+    hote.innerHTML = '<div class="vide-msg">Aucun aliment de votre liste ne correspond à « ' + esc(ETAT.ui.recherche) + ' ».' +
+      '<div class="rangee-actions" style="margin-top:14px;justify-content:center">' +
+        '<button class="btn" data-act="en-ligne">Chercher « ' + esc(ETAT.ui.recherche) + ' » en ligne</button>' +
+        '<button class="btn" data-act="nouvel-aliment">Créer cet aliment</button>' +
+      '</div></div>';
     return;
   }
 
@@ -1108,6 +1410,7 @@ function brancherJournal(){
     if(acte){
       if(acte.dataset.act === 'nouvel-aliment') formulaireAliment(null);
       if(acte.dataset.act === 'base-exemple') confirmerBaseExemple();
+      if(acte.dataset.act === 'en-ligne') rechercheEnLigne(ETAT.ui.recherche);
       return;
     }
     const tete = ev.target.closest('.tete-cat');
@@ -1206,6 +1509,7 @@ function menuJournal(){
     '<div class="pile">' +
       '<button class="btn" data-m="veille">Copier la journée d’hier</button>' +
       '<button class="btn" data-m="ajouter">Ajouter un aliment à ma liste</button>' +
+      '<button class="btn" data-m="en-ligne">Chercher un aliment en ligne</button>' +
       '<button class="btn danger" data-m="vider">Vider le journal du jour</button>' +
     '</div>';
   const mod = ouvrirModale('Actions du journal', corps);
@@ -1216,6 +1520,7 @@ function menuJournal(){
     if(b.dataset.m === 'veille') copierLaVeille();
     if(b.dataset.m === 'vider') viderJournal();
     if(b.dataset.m === 'ajouter') formulaireAliment(null);
+    if(b.dataset.m === 'en-ligne') rechercheEnLigne('');
   });
 }
 
@@ -1286,7 +1591,8 @@ function rendreAliments(){
       '<div class="vide-msg">Aucun aliment enregistré.<br>Commencez par ceux que vous mangez chaque semaine.' +
       '<div class="rangee-actions" style="margin-top:14px;justify-content:center">' +
         '<button class="btn primaire" data-act="nouvel-aliment">Nouvel aliment</button>' +
-        '<button class="btn" data-act="base-exemple">Charger une base d’exemple</button>' +
+        '<button class="btn" data-act="en-ligne">Chercher en ligne</button>' +
+        '<button class="btn" data-act="base-exemple">Charger la base d’aliments</button>' +
       '</div></div>';
     return;
   }
@@ -1295,7 +1601,12 @@ function rendreAliments(){
   const visibles = ETAT.aliments.filter(function(a){
     return !q || normaliser(a.nom).indexOf(q) >= 0 || normaliser(a.categorie).indexOf(q) >= 0;
   });
-  if(!visibles.length){ hote.innerHTML = '<div class="vide-msg">Aucun résultat.</div>'; return; }
+  if(!visibles.length){
+    hote.innerHTML = '<div class="vide-msg">Aucun résultat dans votre liste.' +
+      '<div class="rangee-actions" style="margin-top:14px;justify-content:center">' +
+        '<button class="btn" data-act="en-ligne">Chercher en ligne</button></div></div>';
+    return;
+  }
 
   const parCat = {};
   visibles.forEach(function(a){ const c = a.categorie || 'Sans catégorie'; (parCat[c] = parCat[c] || []).push(a); });
@@ -1369,10 +1680,205 @@ function menuAliment(id){
   });
 }
 
+
+/* =========================================================================
+   8 bis. RECHERCHE EN LIGNE — Open Food Facts
+   Sert à REMPLIR la liste personnelle, pas à chercher à chaque repas :
+   on interroge le service, on vérifie les valeurs, on enregistre l'aliment.
+   Ensuite tout se passe hors ligne, sur la liste courte.
+   Données Open Food Facts, licence ODbL.
+   ========================================================================= */
+const OFF = {
+  base: 'https://world.openfoodfacts.org',
+  champs: 'code,product_name,product_name_fr,generic_name_fr,brands,quantity,serving_size,serving_quantity,nutriments',
+
+  /** Une suite de 8 à 14 chiffres est traitée comme un code-barres. */
+  estCodeBarres: function(q){ return /^\d{8,14}$/.test(String(q).replace(/[\s-]/g, '')); },
+
+  url: function(q){
+    if(OFF.estCodeBarres(q)){
+      return OFF.base + '/api/v2/product/' + encodeURIComponent(String(q).replace(/[\s-]/g, '')) +
+             '.json?fields=' + OFF.champs;
+    }
+    const p = new URLSearchParams();
+    p.set('search_terms', q);
+    p.set('search_simple', '1');
+    p.set('action', 'process');
+    p.set('json', '1');
+    p.set('page_size', '24');
+    p.set('fields', OFF.champs);
+    p.set('app_name', 'macro-carnet');
+    return OFF.base + '/cgi/search.pl?' + p.toString();
+  },
+
+  /** Convertit une fiche produit en Aliment du modèle interne, ou null si inexploitable. */
+  versAliment: function(prod){
+    if(!prod) return null;
+    const n = prod.nutriments || {};
+    const val = function(cle){ const v = n[cle]; return typeof v === 'number' && isFinite(v) ? v : null; };
+
+    let kcal = val('energy-kcal_100g');
+    if(kcal == null){
+      const kj = val('energy_100g') != null ? val('energy_100g') : val('energy-kj_100g');
+      if(kj != null) kcal = kj / 4.184;          // les fiches européennes stockent souvent des kilojoules
+    }
+    const prot = val('proteins_100g'), gluc = val('carbohydrates_100g'), lip = val('fat_100g');
+    if(kcal == null && prot == null && gluc == null && lip == null) return null;
+
+    const nom = (prod.product_name_fr || prod.product_name || prod.generic_name_fr || '').trim();
+    if(!nom) return null;
+    const marque = (prod.brands || '').split(',')[0].trim();
+
+    const unites = [{label:'g', grammes:1}];
+    const portion = Number(prod.serving_quantity);
+    if(isFinite(portion) && portion > 0 && portion < 2000) unites.push({label:'portion', grammes: Math.round(portion)});
+
+    return {
+      id: null,
+      nom: marque && nom.toLowerCase().indexOf(marque.toLowerCase()) < 0 ? nom + ' — ' + marque : nom,
+      categorie: ETAT.categories[0] || 'Sans catégorie',
+      pour100g: {
+        kcal: Math.round(kcal || 0),
+        prot: Math.round((prot || 0) * 10) / 10,
+        gluc: Math.round((gluc || 0) * 10) / 10,
+        lip:  Math.round((lip  || 0) * 10) / 10,
+        fibres: Math.round((val('fiber_100g') || 0) * 10) / 10
+      },
+      unites: unites,
+      favori: false,
+      masque: false,
+      complet: kcal != null && prot != null && gluc != null && lip != null
+    };
+  },
+
+  /** Lance la requête et renvoie une liste d'Aliments candidats. */
+  chercher: function(q){
+    return fetch(OFF.url(q), {headers: {'Accept': 'application/json'}})
+      .then(function(r){
+        if(!r.ok) throw new Error('http ' + r.status);
+        return r.json();
+      })
+      .then(function(d){
+        const bruts = d.products || (d.product ? [d.product] : []);
+        return bruts.map(OFF.versAliment).filter(Boolean);
+      });
+  }
+};
+
+/**
+ * Lecture d'un code-barres sur une photo, via l'API BarcodeDetector du
+ * navigateur. Disponible sur Chrome / Android ; ailleurs on retombe sur la
+ * saisie manuelle des chiffres, qui fonctionne partout.
+ */
+const Scan = {
+  disponible: function(){ return typeof window.BarcodeDetector === 'function'; },
+  lire: function(fichier){
+    return createImageBitmap(fichier).then(function(image){
+      const detecteur = new window.BarcodeDetector();      // tous les formats gérés
+      return detecteur.detect(image);
+    }).then(function(codes){
+      return (codes && codes.length) ? codes[0].rawValue : null;
+    });
+  }
+};
+
+function rechercheEnLigne(termeInitial){
+  const mod = ouvrirModale('Chercher un aliment en ligne',
+    '<p class="entrefilet">Base Open Food Facts : produits de marque et codes-barres. ' +
+      'Une connexion est nécessaire. Les valeurs sont renseignées par des contributeurs — vérifiez-les avant d’enregistrer.</p>' +
+    '<div class="rangee" style="gap:8px">' +
+      '<label class="sr" for="off-q">Nom du produit ou code-barres</label>' +
+      '<input type="text" id="off-q" data-q placeholder="Skyr vanille, ou 3033710065967" ' +
+        'value="' + esc(termeInitial || '') + '" autocomplete="off" style="flex:1">' +
+      '<button class="btn" data-chercher>Chercher</button>' +
+    '</div>' +
+    (Scan.disponible()
+      ? '<div class="rangee-actions">' +
+          '<label class="btn" for="off-photo" style="flex:1">Scanner un code-barres</label>' +
+          '<input type="file" id="off-photo" accept="image/*" capture="environment" data-photo ' +
+            'style="position:absolute;width:1px;height:1px;opacity:0;pointer-events:none">' +
+        '</div>'
+      : '<p class="entrefilet">Votre navigateur ne sait pas lire les codes-barres. ' +
+        'Tapez les chiffres imprimés sous le code, cela fonctionne partout.</p>') +
+    '<div data-res></div>' +
+    '<p class="entrefilet">Données <strong>Open Food Facts</strong>, licence ODbL.</p>');
+
+  let resultats = [];
+  const zone = $('[data-res]', mod);
+  const champ = $('[data-q]', mod);
+
+  function afficher(html){ zone.innerHTML = html; }
+
+  function lancer(){
+    const q = champ.value.trim();
+    if(q.length < 2){ toast('Tapez au moins deux caractères.'); return; }
+    afficher('<div class="vide-msg">Recherche en cours…</div>');
+    OFF.chercher(q).then(function(liste){
+      resultats = liste;
+      if(!liste.length){
+        afficher('<div class="vide-msg">Aucun produit trouvé pour « ' + esc(q) + ' ».<br>' +
+                 'Essayez un nom plus court, ou créez l’aliment à la main.</div>');
+        return;
+      }
+      afficher('<div class="etiq" style="margin:6px 0">' + liste.length + ' résultats</div>' +
+        liste.map(function(a, i){
+          const p = a.pour100g;
+          return '<div class="ali" data-i="' + i + '">' +
+            '<div class="info">' +
+              '<div class="n">' + esc(a.nom) + (a.complet ? '' : ' <span class="etiq">incomplet</span>') + '</div>' +
+              '<div class="p100">' + fmt(p.kcal) + ' kcal · ' + fmtG(p.prot) + ' P · ' + fmtG(p.gluc) + ' G · ' +
+                fmtG(p.lip) + ' L' + (p.fibres ? ' · ' + fmtG(p.fibres) + ' F' : '') + ' /100 g</div>' +
+            '</div>' +
+            '<div class="outils"><button data-ajouter aria-label="Reprendre ' + esc(a.nom) + '">+</button></div>' +
+          '</div>';
+        }).join(''));
+    }).catch(function(){
+      afficher('<div class="vide-msg">La recherche en ligne n’a pas abouti.<br>' +
+               'Vérifiez votre connexion. Sur la page publiée chez Claude, les appels vers l’extérieur sont bloqués : ' +
+               'utilisez la version hébergée sur votre site.</div>');
+    });
+  }
+
+  const photo = $('[data-photo]', mod);
+  if(photo){
+    photo.addEventListener('change', function(){
+      const f = this.files && this.files[0];
+      this.value = '';
+      if(!f) return;
+      afficher('<div class="vide-msg">Lecture du code-barres…</div>');
+      Scan.lire(f).then(function(code){
+        if(!code){
+          afficher('<div class="vide-msg">Aucun code-barres lisible sur cette photo.<br>' +
+                   'Cadrez le code de près, bien à plat, ou tapez les chiffres à la main.</div>');
+          return;
+        }
+        champ.value = code;
+        lancer();
+      }).catch(function(){
+        afficher('<div class="vide-msg">La lecture a échoué. Tapez les chiffres sous le code.</div>');
+      });
+    });
+  }
+
+  $('[data-chercher]', mod).addEventListener('click', lancer);
+  champ.addEventListener('keydown', function(ev){ if(ev.key === 'Enter'){ ev.preventDefault(); lancer(); } });
+
+  zone.addEventListener('click', function(ev){
+    const b = ev.target.closest('[data-ajouter]');
+    if(!b) return;
+    const a = resultats[Number(b.closest('[data-i]').dataset.i)];
+    if(!a) return;
+    fermerModale();
+    formulaireAliment(null, JSON.parse(JSON.stringify(a)));   // pré-rempli, l'utilisateur valide
+  });
+
+  if(termeInitial) lancer();
+}
+
 /* ---------- Formulaire d'aliment ---------- */
-function formulaireAliment(aliment){
+function formulaireAliment(aliment, prerempli){
   const est_modif = !!aliment;
-  const a = aliment || {
+  const a = aliment || prerempli || {
     id: null, nom: '', categorie: ETAT.categories[0] || 'Sans catégorie',
     pour100g: {kcal:0, prot:0, gluc:0, lip:0, fibres:0},
     unites: [{label:'g', grammes:1}], favori:false, masque:false
@@ -1889,7 +2395,8 @@ function rendreProfil(){
         '<button class="btn" id="p-donnees">Import / export</button>' +
         '<button class="btn danger" id="p-reset">Tout effacer</button>' +
       '</div>' +
-      '<p class="entrefilet" style="margin-top:10px">Tout est stocké sur cet appareil' +
+      '<p class="entrefilet" style="margin-top:10px">Macro Carnet — version ' + VERSION + '. ' +
+      'Tout est stocké sur cet appareil' +
       (Stockage.disponible() ? '' : ' — attention : le stockage du navigateur est indisponible, les données seront perdues à la fermeture') +
       '.</p>' +
     '</div>';
@@ -2072,7 +2579,7 @@ function modaleDonnees(){
       '<label class="champ"><span>ou coller le contenu JSON</span><textarea data-colle placeholder="{ …" ></textarea></label>' +
       '<button class="btn" data-d="importer">Importer (remplace les données)</button>' +
       '<hr class="sep">' +
-      '<button class="btn" data-d="exemple">Charger la base d’exemple</button>' +
+      '<button class="btn" data-d="exemple">Charger la base d’aliments</button>' +
     '</div>');
 
   mod.addEventListener('click', function(ev){
@@ -2106,15 +2613,20 @@ function modaleDonnees(){
 }
 
 function confirmerBaseExemple(){
-  confirmer('Charger la base d’exemple ?',
-    'Environ 45 aliments courants seront ajoutés à votre liste. Vous pourrez masquer ou supprimer ceux que vous ne mangez pas.',
+  confirmer('Charger la base d’aliments ?',
+    'Près de 300 aliments courants seront ajoutés à votre liste, répartis en 15 catégories. ' +
+    'Les valeurs pour 100 g sont des repères usuels, pas des données officielles : pour un produit précis, ' +
+    'l’étiquette prime. Vous pourrez masquer ou supprimer ceux que vous ne mangez pas.',
     'Charger', function(){
       const nouveaux = baseExemple().filter(function(n){
         return !ETAT.aliments.some(function(a){ return normaliser(a.nom) === normaliser(n.nom); });
       });
       ETAT.aliments = ETAT.aliments.concat(nouveaux);
       CATEGORIES_DEFAUT.forEach(function(c){ if(ETAT.categories.indexOf(c) < 0) ETAT.categories.push(c); });
-      reindexer(); sauver('aliments'); sauver('categories');
+      // Avec près de 300 aliments, on replie les catégories : le journal reste
+      // un sommaire lisible, et la recherche donne l'accès direct.
+      ETAT.categories.forEach(function(c){ ETAT.ui.repliees[c] = true; });
+      reindexer(); sauver('aliments'); sauver('categories'); sauver('ui');
       rendreTout();
       toast(nouveaux.length + ' aliments ajoutés.');
     });
@@ -2173,6 +2685,7 @@ function brancherGlobal(){
     b.addEventListener('click', function(){ allerA(b.dataset.onglet); });
   });
   $('#a-nouveau').addEventListener('click', function(){ formulaireAliment(null); });
+  $('#a-en-ligne').addEventListener('click', function(){ rechercheEnLigne(ETAT.ui.filtreAliments); });
   $('#a-categories').addEventListener('click', gererCategories);
   $('#a-donnees').addEventListener('click', modaleDonnees);
   $('#a-recherche').addEventListener('input', function(){
@@ -2184,6 +2697,7 @@ function brancherGlobal(){
     if(acte){
       if(acte.dataset.act === 'nouvel-aliment') formulaireAliment(null);
       if(acte.dataset.act === 'base-exemple') confirmerBaseExemple();
+      if(acte.dataset.act === 'en-ligne') rechercheEnLigne(ETAT.ui.filtreAliments);
       return;
     }
     const m = ev.target.closest('[data-menu]');
