@@ -1,0 +1,2235 @@
+<!doctype html>
+<html lang="fr">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+<meta name="color-scheme" content="light dark">
+<title>Macro Carnet</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=IBM+Plex+Mono:wght@400;500;600&family=IBM+Plex+Sans+Condensed:wght@600;700&family=IBM+Plex+Sans:wght@400;500;600;700&display=swap">
+<style>
+/* =========================================================================
+   MACRO CARNET — feuille de style
+   Direction : outil quotidien, dense, chiffré. Aucun dégradé, aucune icône
+   décorative. Une couleur par macronutriment, utilisée partout à l'identique.
+   ========================================================================= */
+
+/* --- 1. Jetons de couleur : thème clair (état par défaut) --------------- */
+:root{
+  --bg:#F2F4F6;
+  --surface:#FFFFFF;
+  --surface-2:#F7F9FB;
+  --surface-3:#EDF0F4;
+  --line:#DEE3E9;
+  --line-fort:#C3CAD3;
+  --ink:#111519;
+  --ink-2:#454E58;
+  --ink-3:#78828E;
+
+  --prot:#2F62C4;
+  --gluc:#A8760B;
+  --lip:#A8437A;
+  --prot-doux:#E4ECFA;
+  --gluc-doux:#F5EBD8;
+  --lip-doux:#F7E6F0;
+
+  --ok:#2C7A57;
+  --alerte:#B4483C;
+  --ok-doux:#E1F0E8;
+  --alerte-doux:#F8E4E1;
+
+  --focus:#2F62C4;
+  --ombre:0 1px 2px rgba(17,21,25,.06), 0 8px 24px rgba(17,21,25,.06);
+
+  --r:6px;
+  --pas:4px;
+  --nav-h:58px;
+}
+
+/* --- 2. Thème sombre : réglage système (non estampillé) ------------------ */
+@media (prefers-color-scheme: dark){
+  :root:not([data-theme="light"]){
+    --bg:#0D1116;
+    --surface:#151A20;
+    --surface-2:#1B212A;
+    --surface-3:#222932;
+    --line:#252D36;
+    --line-fort:#3A434E;
+    --ink:#E9EDF2;
+    --ink-2:#AFB9C5;
+    --ink-3:#7D8794;
+
+    --prot:#7BA5F5;
+    --gluc:#D9A63F;
+    --lip:#E07FB1;
+    --prot-doux:#1A253C;
+    --gluc-doux:#2F2915;
+    --lip-doux:#31202B;
+
+    --ok:#54B98C;
+    --alerte:#E47766;
+    --ok-doux:#16281F;
+    --alerte-doux:#2C1B18;
+
+    --focus:#7BA5F5;
+    --ombre:0 1px 2px rgba(0,0,0,.4), 0 8px 24px rgba(0,0,0,.35);
+  }
+}
+
+/* --- 3. Thème sombre : choix explicite du lecteur ------------------------ */
+:root[data-theme="dark"]{
+  --bg:#0D1116;
+  --surface:#151A20;
+  --surface-2:#1B212A;
+  --surface-3:#222932;
+  --line:#252D36;
+  --line-fort:#3A434E;
+  --ink:#E9EDF2;
+  --ink-2:#AFB9C5;
+  --ink-3:#7D8794;
+
+  --prot:#7BA5F5;
+  --gluc:#D9A63F;
+  --lip:#E07FB1;
+  --prot-doux:#1A253C;
+  --gluc-doux:#2F2915;
+  --lip-doux:#31202B;
+
+  --ok:#54B98C;
+  --alerte:#E47766;
+  --ok-doux:#16281F;
+  --alerte-doux:#2C1B18;
+
+  --focus:#7BA5F5;
+  --ombre:0 1px 2px rgba(0,0,0,.4), 0 8px 24px rgba(0,0,0,.35);
+}
+
+/* --- 4. Réinitialisation minimale --------------------------------------- */
+*,*::before,*::after{box-sizing:border-box}
+html{-webkit-text-size-adjust:100%}
+body{
+  margin:0;
+  background:var(--bg);
+  color:var(--ink);
+  font-family:"IBM Plex Sans","Segoe UI",system-ui,-apple-system,sans-serif;
+  font-size:15px;
+  line-height:1.45;
+  -webkit-font-smoothing:antialiased;
+}
+button,input,select,textarea{font:inherit;color:inherit}
+button{cursor:pointer}
+:focus-visible{outline:2px solid var(--focus);outline-offset:2px;border-radius:3px}
+@media (prefers-reduced-motion: reduce){
+  *{animation-duration:.001ms !important;transition-duration:.001ms !important}
+}
+
+/* --- 5. Utilitaires typographiques -------------------------------------- */
+.nb{font-family:"IBM Plex Sans Condensed","IBM Plex Sans",sans-serif;font-weight:700;font-variant-numeric:tabular-nums;letter-spacing:.005em}
+.mono{font-family:"IBM Plex Mono",ui-monospace,monospace;font-variant-numeric:tabular-nums}
+.etiq{font-family:"IBM Plex Mono",ui-monospace,monospace;font-size:10.5px;font-weight:500;letter-spacing:.09em;text-transform:uppercase;color:var(--ink-3)}
+.muet{color:var(--ink-2)}
+.tres-muet{color:var(--ink-3)}
+.sr{position:absolute;width:1px;height:1px;padding:0;margin:-1px;overflow:hidden;clip:rect(0 0 0 0);white-space:nowrap;border:0}
+
+/* --- 6. Charpente ------------------------------------------------------- */
+.app{max-width:760px;margin:0 auto;min-height:100vh;background:var(--surface);border-inline:1px solid var(--line)}
+.ecran{display:none;padding-bottom:calc(var(--nav-h) + 18px + env(safe-area-inset-bottom,0px))}
+.ecran.actif{display:block}
+.bloc{padding:14px 16px;border-bottom:1px solid var(--line)}
+.titre-bloc{display:flex;align-items:baseline;justify-content:space-between;gap:10px;margin-bottom:10px}
+h1,h2,h3{margin:0;text-wrap:balance}
+h1{font-size:19px;font-weight:700;letter-spacing:-.01em}
+h2{font-size:15px;font-weight:600}
+h3{font-size:13px;font-weight:600}
+
+/* --- 7. Boutons --------------------------------------------------------- */
+.btn{
+  display:inline-flex;align-items:center;justify-content:center;gap:6px;
+  min-height:44px;padding:0 14px;border:1px solid var(--line-fort);border-radius:var(--r);
+  background:var(--surface);color:var(--ink);font-size:14px;font-weight:500;
+  transition:background .12s ease,border-color .12s ease;
+}
+.btn:hover{background:var(--surface-2)}
+.btn:active{background:var(--surface-3)}
+.btn.primaire{background:var(--ink);border-color:var(--ink);color:var(--surface);font-weight:600}
+.btn.primaire:hover{opacity:.88;background:var(--ink)}
+.btn.enregistre{background:var(--ok-doux);border-color:var(--ok);color:var(--ok)}
+.btn.danger{color:var(--alerte);border-color:var(--line-fort)}
+.btn.danger:hover{background:var(--alerte-doux);border-color:var(--alerte)}
+.btn.petit{min-height:36px;padding:0 10px;font-size:13px}
+.btn.icone{min-width:44px;padding:0 8px}
+.btn[disabled]{opacity:.45;cursor:not-allowed}
+.rangee-actions{display:flex;gap:8px;flex-wrap:wrap}
+.rangee-actions .btn{flex:1 1 auto}
+
+/* --- 8. Champs ---------------------------------------------------------- */
+.champ{display:flex;flex-direction:column;gap:5px}
+.champ > span{font-family:"IBM Plex Mono",monospace;font-size:10.5px;letter-spacing:.09em;text-transform:uppercase;color:var(--ink-3)}
+input[type="text"],input[type="number"],input[type="date"],select,textarea{
+  min-height:44px;width:100%;padding:8px 10px;
+  background:var(--surface-2);border:1px solid var(--line-fort);border-radius:var(--r);
+  font-variant-numeric:tabular-nums;
+}
+textarea{min-height:120px;font-family:"IBM Plex Mono",monospace;font-size:12px;line-height:1.5;resize:vertical}
+input:focus,select:focus,textarea:focus{outline:2px solid var(--focus);outline-offset:-1px;border-color:var(--focus)}
+.grille-champs{display:grid;grid-template-columns:repeat(auto-fit,minmax(120px,1fr));gap:10px}
+.grille-champs.trois{grid-template-columns:repeat(3,minmax(0,1fr));gap:8px}
+.grille-champs.deux{grid-template-columns:repeat(2,minmax(0,1fr))}
+
+/* Segments (sexe, objectif, activité) */
+.segments{display:flex;flex-wrap:wrap;gap:6px}
+.segments button{
+  flex:1 1 auto;min-height:44px;padding:0 10px;border:1px solid var(--line-fort);
+  border-radius:var(--r);background:var(--surface-2);font-size:13.5px;font-weight:500;
+}
+.segments button[aria-pressed="true"]{background:var(--ink);border-color:var(--ink);color:var(--surface);font-weight:600}
+
+/* --- 9. En-tête collant du journal -------------------------------------- */
+.entete{position:sticky;top:0;z-index:30;background:var(--surface);border-bottom:1px solid var(--line-fort)}
+.entete-haut{display:flex;align-items:flex-start;justify-content:space-between;gap:12px;padding:12px 16px 8px}
+.kcal-jour{display:flex;align-items:baseline;gap:7px}
+.kcal-jour .val{font-size:40px;line-height:.95}
+.kcal-jour .sur{font-size:15px;color:var(--ink-3);font-variant-numeric:tabular-nums}
+.jour-meta{text-align:right;display:flex;flex-direction:column;gap:3px;align-items:flex-end}
+.pastille{display:inline-flex;align-items:center;gap:5px;padding:2px 7px;border-radius:99px;font-size:11px;font-weight:600;border:1px solid var(--line-fort);color:var(--ink-3);font-family:"IBM Plex Mono",monospace}
+.pastille.on{background:var(--ok-doux);border-color:var(--ok);color:var(--ok)}
+.pastille.off{background:var(--surface-2)}
+
+/* Barre empilée des calories par macro */
+.barre-empilee{display:flex;height:9px;border-radius:2px;overflow:hidden;background:var(--surface-3);margin:0 16px}
+.barre-empilee span{display:block;height:100%}
+.seg-prot{background:var(--prot)} .seg-gluc{background:var(--gluc)} .seg-lip{background:var(--lip)}
+
+/* Tableau des trois macros + fibres */
+.macros{display:grid;grid-template-columns:repeat(3,1fr);gap:1px;background:var(--line);margin-top:10px;border-top:1px solid var(--line)}
+.macro{background:var(--surface);padding:8px 16px 10px}
+.macro .tete{display:flex;align-items:center;gap:5px}
+.puce{width:8px;height:8px;border-radius:2px;flex:none}
+.puce.p{background:var(--prot)} .puce.g{background:var(--gluc)} .puce.l{background:var(--lip)}
+.macro .valeur{display:flex;align-items:baseline;justify-content:space-between;gap:6px;margin-top:2px}
+.macro .valeur .q{display:flex;align-items:baseline;gap:3px;min-width:0}
+.macro .valeur .nb{font-size:21px;line-height:1.05}
+.macro .valeur .u{font-size:11px;color:var(--ink-3)}
+.macro .pct{font-size:11px;color:var(--ink-3);font-variant-numeric:tabular-nums;white-space:nowrap;flex:none}
+.jauge{height:3px;background:var(--surface-3);border-radius:2px;margin-top:6px;overflow:hidden}
+.jauge i{display:block;height:100%;border-radius:2px}
+.jauge i.p{background:var(--prot)} .jauge i.g{background:var(--gluc)} .jauge i.l{background:var(--lip)}
+.ligne-fibres{display:flex;align-items:center;justify-content:space-between;gap:10px;padding:7px 16px;border-top:1px solid var(--line);background:var(--surface-2)}
+
+/* Recherche */
+.recherche{display:flex;gap:8px;padding:10px 16px;border-top:1px solid var(--line);background:var(--surface)}
+.recherche input{background:var(--surface-2)}
+
+/* --- 10. Sections d'aliments repliables ---------------------------------- */
+.section-cat > .tete-cat{
+  display:flex;align-items:center;gap:9px;width:100%;
+  min-height:44px;padding:8px 16px;border:0;border-bottom:1px solid var(--line);
+  background:var(--surface-2);text-align:left;
+}
+.tete-cat .chev{width:9px;height:9px;border-right:2px solid var(--ink-3);border-bottom:2px solid var(--ink-3);transform:rotate(45deg);transition:transform .15s ease;flex:none;margin-top:-3px}
+.tete-cat[aria-expanded="false"] .chev{transform:rotate(-45deg)}
+.tete-cat .nom-cat{font-weight:600;font-size:13px;letter-spacing:.01em;flex:1}
+.tete-cat .compte{font-family:"IBM Plex Mono",monospace;font-size:11px;color:var(--ink-3)}
+
+/* --- 11. Ligne d'aliment ------------------------------------------------
+   Mobile : identité + calories sur la première ligne, saisie en dessous,
+   macros seulement si la ligne est renseignée. Écran large : tout sur un rang. */
+.ligne{
+  display:grid;grid-template-columns:1fr auto;
+  grid-template-areas:"ident kcal" "saisie saisie" "macros macros";
+  gap:2px 10px;padding:9px 16px;border-bottom:1px solid var(--line);align-items:center;
+}
+.ligne.rempli{background:var(--surface-2);box-shadow:inset 3px 0 0 var(--ink)}
+.ligne .ident{grid-area:ident;min-width:0}
+.ligne .nom{font-size:14.5px;font-weight:500;line-height:1.25}
+.p100{font-family:"IBM Plex Mono",monospace;font-size:10.5px;line-height:1.4;color:var(--ink-3);margin-top:2px;font-variant-numeric:tabular-nums}
+.saisie{grid-area:saisie;display:flex;align-items:center;gap:6px;margin-top:5px;flex-wrap:nowrap}
+.pas{width:38px;height:44px;border:1px solid var(--line-fort);border-radius:var(--r);background:var(--surface);font-size:17px;font-weight:600;line-height:1;color:var(--ink-2);display:flex;align-items:center;justify-content:center;flex:none}
+.pas:hover{background:var(--surface-3)}
+input.qte{width:64px;flex:none;min-height:44px;text-align:center;padding:6px 4px;font-weight:600;font-variant-numeric:tabular-nums;background:var(--surface);border:1px solid var(--line-fort);border-radius:var(--r)}
+select.unite{flex:0 1 auto;min-width:96px;max-width:180px;margin-right:auto;min-height:44px;width:auto;padding:6px 6px;font-size:12.5px;background:var(--surface);border:1px solid var(--line-fort);border-radius:var(--r)}
+.kcal-ligne{grid-area:kcal;align-self:start;min-width:52px;text-align:right;font-size:19px;color:var(--ink-3)}
+.ligne.rempli .kcal-ligne{color:var(--ink)}
+.macros-ligne{grid-area:macros;font-family:"IBM Plex Mono",monospace;font-size:11px;font-variant-numeric:tabular-nums;display:none;gap:10px;margin-top:4px}
+.ligne.rempli .macros-ligne{display:flex}
+.macros-ligne .p{color:var(--prot)} .macros-ligne .g{color:var(--gluc)} .macros-ligne .l{color:var(--lip)}
+.vide-msg{padding:26px 16px;text-align:center;color:var(--ink-3);font-size:13.5px}
+@media (min-width:620px){
+  .ligne{grid-template-columns:minmax(0,1fr) auto minmax(140px,auto) auto;
+         grid-template-areas:"ident saisie macros kcal";gap:0 12px}
+  .saisie{margin-top:0}
+  .macros-ligne{margin-top:0;justify-content:flex-end}
+  select.unite{flex:none;min-width:92px}
+}
+
+/* --- 12. Barre d'actions basse ------------------------------------------ */
+.actions-jour{position:sticky;bottom:calc(var(--nav-h) + env(safe-area-inset-bottom,0px));z-index:25;display:flex;gap:8px;padding:10px 16px;background:var(--surface);border-top:1px solid var(--line-fort);box-shadow:0 -6px 16px rgba(17,21,25,.05)}
+.actions-jour .btn{flex:1}
+
+/* --- 13. Barre d'onglets ------------------------------------------------ */
+.nav{
+  position:fixed;bottom:0;left:0;right:0;z-index:40;
+  display:grid;grid-template-columns:repeat(4,1fr);
+  max-width:760px;margin:0 auto;
+  background:var(--surface);border-top:1px solid var(--line-fort);
+  padding-bottom:env(safe-area-inset-bottom,0px);
+}
+.nav button{
+  min-height:var(--nav-h);border:0;background:none;color:var(--ink-3);
+  font-size:12px;font-weight:600;letter-spacing:.02em;
+  display:flex;flex-direction:column;align-items:center;justify-content:center;gap:3px;
+  border-top:2px solid transparent;margin-top:-1px;
+}
+.nav button .marque{width:16px;height:2px;background:currentColor;opacity:.35;border-radius:2px}
+.nav button[aria-current="page"]{color:var(--ink)}
+.nav button[aria-current="page"] .marque{opacity:1}
+
+/* --- 14. Historique : statistiques --------------------------------------- */
+.stats{display:grid;grid-template-columns:repeat(auto-fit,minmax(104px,1fr));gap:1px;background:var(--line);border-block:1px solid var(--line)}
+.stat{background:var(--surface);padding:10px 13px;min-width:0}
+.stat .etiq{white-space:nowrap;overflow:hidden;text-overflow:ellipsis;display:block}
+.stat .u{display:block;line-height:1.3}
+.stat .v{font-size:23px;display:block;margin-top:1px}
+.stat .u{font-size:11px;color:var(--ink-3)}
+
+/* Graphique 14 jours */
+.graph{padding:14px 16px 6px;position:relative}
+.barres{display:flex;align-items:flex-end;gap:4px;height:112px;position:relative;border-bottom:1px solid var(--line-fort)}
+.barre{flex:1;display:flex;flex-direction:column;justify-content:flex-end;height:100%;position:relative}
+.barre i{display:block;width:100%;background:var(--ink-3);border-radius:2px 2px 0 0;min-height:2px}
+.barre.sous i{background:var(--line-fort)}
+.barre.dans i{background:var(--ok)}
+.barre.sur i{background:var(--alerte)}
+.barre.absent i{background:var(--surface-3);height:3px !important;border-radius:0}
+.ligne-cible{position:absolute;left:0;right:0;border-top:1px dashed var(--line-fort);pointer-events:none}
+.ligne-cible span{position:absolute;right:0;top:-15px;font-family:"IBM Plex Mono",monospace;font-size:10px;color:var(--ink-3);background:var(--surface);padding:0 3px}
+.jours-x{display:flex;gap:4px;margin-top:5px}
+.jours-x span{flex:1;text-align:center;font-family:"IBM Plex Mono",monospace;font-size:9.5px;color:var(--ink-3)}
+
+/* Calendrier */
+.cal-nav{display:flex;align-items:center;justify-content:space-between;gap:10px;padding:10px 16px;border-top:1px solid var(--line)}
+.cal-nav .mois{font-weight:600;font-size:14px;text-transform:capitalize}
+.cal-entetes,.cal{display:grid;grid-template-columns:repeat(7,1fr);gap:3px;padding:0 16px}
+.cal-entetes{padding-bottom:5px}
+.cal-entetes span{text-align:center;font-family:"IBM Plex Mono",monospace;font-size:10px;color:var(--ink-3)}
+.cal{padding-bottom:14px}
+.case{
+  aspect-ratio:1/1.06;border:1px solid var(--line);border-radius:4px;background:var(--surface-2);
+  display:flex;flex-direction:column;align-items:center;justify-content:center;gap:2px;padding:2px;
+  min-height:44px;
+}
+.case.vide{border-color:transparent;background:none}
+.case.avenir{opacity:.34}
+.case .j{font-family:"IBM Plex Mono",monospace;font-size:9.5px;color:var(--ink-3);line-height:1}
+.case .k{font-size:13px;line-height:1.05}
+.case .mini{display:flex;width:74%;height:3px;border-radius:2px;overflow:hidden;background:var(--line)}
+.case .mini span{height:100%}
+.case.notee{background:var(--surface);border-color:var(--line-fort);cursor:pointer}
+.case.notee.dans{border-color:var(--ok)}
+.case.notee.sur{border-color:var(--alerte)}
+.case.notee.sous{border-color:var(--line-fort)}
+.case.aujourdhui{box-shadow:0 0 0 2px var(--ink)}
+.case.selection{background:var(--surface-3)}
+
+/* --- 15. Fiche jour / modale -------------------------------------------- */
+.voile{position:fixed;inset:0;z-index:60;background:rgba(9,12,16,.5);display:flex;align-items:flex-end;justify-content:center}
+.modale{
+  width:100%;max-width:760px;max-height:90vh;overflow:auto;background:var(--surface);
+  border-top:1px solid var(--line-fort);border-radius:12px 12px 0 0;box-shadow:var(--ombre);
+  padding-bottom:calc(14px + env(safe-area-inset-bottom,0px));
+}
+.modale-tete{position:sticky;top:0;background:var(--surface);display:flex;align-items:center;justify-content:space-between;gap:10px;padding:13px 16px;border-bottom:1px solid var(--line);z-index:2}
+.modale-corps{padding:14px 16px;display:flex;flex-direction:column;gap:14px}
+.modale-pied{display:flex;gap:8px;padding:12px 16px;border-top:1px solid var(--line);position:sticky;bottom:0;background:var(--surface)}
+.modale-pied .btn{flex:1}
+@media (min-width:700px){
+  .voile{align-items:center}
+  .modale{border-radius:10px;border:1px solid var(--line-fort);max-height:86vh}
+}
+
+/* Liste détaillée d'une journée */
+.detail-liste{border-top:1px solid var(--line)}
+.detail-liste .l{display:flex;justify-content:space-between;gap:10px;padding:7px 0;border-bottom:1px solid var(--line);font-size:13.5px}
+.detail-liste .l .q{font-family:"IBM Plex Mono",monospace;font-size:11.5px;color:var(--ink-3)}
+
+/* --- 16. Mes aliments ---------------------------------------------------- */
+.ali{display:flex;align-items:center;gap:10px;padding:9px 16px;border-bottom:1px solid var(--line)}
+.ali .info{flex:1;min-width:0}
+.ali .info .n{font-size:14px;font-weight:500;overflow:hidden;text-overflow:ellipsis;white-space:nowrap}
+.ali.masque{opacity:.5}
+.ali .outils{display:flex;gap:4px;flex:none}
+.ali .outils button{width:38px;height:38px;border:1px solid var(--line);border-radius:var(--r);background:var(--surface);font-size:12px;display:flex;align-items:center;justify-content:center;color:var(--ink-2)}
+.ali .outils button:hover{background:var(--surface-2);color:var(--ink)}
+.unites-edit{display:flex;flex-direction:column;gap:6px}
+.unite-l{display:flex;gap:6px;align-items:center}
+.unite-l input:first-child{flex:2} .unite-l input:nth-child(2){flex:1}
+.etiquettes{display:flex;flex-wrap:wrap;gap:6px}
+.tag{display:inline-flex;align-items:center;gap:6px;padding:5px 9px;border:1px solid var(--line-fort);border-radius:99px;font-size:12.5px;background:var(--surface-2)}
+.tag button{border:0;background:none;color:var(--ink-3);font-size:14px;line-height:1;padding:0 0 0 2px}
+.tag button:hover{color:var(--alerte)}
+
+/* --- 17. Onboarding ------------------------------------------------------ */
+.onb{position:fixed;inset:0;z-index:80;background:var(--bg);overflow:auto}
+.onb-inner{max-width:560px;margin:0 auto;padding:22px 18px calc(30px + env(safe-area-inset-bottom,0px));display:flex;flex-direction:column;gap:18px}
+.encart{border:1px solid var(--line);border-radius:var(--r);background:var(--surface);padding:13px 14px}
+.encart.resultat{border-color:var(--line-fort)}
+.avertissement{font-size:12.5px;color:var(--ink-2);border-left:2px solid var(--line-fort);padding-left:10px}
+.cibles-apercu{display:grid;grid-template-columns:repeat(4,1fr);gap:10px;margin-top:10px}
+.cibles-apercu .c{display:flex;flex-direction:column;gap:1px}
+.cibles-apercu .c .nb{font-size:20px}
+
+/* --- 18. Divers ---------------------------------------------------------- */
+.entrefilet{font-size:12.5px;color:var(--ink-3);line-height:1.5}
+.rangee{display:flex;align-items:center;justify-content:space-between;gap:10px}
+.pile{display:flex;flex-direction:column;gap:10px}
+.toast{
+  position:fixed;left:50%;transform:translateX(-50%);
+  bottom:calc(var(--nav-h) + 76px + env(safe-area-inset-bottom,0px));z-index:90;
+  background:var(--ink);color:var(--surface);padding:9px 14px;border-radius:var(--r);
+  font-size:13px;font-weight:500;box-shadow:var(--ombre);max-width:88vw;text-align:center;
+}
+hr.sep{border:0;border-top:1px solid var(--line);margin:0}
+</style>
+</head>
+<body>
+
+
+<div class="app">
+
+  <!-- ===================== ÉCRAN 1 : JOURNAL DU JOUR ===================== -->
+  <section class="ecran actif" id="ecran-journal" aria-labelledby="t-journal">
+    <h1 class="sr" id="t-journal">Journal du jour</h1>
+
+    <!-- En-tête collant : totaux, barre empilée, macros, recherche -->
+    <div class="entete">
+      <div class="entete-haut">
+        <div>
+          <div class="etiq">Calories du jour</div>
+          <div class="kcal-jour">
+            <span class="nb val" id="j-kcal">0</span>
+            <span class="sur" id="j-kcal-cible">/ 0</span>
+          </div>
+          <div class="entrefilet" id="j-reste">Aucune cible définie</div>
+        </div>
+        <div class="jour-meta">
+          <div class="etiq" id="j-date">—</div>
+          <span class="pastille off" id="j-etat">non enregistré</span>
+          <span class="etiq" id="j-compte">0 aliment</span>
+        </div>
+      </div>
+
+      <div class="barre-empilee" id="j-barre" role="img" aria-label="Répartition des calories par macronutriment">
+        <span class="seg-prot" style="width:0%"></span>
+        <span class="seg-gluc" style="width:0%"></span>
+        <span class="seg-lip" style="width:0%"></span>
+      </div>
+
+      <div class="macros">
+        <div class="macro">
+          <div class="tete"><i class="puce p"></i><span class="etiq">Protéines</span></div>
+          <div class="valeur"><span class="q"><span class="nb" id="j-prot">0</span><span class="u">g</span></span><span class="pct" id="j-prot-pct">0 %</span></div>
+          <div class="jauge"><i class="p" id="j-prot-jauge" style="width:0%"></i></div>
+          <div class="etiq" id="j-prot-cible">cible —</div>
+        </div>
+        <div class="macro">
+          <div class="tete"><i class="puce g"></i><span class="etiq">Glucides</span></div>
+          <div class="valeur"><span class="q"><span class="nb" id="j-gluc">0</span><span class="u">g</span></span><span class="pct" id="j-gluc-pct">0 %</span></div>
+          <div class="jauge"><i class="g" id="j-gluc-jauge" style="width:0%"></i></div>
+          <div class="etiq" id="j-gluc-cible">cible —</div>
+        </div>
+        <div class="macro">
+          <div class="tete"><i class="puce l"></i><span class="etiq">Lipides</span></div>
+          <div class="valeur"><span class="q"><span class="nb" id="j-lip">0</span><span class="u">g</span></span><span class="pct" id="j-lip-pct">0 %</span></div>
+          <div class="jauge"><i class="l" id="j-lip-jauge" style="width:0%"></i></div>
+          <div class="etiq" id="j-lip-cible">cible —</div>
+        </div>
+      </div>
+
+      <div class="ligne-fibres">
+        <span class="etiq">Fibres</span>
+        <span><span class="nb" id="j-fibres" style="font-size:15px">0</span> <span class="tres-muet" style="font-size:11px">g</span></span>
+      </div>
+
+      <div class="recherche">
+        <label class="sr" for="j-recherche">Rechercher un aliment</label>
+        <input type="text" id="j-recherche" placeholder="Rechercher un aliment…" autocomplete="off" spellcheck="false">
+        <button class="btn petit icone" id="j-effacer-recherche" aria-label="Effacer la recherche" title="Effacer la recherche">×</button>
+      </div>
+    </div>
+
+    <!-- Liste des aliments par catégorie -->
+    <div id="j-liste"></div>
+
+    <!-- Actions principales, atteignables au pouce -->
+    <div class="actions-jour">
+      <button class="btn primaire" id="j-enregistrer">Enregistrer</button>
+      <button class="btn petit icone" id="j-menu" aria-label="Autres actions du journal" title="Autres actions">···</button>
+    </div>
+  </section>
+
+  <!-- ===================== ÉCRAN 2 : HISTORIQUE ========================== -->
+  <section class="ecran" id="ecran-historique" aria-labelledby="t-histo">
+    <div class="bloc">
+      <div class="titre-bloc">
+        <h1 id="t-histo">Historique</h1>
+        <span class="etiq" id="h-portee">—</span>
+      </div>
+      <p class="entrefilet">Moyennes calculées sur les journées enregistrées.</p>
+    </div>
+    <div class="stats" id="h-stats"></div>
+    <div class="graph" id="h-graph"></div>
+    <div id="h-calendrier"></div>
+  </section>
+
+  <!-- ===================== ÉCRAN 3 : MES ALIMENTS ======================== -->
+  <section class="ecran" id="ecran-aliments" aria-labelledby="t-ali">
+    <div class="bloc">
+      <div class="titre-bloc">
+        <h1 id="t-ali">Mes aliments</h1>
+        <span class="etiq" id="a-compte">0</span>
+      </div>
+      <div class="rangee-actions">
+        <button class="btn primaire" id="a-nouveau">Nouvel aliment</button>
+        <button class="btn" id="a-categories">Catégories</button>
+        <button class="btn" id="a-donnees">Données</button>
+      </div>
+    </div>
+    <div class="recherche" style="border-top:0">
+      <label class="sr" for="a-recherche">Filtrer mes aliments</label>
+      <input type="text" id="a-recherche" placeholder="Filtrer…" autocomplete="off" spellcheck="false">
+    </div>
+    <div id="a-liste"></div>
+  </section>
+
+  <!-- ===================== ÉCRAN 4 : PROFIL ============================== -->
+  <section class="ecran" id="ecran-profil" aria-labelledby="t-profil">
+    <div class="bloc">
+      <div class="titre-bloc"><h1 id="t-profil">Profil et cibles</h1></div>
+      <p class="entrefilet">Les cibles sont des estimations de départ. Ajustez-les selon l'évolution réelle de votre poids sur deux à trois semaines.</p>
+    </div>
+    <div id="p-contenu"></div>
+  </section>
+
+  <!-- ===================== BARRE D'ONGLETS ============================== -->
+  <nav class="nav" aria-label="Navigation principale">
+    <button data-onglet="journal" aria-current="page"><span class="marque"></span>Journal</button>
+    <button data-onglet="historique"><span class="marque"></span>Historique</button>
+    <button data-onglet="aliments"><span class="marque"></span>Aliments</button>
+    <button data-onglet="profil"><span class="marque"></span>Profil</button>
+  </nav>
+</div>
+
+<div id="hote-modale"></div>
+<div id="hote-onboarding"></div>
+<div id="hote-toast"></div>
+
+<script>
+"use strict";
+/* =========================================================================
+   MACRO CARNET — suivi nutritionnel local
+   Organisation du fichier :
+     1. Outils génériques
+     2. Module DONNÉES   : constantes, unités, base d'exemple
+     3. Module STOCKAGE  : couche d'abstraction get / set / supprimer
+     4. Module CALCULS   : facteurs, totaux, Mifflin-St Jeor, cibles
+     5. État de l'application et persistance
+     6. Rendu : journal, historique, aliments, profil
+     7. Modales, onboarding, import / export
+     8. Amorçage
+   ========================================================================= */
+(function(){
+
+/* =========================================================================
+   1. OUTILS GÉNÉRIQUES
+   ========================================================================= */
+const $  = (s, c) => (c || document).querySelector(s);
+const $$ = (s, c) => Array.prototype.slice.call((c || document).querySelectorAll(s));
+
+/** Échappe le texte saisi par l'utilisateur avant insertion en HTML. */
+function esc(v){
+  return String(v == null ? '' : v)
+    .replace(/&/g,'&amp;').replace(/</g,'&lt;').replace(/>/g,'&gt;')
+    .replace(/"/g,'&quot;').replace(/'/g,'&#39;');
+}
+
+/** Formate un nombre à la française (virgule décimale, séparateur d'espace). */
+function fmt(v, dec){
+  const n = Number(v);
+  if(!isFinite(n)) return '0';
+  return n.toLocaleString('fr-FR', {minimumFractionDigits: dec || 0, maximumFractionDigits: dec == null ? 0 : dec});
+}
+
+/** Nombre « nutritionnel » : une décimale seulement si elle est utile. */
+function fmtG(v){
+  const n = Number(v) || 0;
+  return Math.abs(n - Math.round(n)) < 0.05 ? fmt(Math.round(n)) : fmt(n, 1);
+}
+
+/** Convertit une saisie texte en nombre (accepte la virgule décimale). */
+function num(v){
+  const n = parseFloat(String(v == null ? '' : v).replace(',', '.'));
+  return isFinite(n) ? n : 0;
+}
+
+/** Identifiant court et stable. */
+function uid(prefixe){
+  return (prefixe || 'x') + '_' + Math.random().toString(36).slice(2, 9) + Date.now().toString(36).slice(-4);
+}
+
+/** Retire accents et casse : sert à la recherche instantanée. */
+function normaliser(s){
+  return String(s || '').toLowerCase().normalize('NFD').replace(/[\u0300-\u036f]/g, '');
+}
+
+/** Date locale au format ISO court (sans décalage UTC). */
+function isoJour(d){
+  const x = d || new Date();
+  const m = String(x.getMonth() + 1).padStart(2, '0');
+  const j = String(x.getDate()).padStart(2, '0');
+  return x.getFullYear() + '-' + m + '-' + j;
+}
+function dateDepuisIso(iso){
+  const p = String(iso).split('-');
+  return new Date(Number(p[0]), Number(p[1]) - 1, Number(p[2]));
+}
+function decalerJours(iso, n){
+  const d = dateDepuisIso(iso); d.setDate(d.getDate() + n); return isoJour(d);
+}
+const JOURS_COURTS = ['L','M','M','J','V','S','D'];
+function libelleLong(iso){
+  return dateDepuisIso(iso).toLocaleDateString('fr-FR', {weekday:'long', day:'numeric', month:'long'});
+}
+function libelleCourt(iso){
+  return dateDepuisIso(iso).toLocaleDateString('fr-FR', {day:'2-digit', month:'2-digit'});
+}
+/** Index lundi = 0 … dimanche = 6 */
+function indexLundi(d){ return (d.getDay() + 6) % 7; }
+
+/* =========================================================================
+   2. MODULE DONNÉES — constantes du domaine
+   ========================================================================= */
+
+/** Facteurs d'activité appliqués au métabolisme de base. */
+const ACTIVITES = [
+  {cle:'sedentaire', label:'Sédentaire',  detail:'bureau, peu de marche',        facteur:1.2},
+  {cle:'leger',      label:'Léger',       detail:'1 à 3 séances par semaine',    facteur:1.375},
+  {cle:'modere',     label:'Modéré',      detail:'3 à 5 séances par semaine',    facteur:1.55},
+  {cle:'eleve',      label:'Élevé',       detail:'6 à 7 séances par semaine',    facteur:1.725},
+  {cle:'tres_eleve', label:'Très élevé',  detail:'sport + métier physique',      facteur:1.9}
+];
+
+/**
+ * Objectifs : écart appliqué à la dépense totale, puis grammes par kilo
+ * de poids corporel pour les protéines et les lipides.
+ * Protéines maintenues dans la fourchette 1,6 – 2,2 g/kg ; lipides ≥ 0,8 g/kg.
+ */
+const OBJECTIFS = [
+  {cle:'masse',    label:'Prise de masse',  ecart: 0.12, prot:2.0, lip:1.0},
+  {cle:'maintien', label:'Maintien',        ecart: 0.00, prot:1.8, lip:0.9},
+  {cle:'seche',    label:'Perte de gras',   ecart:-0.18, prot:2.2, lip:0.8}
+];
+
+/** Unités usuelles proposées à la création d'un aliment (équivalent en grammes). */
+const UNITES_SUGGEREES = [
+  {label:'g',                 grammes:1},
+  {label:'pièce',             grammes:100},
+  {label:'tranche',           grammes:30},
+  {label:'cuillère à soupe',  grammes:15},
+  {label:'cuillère à café',   grammes:5},
+  {label:'portion',           grammes:100}
+];
+
+/** Catégories fournies au démarrage (la liste d'aliments, elle, est vide). */
+const CATEGORIES_DEFAUT = [
+  'Viandes et poissons',
+  'Œufs et protéines en poudre',
+  'Produits laitiers',
+  'Féculents et pains',
+  'Fruits',
+  'Légumes',
+  'Matières grasses et oléagineux',
+  'Condiments'
+];
+
+/**
+ * Base d'exemple, non chargée par défaut : l'utilisateur la charge depuis
+ * l'écran « Mes aliments » s'il ne veut pas tout saisir à la main.
+ * Valeurs pour 100 g d'après les tables CIQUAL et USDA (arrondies).
+ */
+function baseExemple(){
+  const g = {label:'g', grammes:1};
+  const A = (nom, categorie, kcal, prot, gluc, lip, fibres, unites) => ({
+    id: uid('al'), nom: nom, categorie: categorie,
+    pour100g: {kcal:kcal, prot:prot, gluc:gluc, lip:lip, fibres:fibres || 0},
+    unites: [g].concat(unites || []), favori: false, masque: false
+  });
+  return [
+    // Viandes et poissons
+    A('Blanc de poulet cru','Viandes et poissons',108,23,0,1.7,0,[{label:'filet',grammes:150}]),
+    A('Steak haché 5 % cru','Viandes et poissons',121,21,0,4.5,0,[{label:'steak',grammes:100}]),
+    A('Filet de dinde cru','Viandes et poissons',104,23.5,0,1.1,0,[{label:'escalope',grammes:120}]),
+    A('Saumon cru','Viandes et poissons',180,20,0,11,0,[{label:'pavé',grammes:130}]),
+    A('Thon au naturel égoutté','Viandes et poissons',116,26,0,1.2,0,[{label:'boîte',grammes:112}]),
+    A('Cabillaud cru','Viandes et poissons',76,17.5,0,0.7,0,[{label:'dos',grammes:130}]),
+    A('Jambon blanc découenné','Viandes et poissons',117,20,0.8,3.6,0,[{label:'tranche',grammes:40}]),
+    // Œufs et protéines en poudre
+    A('Œuf entier','Œufs et protéines en poudre',145,12.7,0.3,10.3,0,[{label:'pièce',grammes:50}]),
+    A('Blanc d’œuf','Œufs et protéines en poudre',48,10.7,0.3,0.2,0,[{label:'pièce',grammes:33}]),
+    A('Whey (poudre)','Œufs et protéines en poudre',380,78,8,5,0,[{label:'dose',grammes:30}]),
+    A('Caséine (poudre)','Œufs et protéines en poudre',360,75,6,3,0,[{label:'dose',grammes:30}]),
+    // Produits laitiers
+    A('Fromage blanc 3 %','Produits laitiers',76,7.5,4.5,3,0,[{label:'portion',grammes:100}]),
+    A('Skyr nature','Produits laitiers',63,11,4,0.2,0,[{label:'pot',grammes:150}]),
+    A('Yaourt nature','Produits laitiers',61,3.5,4.7,3.2,0,[{label:'pot',grammes:125}]),
+    A('Lait demi-écrémé','Produits laitiers',46,3.2,4.8,1.6,0,[{label:'verre',grammes:200}]),
+    A('Emmental','Produits laitiers',380,28,1,29.5,0,[{label:'tranche',grammes:25}]),
+    A('Mozzarella','Produits laitiers',250,18,1.5,19,0,[{label:'boule',grammes:125}]),
+    // Féculents et pains
+    A('Riz blanc cru','Féculents et pains',350,7,78,0.9,1.3,[{label:'portion',grammes:80}]),
+    A('Riz blanc cuit','Féculents et pains',130,2.6,28,0.3,0.5,[{label:'portion',grammes:200}]),
+    A('Pâtes complètes crues','Féculents et pains',350,13,65,2.5,7,[{label:'portion',grammes:80}]),
+    A('Pâtes cuites','Féculents et pains',158,5.5,30,0.9,2.4,[{label:'portion',grammes:220}]),
+    A('Pomme de terre cuite','Féculents et pains',87,2,18,0.1,2,[{label:'pièce',grammes:150}]),
+    A('Patate douce cuite','Féculents et pains',90,1.6,20,0.1,3,[{label:'pièce',grammes:150}]),
+    A('Flocons d’avoine','Féculents et pains',372,13,60,7,9,[{label:'portion',grammes:60},{label:'cuillère à soupe',grammes:12}]),
+    A('Pain complet','Féculents et pains',250,9,42,2.5,6,[{label:'tranche',grammes:35}]),
+    A('Lentilles cuites','Féculents et pains',116,9,16,0.5,5,[{label:'portion',grammes:150}]),
+    A('Pois chiches cuits','Féculents et pains',139,8,19,2.5,6.5,[{label:'portion',grammes:150}]),
+    // Fruits
+    A('Banane','Fruits',94,1.1,20,0.3,2.1,[{label:'pièce',grammes:120}]),
+    A('Pomme','Fruits',54,0.3,11.5,0.2,2,[{label:'pièce',grammes:150}]),
+    A('Fraises','Fruits',33,0.7,5.6,0.3,2,[{label:'portion',grammes:150}]),
+    A('Myrtilles','Fruits',57,0.7,12,0.3,2.4,[{label:'portion',grammes:100}]),
+    A('Kiwi','Fruits',58,1.1,10,0.5,2.5,[{label:'pièce',grammes:75}]),
+    // Légumes
+    A('Brocoli cuit','Légumes',35,2.8,3.1,0.4,3,[{label:'portion',grammes:200}]),
+    A('Haricots verts cuits','Légumes',31,1.8,3.4,0.2,3,[{label:'portion',grammes:200}]),
+    A('Courgette cuite','Légumes',20,1.2,2,0.3,1.2,[{label:'portion',grammes:200}]),
+    A('Tomate','Légumes',18,0.8,2.6,0.2,1.2,[{label:'pièce',grammes:120}]),
+    A('Épinards cuits','Légumes',24,2.7,1.2,0.5,2.6,[{label:'portion',grammes:200}]),
+    A('Carotte crue','Légumes',36,0.6,7.6,0.2,2.6,[{label:'pièce',grammes:80}]),
+    // Matières grasses et oléagineux
+    A('Huile d’olive','Matières grasses et oléagineux',900,0,0,100,0,[{label:'cuillère à soupe',grammes:10},{label:'cuillère à café',grammes:5}]),
+    A('Amandes','Matières grasses et oléagineux',634,25,5,53,12,[{label:'poignée',grammes:30}]),
+    A('Beurre de cacahuète','Matières grasses et oléagineux',620,25,10,50,6,[{label:'cuillère à soupe',grammes:16}]),
+    A('Avocat','Matières grasses et oléagineux',169,2,3,16,6,[{label:'pièce',grammes:140}]),
+    A('Noix','Matières grasses et oléagineux',698,15,5,65,6,[{label:'poignée',grammes:30}]),
+    // Condiments
+    A('Sauce soja','Condiments',60,6,5.5,0.1,0,[{label:'cuillère à soupe',grammes:15}]),
+    A('Ketchup','Condiments',102,1.3,23,0.2,1,[{label:'cuillère à soupe',grammes:15}]),
+    A('Moutarde','Condiments',145,7,4,11,3,[{label:'cuillère à café',grammes:5}]),
+    A('Sauce sans matière grasse','Condiments',25,1,4,0.2,0,[{label:'cuillère à soupe',grammes:15}])
+  ];
+}
+
+/* =========================================================================
+   3. MODULE STOCKAGE
+   Couche d'abstraction volontairement minuscule : get / set / supprimer,
+   toutes asynchrones. Remplacer le corps de ces trois fonctions suffit à
+   brancher IndexedDB ou une API distante sans toucher au reste du code.
+   ========================================================================= */
+const Stockage = (function(){
+  const PREFIXE = 'macrocarnet.';
+  const memoire = {};      // repli si le stockage du navigateur est indisponible
+  let disponible = true;
+  try{
+    window.localStorage.setItem(PREFIXE + '_test', '1');
+    window.localStorage.removeItem(PREFIXE + '_test');
+  }catch(e){ disponible = false; }
+
+  return {
+    disponible: function(){ return disponible; },
+    get: function(cle){
+      return new Promise(function(res){
+        try{
+          const brut = disponible ? window.localStorage.getItem(PREFIXE + cle) : memoire[cle];
+          res(brut == null ? null : JSON.parse(brut));
+        }catch(e){ res(null); }
+      });
+    },
+    set: function(cle, valeur){
+      return new Promise(function(res){
+        const brut = JSON.stringify(valeur);
+        try{
+          if(disponible) window.localStorage.setItem(PREFIXE + cle, brut);
+          else memoire[cle] = brut;
+        }catch(e){ memoire[cle] = brut; }
+        res(true);
+      });
+    },
+    supprimer: function(cle){
+      return new Promise(function(res){
+        try{
+          if(disponible) window.localStorage.removeItem(PREFIXE + cle);
+          delete memoire[cle];
+        }catch(e){}
+        res(true);
+      });
+    }
+  };
+})();
+
+/* =========================================================================
+   4. MODULE CALCULS
+   ========================================================================= */
+const Calculs = {
+  /** Unité effective d'une entrée (repli sur les grammes). */
+  unite: function(aliment, index){
+    if(!aliment || !aliment.unites || !aliment.unites.length) return {label:'g', grammes:1};
+    return aliment.unites[index] || aliment.unites[0];
+  },
+  /** facteur = quantité × grammes de l'unité ÷ 100 */
+  facteur: function(entree, aliment){
+    const u = Calculs.unite(aliment, entree.uniteIndex);
+    return (num(entree.quantite) * (u.grammes || 0)) / 100;
+  },
+  /** Masse réelle consommée, en grammes. */
+  grammes: function(entree, aliment){
+    const u = Calculs.unite(aliment, entree.uniteIndex);
+    return num(entree.quantite) * (u.grammes || 0);
+  },
+  /** Nutriments apportés par une entrée. */
+  nutriments: function(entree, aliment){
+    const f = Calculs.facteur(entree, aliment);
+    const p = (aliment && aliment.pour100g) || {};
+    return {
+      kcal:   (p.kcal   || 0) * f,
+      prot:   (p.prot   || 0) * f,
+      gluc:   (p.gluc   || 0) * f,
+      lip:    (p.lip    || 0) * f,
+      fibres: (p.fibres || 0) * f
+    };
+  },
+  /** Somme d'une liste d'entrées. */
+  totaux: function(entrees, indexAliments){
+    const t = {kcal:0, prot:0, gluc:0, lip:0, fibres:0};
+    (entrees || []).forEach(function(e){
+      const a = indexAliments[e.alimentId];
+      if(!a) return;
+      const n = Calculs.nutriments(e, a);
+      t.kcal += n.kcal; t.prot += n.prot; t.gluc += n.gluc; t.lip += n.lip; t.fibres += n.fibres;
+    });
+    return t;
+  },
+  /** Part de chaque macro dans les calories : 4 / 4 / 9 kcal par gramme. */
+  repartition: function(t){
+    const kp = t.prot * 4, kg = t.gluc * 4, kl = t.lip * 9;
+    const somme = kp + kg + kl;
+    if(somme <= 0) return {prot:0, gluc:0, lip:0};
+    return {prot: kp / somme * 100, gluc: kg / somme * 100, lip: kl / somme * 100};
+  },
+  /** Métabolisme de base — équation de Mifflin-St Jeor. */
+  mifflin: function(p){
+    const base = 10 * num(p.poids) + 6.25 * num(p.taille) - 5 * num(p.age);
+    return p.sexe === 'femme' ? base - 161 : base + 5;
+  },
+  activite: function(cle){
+    for(let i = 0; i < ACTIVITES.length; i++) if(ACTIVITES[i].cle === cle) return ACTIVITES[i];
+    return ACTIVITES[2];
+  },
+  objectif: function(cle){
+    for(let i = 0; i < OBJECTIFS.length; i++) if(OBJECTIFS[i].cle === cle) return OBJECTIFS[i];
+    return OBJECTIFS[1];
+  },
+  /** Dépense énergétique totale estimée. */
+  depense: function(p){ return Calculs.mifflin(p) * Calculs.activite(p.activite).facteur; },
+  /**
+   * Cibles proposées : calories ajustées selon l'objectif, protéines et
+   * lipides au poids corporel, glucides en solde.
+   */
+  cibles: function(p){
+    const obj = Calculs.objectif(p.objectif);
+    const kcal = Math.round(Calculs.depense(p) * (1 + obj.ecart) / 10) * 10;
+    const prot = Math.round(num(p.poids) * obj.prot);
+    const lip  = Math.round(num(p.poids) * obj.lip);
+    const gluc = Math.max(0, Math.round((kcal - prot * 4 - lip * 9) / 4));
+    return {kcal:kcal, prot:prot, gluc:gluc, lip:lip};
+  }
+};
+
+/* =========================================================================
+   5. ÉTAT ET PERSISTANCE
+   ========================================================================= */
+const CIBLES_PAR_DEFAUT = {kcal:2400, prot:150, gluc:270, lip:75};
+
+const ETAT = {
+  profil: null,                                   // Profil
+  aliments: [],                                   // [Aliment]
+  categories: CATEGORIES_DEFAUT.slice(),          // [string]
+  journal: {date: isoJour(), entrees: []},        // Journée en cours
+  historique: {},                                 // { "AAAA-MM-JJ": Journée }
+  ui: {
+    onglet: 'journal',
+    recherche: '',
+    filtreAliments: '',
+    repliees: {},                                 // catégories repliées dans le journal
+    mois: null,                                   // mois affiché dans le calendrier
+    onboardingVu: false
+  }
+};
+
+/** Index id → aliment, reconstruit à chaque modification de la liste. */
+let INDEX = {};
+function reindexer(){
+  INDEX = {};
+  ETAT.aliments.forEach(function(a){ INDEX[a.id] = a; });
+}
+
+/** Écritures groupées : on ne sollicite le stockage qu'après une pause. */
+const minuteurs = {};
+function sauver(cle){
+  clearTimeout(minuteurs[cle]);
+  minuteurs[cle] = setTimeout(function(){ Stockage.set(cle, ETAT[cle]); }, 200);
+}
+function sauverTout(){ ['profil','aliments','categories','journal','historique','ui'].forEach(sauver); }
+
+/** Cibles applicables aujourd'hui. */
+function ciblesCourantes(){
+  return (ETAT.profil && ETAT.profil.cibles) ? ETAT.profil.cibles : CIBLES_PAR_DEFAUT;
+}
+function profilDefini(){ return !!(ETAT.profil && ETAT.profil.cibles); }
+
+/* =========================================================================
+   6. RENDU — ÉCRAN 1 : JOURNAL DU JOUR
+   Principe : aucun re-rendu global à la frappe. La saisie d'une quantité ne
+   met à jour que la ligne concernée et l'en-tête ; la liste n'est reconstruite
+   que sur recherche, changement d'onglet ou modification de la liste d'aliments.
+   ========================================================================= */
+
+/** Entrée du journal correspondant à un aliment, ou null. */
+function entreeDe(id){
+  const t = ETAT.journal.entrees;
+  for(let i = 0; i < t.length; i++) if(t[i].alimentId === id) return t[i];
+  return null;
+}
+
+/** Crée, met à jour ou retire une entrée selon la quantité saisie. */
+function definirEntree(id, quantite, uniteIndex){
+  const q = num(quantite);
+  let e = entreeDe(id);
+  if(q <= 0){
+    if(e) ETAT.journal.entrees = ETAT.journal.entrees.filter(function(x){ return x.alimentId !== id; });
+  }else if(e){
+    e.quantite = q;
+    if(uniteIndex != null) e.uniteIndex = uniteIndex;
+  }else{
+    ETAT.journal.entrees.push({alimentId:id, quantite:q, uniteIndex: uniteIndex || 0});
+  }
+  sauver('journal');
+}
+
+/** Totaux de la journée en cours. */
+function totauxJournal(){ return Calculs.totaux(ETAT.journal.entrees, INDEX); }
+
+/** La journée en cours est-elle déjà dans l'historique, et à l'identique ? */
+function etatEnregistrement(){
+  const j = ETAT.historique[ETAT.journal.date];
+  if(!j) return 'aucun';
+  return JSON.stringify(j.entrees) === JSON.stringify(ETAT.journal.entrees) ? 'a_jour' : 'modifie';
+}
+
+/* ---------- En-tête collant ---------- */
+function majEntete(){
+  const t = ETAT.journal.entrees.length ? totauxJournal() : {kcal:0,prot:0,gluc:0,lip:0,fibres:0};
+  const c = ciblesCourantes();
+  const r = Calculs.repartition(t);
+
+  $('#j-kcal').textContent = fmt(Math.round(t.kcal));
+  $('#j-kcal-cible').textContent = '/ ' + fmt(c.kcal) + ' kcal';
+  const reste = Math.round(c.kcal - t.kcal);
+  $('#j-reste').textContent = reste >= 0
+    ? 'Il reste ' + fmt(reste) + ' kcal'
+    : fmt(Math.abs(reste)) + ' kcal au-dessus de la cible';
+  $('#j-reste').style.color = reste >= 0 ? '' : 'var(--alerte)';
+
+  $('#j-date').textContent = libelleLong(ETAT.journal.date);
+  const nbLignes = ETAT.journal.entrees.length;
+  $('#j-compte').textContent = nbLignes + (nbLignes > 1 ? ' aliments saisis' : ' aliment saisi');
+
+  const segs = $('#j-barre').children;
+  segs[0].style.width = r.prot.toFixed(1) + '%';
+  segs[1].style.width = r.gluc.toFixed(1) + '%';
+  segs[2].style.width = r.lip.toFixed(1) + '%';
+  $('#j-barre').setAttribute('aria-label',
+    'Répartition des calories : protéines ' + Math.round(r.prot) + ' %, glucides ' +
+    Math.round(r.gluc) + ' %, lipides ' + Math.round(r.lip) + ' %');
+
+  [['prot', t.prot, c.prot, r.prot], ['gluc', t.gluc, c.gluc, r.gluc], ['lip', t.lip, c.lip, r.lip]]
+  .forEach(function(m){
+    const cle = m[0], val = m[1], cible = m[2], pct = m[3];
+    $('#j-' + cle).textContent = fmt(val, val < 100 ? 1 : 0);
+    $('#j-' + cle + '-pct').textContent = Math.round(pct) + ' %';
+    const part = cible > 0 ? Math.min(100, val / cible * 100) : 0;
+    $('#j-' + cle + '-jauge').style.width = part.toFixed(1) + '%';
+    $('#j-' + cle + '-cible').textContent = 'cible ' + fmt(cible) + ' g';
+    $('#j-' + cle).style.color = (cible > 0 && val > cible * 1.08) ? 'var(--alerte)' : '';
+  });
+
+  $('#j-fibres').textContent = fmt(t.fibres, 1);
+
+  const etat = etatEnregistrement();
+  const past = $('#j-etat');
+  past.className = 'pastille ' + (etat === 'a_jour' ? 'on' : 'off');
+  past.textContent = etat === 'a_jour' ? 'enregistré' : (etat === 'modifie' ? 'modifié' : 'non enregistré');
+  $('#j-enregistrer').textContent = etat === 'aucun' ? 'Enregistrer' : 'Mettre à jour';
+  $('#j-enregistrer').classList.toggle('enregistre', etat === 'a_jour');
+}
+
+/* ---------- Liste des aliments ---------- */
+
+/** Ordre d'affichage des catégories : celles du profil, puis les orphelines. */
+function ordreCategories(liste){
+  const vues = {}, ordre = [];
+  ETAT.categories.forEach(function(c){ vues[c] = true; ordre.push(c); });
+  liste.forEach(function(a){
+    const c = a.categorie || 'Sans catégorie';
+    if(!vues[c]){ vues[c] = true; ordre.push(c); }
+  });
+  return ordre;
+}
+
+function htmlLigne(a){
+  const e = entreeDe(a.id);
+  const rempli = !!(e && num(e.quantite) > 0);
+  const uIdx = e ? (e.uniteIndex || 0) : 0;
+  const p = a.pour100g;
+  const n = rempli ? Calculs.nutriments(e, a) : null;
+  const gr = rempli ? Calculs.grammes(e, a) : 0;
+
+  const options = (a.unites || [{label:'g', grammes:1}]).map(function(u, i){
+    return '<option value="' + i + '"' + (i === uIdx ? ' selected' : '') + '>' + esc(u.label) + '</option>';
+  }).join('');
+
+  return '' +
+  '<div class="ligne' + (rempli ? ' rempli' : '') + '" data-id="' + esc(a.id) + '">' +
+    '<div class="ident">' +
+      '<div class="nom">' + esc(a.nom) + '</div>' +
+      '<div class="p100">' + fmt(p.kcal) + ' kcal · ' + fmtG(p.prot) + ' P · ' + fmtG(p.gluc) + ' G · ' + fmtG(p.lip) + ' L /100 g</div>' +
+    '</div>' +
+    '<div class="kcal-ligne nb">' + (rempli ? fmt(Math.round(n.kcal)) : '—') + '</div>' +
+    '<div class="saisie">' +
+      '<button class="pas" data-pas="-1" aria-label="Diminuer la quantité de ' + esc(a.nom) + '">−</button>' +
+      '<input class="qte" type="text" inputmode="decimal" autocomplete="off" ' +
+        'aria-label="Quantité de ' + esc(a.nom) + '" value="' + (rempli ? String(e.quantite).replace('.', ',') : '') + '" placeholder="0">' +
+      '<button class="pas" data-pas="1" aria-label="Augmenter la quantité de ' + esc(a.nom) + '">+</button>' +
+      '<select class="unite" aria-label="Unité pour ' + esc(a.nom) + '">' + options + '</select>' +
+    '</div>' +
+    '<div class="macros-ligne">' +
+      '<span class="tres-muet">' + (rempli ? fmt(Math.round(gr)) + ' g' : '') + '</span>' +
+      '<span class="p">P ' + (rempli ? fmtG(n.prot) : '0') + '</span>' +
+      '<span class="g">G ' + (rempli ? fmtG(n.gluc) : '0') + '</span>' +
+      '<span class="l">L ' + (rempli ? fmtG(n.lip) : '0') + '</span>' +
+    '</div>' +
+  '</div>';
+}
+
+function rendreListeJournal(){
+  const hote = $('#j-liste');
+
+  if(!ETAT.aliments.length){
+    hote.innerHTML =
+      '<div class="vide-msg">Votre liste d’aliments est vide.<br>Ajoutez ceux que vous mangez réellement — une trentaine suffit.' +
+      '<div class="rangee-actions" style="margin-top:14px;justify-content:center">' +
+        '<button class="btn primaire" data-act="nouvel-aliment">Ajouter un aliment</button>' +
+        '<button class="btn" data-act="base-exemple">Charger une base d’exemple</button>' +
+      '</div></div>';
+    return;
+  }
+
+  const q = normaliser(ETAT.ui.recherche);
+  const visibles = ETAT.aliments.filter(function(a){
+    if(a.masque) return false;
+    if(!q) return true;
+    return normaliser(a.nom).indexOf(q) >= 0 || normaliser(a.categorie).indexOf(q) >= 0;
+  });
+
+  if(!visibles.length){
+    hote.innerHTML = '<div class="vide-msg">Aucun aliment ne correspond à « ' + esc(ETAT.ui.recherche) + ' ».</div>';
+    return;
+  }
+
+  const parCat = {};
+  visibles.forEach(function(a){
+    const c = a.categorie || 'Sans catégorie';
+    (parCat[c] = parCat[c] || []).push(a);
+  });
+
+  let html = '';
+  ordreCategories(visibles).forEach(function(cat){
+    const liste = parCat[cat];
+    if(!liste || !liste.length) return;
+    // Une recherche en cours déplie tout : on veut voir les résultats.
+    const replie = q ? false : !!ETAT.ui.repliees[cat];
+    const saisis = liste.filter(function(a){ const e = entreeDe(a.id); return e && num(e.quantite) > 0; }).length;
+    html +=
+      '<section class="section-cat">' +
+        '<button class="tete-cat" aria-expanded="' + (replie ? 'false' : 'true') + '" data-cat="' + esc(cat) + '">' +
+          '<i class="chev"></i>' +
+          '<span class="nom-cat">' + esc(cat) + '</span>' +
+          '<span class="compte">' + (saisis ? saisis + '/' : '') + liste.length + '</span>' +
+        '</button>' +
+        (replie ? '' : '<div class="corps-cat">' + liste.map(htmlLigne).join('') + '</div>') +
+      '</section>';
+  });
+  hote.innerHTML = html;
+}
+
+/** Met à jour une seule ligne après saisie (sans reconstruire la liste). */
+function majLigne(id){
+  const li = $('#j-liste .ligne[data-id="' + id + '"]');
+  if(!li) return;
+  const a = INDEX[id];
+  const e = entreeDe(id);
+  const rempli = !!(e && num(e.quantite) > 0);
+  li.classList.toggle('rempli', rempli);
+  const n = rempli ? Calculs.nutriments(e, a) : null;
+  $('.kcal-ligne', li).textContent = rempli ? fmt(Math.round(n.kcal)) : '—';
+  const m = $('.macros-ligne', li).children;
+  m[0].textContent = rempli ? fmt(Math.round(Calculs.grammes(e, a))) + ' g' : '';
+  m[1].textContent = 'P ' + (rempli ? fmtG(n.prot) : '0');
+  m[2].textContent = 'G ' + (rempli ? fmtG(n.gluc) : '0');
+  m[3].textContent = 'L ' + (rempli ? fmtG(n.lip) : '0');
+  // Compteur de la catégorie
+  const sec = li.closest('.section-cat');
+  if(sec){
+    const total = $$('.ligne', sec).length;
+    const saisis = $$('.ligne.rempli', sec).length;
+    $('.compte', sec).textContent = (saisis ? saisis + '/' : '') + total;
+  }
+}
+
+/* ---------- Interactions du journal (délégation, liaisons posées une fois) -- */
+function brancherJournal(){
+  const liste = $('#j-liste');
+
+  liste.addEventListener('click', function(ev){
+    const acte = ev.target.closest('[data-act]');
+    if(acte){
+      if(acte.dataset.act === 'nouvel-aliment') formulaireAliment(null);
+      if(acte.dataset.act === 'base-exemple') confirmerBaseExemple();
+      return;
+    }
+    const tete = ev.target.closest('.tete-cat');
+    if(tete){
+      const cat = tete.dataset.cat;
+      ETAT.ui.repliees[cat] = !ETAT.ui.repliees[cat];
+      sauver('ui');
+      rendreListeJournal();
+      return;
+    }
+    const pas = ev.target.closest('.pas');
+    if(pas){
+      const li = pas.closest('.ligne');
+      const id = li.dataset.id;
+      const a = INDEX[id];
+      const champ = $('.qte', li);
+      const uIdx = Number($('.unite', li).value) || 0;
+      const u = Calculs.unite(a, uIdx);
+      const increment = (u.grammes || 1) <= 1 ? 10 : 1;   // pas de 10 g, sinon 1 unité
+      let v = num(champ.value) + increment * Number(pas.dataset.pas);
+      if(v < 0) v = 0;
+      champ.value = v ? String(v).replace('.', ',') : '';
+      definirEntree(id, v, uIdx);
+      majLigne(id); majEntete();
+    }
+  });
+
+  liste.addEventListener('input', function(ev){
+    const champ = ev.target.closest('.qte');
+    if(!champ) return;
+    const li = champ.closest('.ligne');
+    const id = li.dataset.id;
+    definirEntree(id, champ.value, Number($('.unite', li).value) || 0);
+    majLigne(id); majEntete();      // rendu ciblé : le champ ne perd jamais le focus
+  });
+
+  liste.addEventListener('change', function(ev){
+    const sel = ev.target.closest('.unite');
+    if(!sel) return;
+    const li = sel.closest('.ligne');
+    const id = li.dataset.id;
+    definirEntree(id, $('.qte', li).value, Number(sel.value) || 0);
+    majLigne(id); majEntete();
+  });
+
+  // Recherche instantanée : le champ est hors de la liste, le focus est préservé.
+  $('#j-recherche').addEventListener('input', function(){
+    ETAT.ui.recherche = this.value;
+    rendreListeJournal();
+  });
+  $('#j-effacer-recherche').addEventListener('click', function(){
+    ETAT.ui.recherche = '';
+    $('#j-recherche').value = '';
+    rendreListeJournal();
+    $('#j-recherche').focus();
+  });
+
+  $('#j-enregistrer').addEventListener('click', enregistrerJournee);
+  $('#j-menu').addEventListener('click', menuJournal);
+}
+
+/* ---------- Actions du journal ---------- */
+function enregistrerJournee(){
+  if(!ETAT.journal.entrees.length){ toast('Rien à enregistrer pour l’instant.'); return; }
+  const t = totauxJournal();
+  ETAT.historique[ETAT.journal.date] = {
+    date: ETAT.journal.date,
+    entrees: JSON.parse(JSON.stringify(ETAT.journal.entrees)),
+    totaux: {kcal:t.kcal, prot:t.prot, gluc:t.gluc, lip:t.lip, fibres:t.fibres},
+    ciblesDuJour: Object.assign({}, ciblesCourantes())
+  };
+  sauver('historique');
+  majEntete();
+  toast('Journée du ' + libelleCourt(ETAT.journal.date) + ' enregistrée.');
+}
+
+function copierLaVeille(){
+  const hier = decalerJours(ETAT.journal.date, -1);
+  const j = ETAT.historique[hier];
+  if(!j){ toast('Aucune journée enregistrée hier.'); return; }
+  ETAT.journal.entrees = JSON.parse(JSON.stringify(j.entrees));
+  sauver('journal');
+  rendreListeJournal(); majEntete();
+  toast('Journée d’hier copiée.');
+}
+
+function viderJournal(){
+  ETAT.journal.entrees = [];
+  sauver('journal');
+  rendreListeJournal(); majEntete();
+  toast('Journal vidé.');
+}
+
+function menuJournal(){
+  const corps =
+    '<div class="pile">' +
+      '<button class="btn" data-m="veille">Copier la journée d’hier</button>' +
+      '<button class="btn" data-m="ajouter">Ajouter un aliment à ma liste</button>' +
+      '<button class="btn danger" data-m="vider">Vider le journal du jour</button>' +
+    '</div>';
+  const mod = ouvrirModale('Actions du journal', corps);
+  mod.addEventListener('click', function(ev){
+    const b = ev.target.closest('[data-m]');
+    if(!b) return;
+    fermerModale();
+    if(b.dataset.m === 'veille') copierLaVeille();
+    if(b.dataset.m === 'vider') viderJournal();
+    if(b.dataset.m === 'ajouter') formulaireAliment(null);
+  });
+}
+
+/* =========================================================================
+   7. MODALES, MESSAGES
+   ========================================================================= */
+let dernierFocus = null;
+
+function ouvrirModale(titre, corpsHtml, piedHtml){
+  fermerModale();
+  dernierFocus = document.activeElement;
+  const voile = document.createElement('div');
+  voile.className = 'voile';
+  voile.innerHTML =
+    '<div class="modale" role="dialog" aria-modal="true" aria-label="' + esc(titre) + '">' +
+      '<div class="modale-tete"><h2>' + esc(titre) + '</h2>' +
+        '<button class="btn petit icone" data-fermer aria-label="Fermer">×</button></div>' +
+      '<div class="modale-corps">' + corpsHtml + '</div>' +
+      (piedHtml ? '<div class="modale-pied">' + piedHtml + '</div>' : '') +
+    '</div>';
+  $('#hote-modale').appendChild(voile);
+  voile.addEventListener('mousedown', function(ev){ if(ev.target === voile) fermerModale(); });
+  voile.addEventListener('click', function(ev){ if(ev.target.closest('[data-fermer]')) fermerModale(); });
+  const premier = $('input, select, textarea, button:not([data-fermer])', voile);
+  if(premier) setTimeout(function(){ premier.focus(); }, 30);
+  return $('.modale', voile);
+}
+
+function fermerModale(){
+  const v = $('#hote-modale .voile');
+  if(v) v.remove();
+  if(dernierFocus && dernierFocus.focus) { try{ dernierFocus.focus(); }catch(e){} }
+  dernierFocus = null;
+}
+
+document.addEventListener('keydown', function(ev){
+  if(ev.key === 'Escape' && $('#hote-modale .voile')) fermerModale();
+});
+
+function toast(message){
+  const h = $('#hote-toast');
+  h.innerHTML = '<div class="toast" role="status">' + esc(message) + '</div>';
+  clearTimeout(toast._t);
+  toast._t = setTimeout(function(){ h.innerHTML = ''; }, 2600);
+}
+
+/** Confirmation sobre, sans window.confirm. */
+function confirmer(titre, texte, libelle, action){
+  const mod = ouvrirModale(titre,
+    '<p class="entrefilet">' + esc(texte) + '</p>',
+    '<button class="btn" data-fermer>Annuler</button><button class="btn danger" data-ok>' + esc(libelle) + '</button>');
+  mod.addEventListener('click', function(ev){
+    if(ev.target.closest('[data-ok]')){ fermerModale(); action(); }
+  });
+}
+
+/* =========================================================================
+   8. RENDU — ÉCRAN 3 : MES ALIMENTS
+   ========================================================================= */
+function rendreAliments(){
+  const total = ETAT.aliments.length;
+  const masques = ETAT.aliments.filter(function(a){ return a.masque; }).length;
+  $('#a-compte').textContent = total + (total > 1 ? ' aliments' : ' aliment') + (masques ? ' · ' + masques + ' masqué' + (masques > 1 ? 's' : '') : '');
+
+  const hote = $('#a-liste');
+  if(!total){
+    hote.innerHTML =
+      '<div class="vide-msg">Aucun aliment enregistré.<br>Commencez par ceux que vous mangez chaque semaine.' +
+      '<div class="rangee-actions" style="margin-top:14px;justify-content:center">' +
+        '<button class="btn primaire" data-act="nouvel-aliment">Nouvel aliment</button>' +
+        '<button class="btn" data-act="base-exemple">Charger une base d’exemple</button>' +
+      '</div></div>';
+    return;
+  }
+
+  const q = normaliser(ETAT.ui.filtreAliments);
+  const visibles = ETAT.aliments.filter(function(a){
+    return !q || normaliser(a.nom).indexOf(q) >= 0 || normaliser(a.categorie).indexOf(q) >= 0;
+  });
+  if(!visibles.length){ hote.innerHTML = '<div class="vide-msg">Aucun résultat.</div>'; return; }
+
+  const parCat = {};
+  visibles.forEach(function(a){ const c = a.categorie || 'Sans catégorie'; (parCat[c] = parCat[c] || []).push(a); });
+
+  let html = '';
+  ordreCategories(visibles).forEach(function(cat){
+    const liste = parCat[cat];
+    if(!liste || !liste.length) return;
+    html += '<section class="section-cat"><div class="tete-cat" style="cursor:default">' +
+      '<span class="nom-cat">' + esc(cat) + '</span><span class="compte">' + liste.length + '</span></div>';
+    liste.forEach(function(a){
+      const p = a.pour100g;
+      // On n'affiche que ce qui apporte de l'information : ni fibres à zéro, ni l'unité « g » implicite.
+      const autresUnites = (a.unites || []).filter(function(u){ return (u.grammes || 0) !== 1; })
+                                           .map(function(u){ return u.label; }).join(', ');
+      html +=
+        '<div class="ali' + (a.masque ? ' masque' : '') + '" data-id="' + esc(a.id) + '">' +
+          '<div class="info">' +
+            '<div class="n">' + esc(a.nom) + (a.masque ? ' <span class="etiq">masqué</span>' : '') + '</div>' +
+            '<div class="p100">' + fmt(p.kcal) + ' kcal · ' + fmtG(p.prot) + ' P · ' + fmtG(p.gluc) + ' G · ' + fmtG(p.lip) + ' L' +
+              (p.fibres ? ' · ' + fmtG(p.fibres) + ' F' : '') + ' /100 g' +
+              (autresUnites ? ' · ' + esc(autresUnites) : '') + '</div>' +
+          '</div>' +
+          '<div class="outils"><button data-menu aria-label="Actions pour ' + esc(a.nom) + '">···</button></div>' +
+        '</div>';
+    });
+    html += '</section>';
+  });
+  hote.innerHTML = html;
+}
+
+function menuAliment(id){
+  const a = INDEX[id];
+  if(!a) return;
+  const mod = ouvrirModale(a.nom,
+    '<div class="pile">' +
+      '<button class="btn" data-m="modifier">Modifier</button>' +
+      '<button class="btn" data-m="dupliquer">Dupliquer pour créer une variante</button>' +
+      '<button class="btn" data-m="masquer">' + (a.masque ? 'Afficher dans le journal' : 'Masquer du journal') + '</button>' +
+      '<button class="btn danger" data-m="supprimer">Supprimer</button>' +
+    '</div>');
+  mod.addEventListener('click', function(ev){
+    const b = ev.target.closest('[data-m]');
+    if(!b) return;
+    const act = b.dataset.m;
+    fermerModale();
+    if(act === 'modifier') formulaireAliment(a);
+    if(act === 'dupliquer'){
+      const copie = JSON.parse(JSON.stringify(a));
+      copie.id = uid('al');
+      copie.nom = a.nom + ' (variante)';
+      ETAT.aliments.push(copie);
+      reindexer(); sauver('aliments'); rendreAliments(); rendreListeJournal();
+      formulaireAliment(copie);
+    }
+    if(act === 'masquer'){
+      a.masque = !a.masque;
+      sauver('aliments'); rendreAliments(); rendreListeJournal(); majEntete();
+    }
+    if(act === 'supprimer'){
+      confirmer('Supprimer ' + a.nom + ' ?',
+        'L’aliment disparaît de la liste. Les journées déjà enregistrées qui le contiennent afficheront « aliment supprimé ».',
+        'Supprimer', function(){
+          ETAT.aliments = ETAT.aliments.filter(function(x){ return x.id !== id; });
+          ETAT.journal.entrees = ETAT.journal.entrees.filter(function(e){ return e.alimentId !== id; });
+          reindexer(); sauver('aliments'); sauver('journal');
+          rendreAliments(); rendreListeJournal(); majEntete();
+          toast('Aliment supprimé.');
+        });
+    }
+  });
+}
+
+/* ---------- Formulaire d'aliment ---------- */
+function formulaireAliment(aliment){
+  const est_modif = !!aliment;
+  const a = aliment || {
+    id: null, nom: '', categorie: ETAT.categories[0] || 'Sans catégorie',
+    pour100g: {kcal:0, prot:0, gluc:0, lip:0, fibres:0},
+    unites: [{label:'g', grammes:1}], favori:false, masque:false
+  };
+
+  const optionsCat = ordreCategories(ETAT.aliments).map(function(c){
+    return '<option value="' + esc(c) + '"' + (c === a.categorie ? ' selected' : '') + '>' + esc(c) + '</option>';
+  }).join('') + '<option value="__nouvelle">+ Nouvelle catégorie…</option>';
+
+  const champNum = function(cle, libelle, val){
+    return '<label class="champ"><span>' + libelle + '</span>' +
+      '<input type="text" inputmode="decimal" data-n="' + cle + '" value="' + String(val || 0).replace('.', ',') + '"></label>';
+  };
+
+  const corps =
+    '<label class="champ"><span>Nom</span><input type="text" data-nom value="' + esc(a.nom) + '" placeholder="Blanc de poulet cru"></label>' +
+    '<label class="champ"><span>Catégorie</span><select data-cat>' + optionsCat + '</select></label>' +
+    '<label class="champ" data-hote-nouvelle hidden><span>Nom de la nouvelle catégorie</span><input type="text" data-nouvelle-cat placeholder="Petit-déjeuner"></label>' +
+    '<div>' +
+      '<div class="etiq" style="margin-bottom:6px">Valeurs pour 100 g</div>' +
+      '<div class="grille-champs">' +
+        champNum('kcal','Calories', a.pour100g.kcal) +
+        champNum('prot','Protéines g', a.pour100g.prot) +
+        champNum('gluc','Glucides g', a.pour100g.gluc) +
+        champNum('lip','Lipides g', a.pour100g.lip) +
+        champNum('fibres','Fibres g', a.pour100g.fibres) +
+      '</div>' +
+      '<button class="btn petit" data-calc style="margin-top:8px">Déduire les calories des macros</button>' +
+      '<p class="entrefilet" style="margin:6px 0 0">Toujours saisir les valeurs pour 100 g, quelle que soit l’unité d’affichage.</p>' +
+    '</div>' +
+    '<div>' +
+      '<div class="etiq" style="margin-bottom:6px">Unités et équivalent en grammes</div>' +
+      '<div class="unites-edit" data-unites></div>' +
+      '<div class="rangee-actions" style="margin-top:8px">' +
+        '<button class="btn petit" data-ajout-unite>Ajouter une unité</button>' +
+        '<select class="unite" data-suggestion aria-label="Unité usuelle à ajouter"><option value="">Unité usuelle…</option>' +
+          UNITES_SUGGEREES.map(function(u, i){ return '<option value="' + i + '">' + esc(u.label) + ' (' + u.grammes + ' g)</option>'; }).join('') +
+        '</select>' +
+      '</div>' +
+    '</div>';
+
+  const pied = '<button class="btn" data-fermer>Annuler</button><button class="btn primaire" data-valider>' +
+    (est_modif ? 'Enregistrer' : 'Ajouter') + '</button>';
+
+  const mod = ouvrirModale(est_modif ? 'Modifier un aliment' : 'Nouvel aliment', corps, pied);
+  let unites = JSON.parse(JSON.stringify(a.unites && a.unites.length ? a.unites : [{label:'g', grammes:1}]));
+
+  function rendreUnites(){
+    $('[data-unites]', mod).innerHTML = unites.map(function(u, i){
+      return '<div class="unite-l" data-i="' + i + '">' +
+        '<input type="text" data-u-label value="' + esc(u.label) + '" aria-label="Libellé de l’unité ' + (i+1) + '" placeholder="tranche">' +
+        '<input type="text" inputmode="decimal" data-u-gr value="' + String(u.grammes).replace('.', ',') + '" aria-label="Grammes de l’unité ' + (i+1) + '">' +
+        '<button class="btn petit icone" data-u-suppr aria-label="Retirer cette unité"' + (unites.length < 2 ? ' disabled' : '') + '>×</button>' +
+      '</div>';
+    }).join('');
+  }
+  rendreUnites();
+
+  const hoteNouvelle = $('[data-hote-nouvelle]', mod);
+  $('[data-cat]', mod).addEventListener('change', function(){
+    const neuf = this.value === '__nouvelle';
+    hoteNouvelle.hidden = !neuf;
+    if(neuf) $('[data-nouvelle-cat]', mod).focus();
+  });
+
+  mod.addEventListener('click', function(ev){
+    if(ev.target.closest('[data-calc]')){
+      const g = function(k){ return num($('[data-n="' + k + '"]', mod).value); };
+      const kcal = Math.round(g('prot') * 4 + g('gluc') * 4 + g('lip') * 9);
+      $('[data-n="kcal"]', mod).value = kcal;
+      return;
+    }
+    if(ev.target.closest('[data-ajout-unite]')){
+      lireUnites(); unites.push({label:'', grammes:100}); rendreUnites(); return;
+    }
+    const sup = ev.target.closest('[data-u-suppr]');
+    if(sup){
+      lireUnites();
+      unites.splice(Number(sup.closest('.unite-l').dataset.i), 1);
+      if(!unites.length) unites = [{label:'g', grammes:1}];
+      rendreUnites(); return;
+    }
+    if(ev.target.closest('[data-valider]')) valider();
+  });
+
+  $('[data-suggestion]', mod).addEventListener('change', function(){
+    if(this.value === '') return;
+    lireUnites();
+    const s = UNITES_SUGGEREES[Number(this.value)];
+    if(s && !unites.some(function(u){ return u.label === s.label; })) unites.push({label:s.label, grammes:s.grammes});
+    this.value = '';
+    rendreUnites();
+  });
+
+  function lireUnites(){
+    unites = $$('.unite-l', mod).map(function(l){
+      return {label: $('[data-u-label]', l).value.trim() || 'unité', grammes: num($('[data-u-gr]', l).value)};
+    });
+  }
+
+  function valider(){
+    const nom = $('[data-nom]', mod).value.trim();
+    if(!nom){ toast('Donnez un nom à l’aliment.'); $('[data-nom]', mod).focus(); return; }
+    let cat = $('[data-cat]', mod).value;
+    if(cat === '__nouvelle'){
+      cat = $('[data-nouvelle-cat]', mod).value.trim();
+      if(!cat){ toast('Nommez la nouvelle catégorie.'); return; }
+      if(ETAT.categories.indexOf(cat) < 0){ ETAT.categories.push(cat); sauver('categories'); }
+    }
+    lireUnites();
+    unites = unites.filter(function(u){ return u.grammes > 0; });
+    if(!unites.length) unites = [{label:'g', grammes:1}];
+
+    const val = function(k){ return num($('[data-n="' + k + '"]', mod).value); };
+    const cible = est_modif ? INDEX[a.id] : {id: uid('al'), favori:false, masque:false};
+    cible.nom = nom;
+    cible.categorie = cat;
+    cible.pour100g = {kcal: val('kcal'), prot: val('prot'), gluc: val('gluc'), lip: val('lip'), fibres: val('fibres')};
+    cible.unites = unites;
+    if(!est_modif) ETAT.aliments.push(cible);
+
+    reindexer(); sauver('aliments');
+    fermerModale();
+    rendreAliments(); rendreListeJournal(); majEntete();
+    toast(est_modif ? 'Aliment mis à jour.' : 'Aliment ajouté.');
+  }
+}
+
+/* ---------- Gestion des catégories ---------- */
+function gererCategories(){
+  function corps(){
+    const utilisees = {};
+    ETAT.aliments.forEach(function(a){ utilisees[a.categorie] = (utilisees[a.categorie] || 0) + 1; });
+    return '<div class="pile">' +
+      ordreCategories(ETAT.aliments).map(function(c){
+        return '<div class="rangee" data-cat="' + esc(c) + '">' +
+          '<span>' + esc(c) + ' <span class="etiq">' + (utilisees[c] || 0) + '</span></span>' +
+          '<span style="display:flex;gap:6px">' +
+            '<button class="btn petit" data-renommer>Renommer</button>' +
+            '<button class="btn petit danger" data-suppr aria-label="Supprimer la catégorie ' + esc(c) + '">×</button>' +
+          '</span></div>';
+      }).join('') +
+      '<hr class="sep">' +
+      '<div class="rangee" style="gap:8px">' +
+        '<input type="text" data-neuve placeholder="Nouvelle catégorie" style="flex:1">' +
+        '<button class="btn" data-ajouter>Ajouter</button>' +
+      '</div></div>';
+  }
+  const mod = ouvrirModale('Catégories', corps());
+
+  mod.addEventListener('click', function(ev){
+    const rangee = ev.target.closest('[data-cat]');
+    if(ev.target.closest('[data-ajouter]')){
+      const champ = $('[data-neuve]', mod);
+      const v = champ.value.trim();
+      if(!v) return;
+      if(ETAT.categories.indexOf(v) < 0) ETAT.categories.push(v);
+      sauver('categories');
+      $('.modale-corps', mod).innerHTML = corps();
+      rendreAliments();
+      return;
+    }
+    if(!rangee) return;
+    const cat = rangee.dataset.cat;
+
+    if(ev.target.closest('[data-renommer]')){
+      const zone = rangee.querySelector('span');
+      zone.innerHTML = '<input type="text" data-edit value="' + esc(cat) + '" style="width:100%">';
+      const champ = $('[data-edit]', rangee);
+      champ.focus();
+      champ.addEventListener('keydown', function(e){ if(e.key === 'Enter') champ.blur(); });
+      champ.addEventListener('blur', function(){
+        const v = champ.value.trim();
+        if(v && v !== cat){
+          ETAT.categories = ETAT.categories.map(function(c){ return c === cat ? v : c; });
+          if(ETAT.categories.indexOf(v) < 0) ETAT.categories.push(v);
+          ETAT.aliments.forEach(function(a){ if(a.categorie === cat) a.categorie = v; });
+          sauver('categories'); sauver('aliments'); reindexer();
+          rendreAliments(); rendreListeJournal();
+        }
+        $('.modale-corps', mod).innerHTML = corps();
+      });
+      return;
+    }
+
+    if(ev.target.closest('[data-suppr]')){
+      ETAT.categories = ETAT.categories.filter(function(c){ return c !== cat; });
+      ETAT.aliments.forEach(function(a){ if(a.categorie === cat) a.categorie = 'Sans catégorie'; });
+      sauver('categories'); sauver('aliments');
+      $('.modale-corps', mod).innerHTML = corps();
+      rendreAliments(); rendreListeJournal();
+    }
+  });
+}
+
+/* =========================================================================
+   9. RENDU — ÉCRAN 2 : HISTORIQUE
+   ========================================================================= */
+function joursTries(){ return Object.keys(ETAT.historique).sort(); }
+
+/** Journées enregistrées dans les n derniers jours (aujourd'hui inclus). */
+function fenetre(n){
+  const fin = isoJour(), debut = decalerJours(fin, -(n - 1));
+  return joursTries().filter(function(d){ return d >= debut && d <= fin; });
+}
+function moyenneSur(cles, champ){
+  if(!cles.length) return 0;
+  let s = 0;
+  cles.forEach(function(d){ s += (ETAT.historique[d].totaux || {})[champ] || 0; });
+  return s / cles.length;
+}
+/** Position d'une journée par rapport à sa cible calorique. */
+function classeEcart(kcal, cible){
+  if(!cible) return 'sous';
+  const r = kcal / cible;
+  if(r < 0.93) return 'sous';
+  if(r > 1.07) return 'sur';
+  return 'dans';
+}
+
+function rendreHistorique(){
+  const cles = joursTries();
+  $('#h-portee').textContent = cles.length
+    ? libelleCourt(cles[0]) + ' → ' + libelleCourt(cles[cles.length - 1])
+    : 'aucune journée';
+
+  // --- Statistiques
+  const f7 = fenetre(7), f30 = fenetre(30);
+  const stats = [
+    {l:'Jours suivis',      v: fmt(cles.length),                       u:'journées enregistrées'},
+    {l:'kcal · 7 j',    v: f7.length ? fmt(Math.round(moyenneSur(f7,'kcal'))) : '—',  u:'moyenne par jour'},
+    {l:'kcal · 30 j',   v: f30.length ? fmt(Math.round(moyenneSur(f30,'kcal'))) : '—', u:'moyenne par jour'},
+    {l:'prot. · 7 j',   v: f7.length ? fmt(Math.round(moyenneSur(f7,'prot'))) : '—',  u:'g par jour'},
+    {l:'prot. · 30 j',  v: f30.length ? fmt(Math.round(moyenneSur(f30,'prot'))) : '—', u:'g par jour'},
+    {l:'Régularité',        v: f30.length + ' / 30',                   u:'jours notés sur 30'}
+  ];
+  $('#h-stats').innerHTML = stats.map(function(s){
+    return '<div class="stat"><span class="etiq">' + s.l + '</span>' +
+      '<span class="nb v">' + s.v + '</span><span class="u">' + s.u + '</span></div>';
+  }).join('');
+
+  // --- Graphique des 14 derniers jours
+  const cible = ciblesCourantes().kcal;
+  const jours = [];
+  for(let i = 13; i >= 0; i--) jours.push(decalerJours(isoJour(), -i));
+  const valeurs = jours.map(function(d){ return ETAT.historique[d] ? (ETAT.historique[d].totaux.kcal || 0) : 0; });
+  const plafond = Math.max(cible * 1.2, Math.max.apply(null, valeurs) * 1.1, 100);
+
+  $('#h-graph').innerHTML =
+    '<div class="titre-bloc"><h2>14 derniers jours</h2><span class="etiq">kcal / jour</span></div>' +
+    '<div class="barres">' +
+      '<div class="ligne-cible" style="top:' + ((1 - cible / plafond) * 100).toFixed(1) + '%">' +
+        '<span>cible ' + fmt(cible) + '</span></div>' +
+      jours.map(function(d, i){
+        const j = ETAT.historique[d];
+        const k = valeurs[i];
+        const cls = j ? classeEcart(k, (j.ciblesDuJour && j.ciblesDuJour.kcal) || cible) : 'absent';
+        const h = j ? Math.max(2, (k / plafond) * 100) : 0;
+        const t = j ? libelleCourt(d) + ' : ' + fmt(Math.round(k)) + ' kcal' : libelleCourt(d) + ' : non enregistré';
+        return '<div class="barre ' + cls + '" title="' + esc(t) + '"><i style="height:' + h.toFixed(1) + '%"></i></div>';
+      }).join('') +
+    '</div>' +
+    '<div class="jours-x">' + jours.map(function(d){
+      return '<span>' + dateDepuisIso(d).getDate() + '</span>';
+    }).join('') + '</div>';
+
+  rendreCalendrier();
+}
+
+function rendreCalendrier(){
+  if(!ETAT.ui.mois) ETAT.ui.mois = isoJour().slice(0, 7);
+  const [an, mo] = ETAT.ui.mois.split('-').map(Number);
+  const premier = new Date(an, mo - 1, 1);
+  const nbJours = new Date(an, mo, 0).getDate();
+  const decalage = indexLundi(premier);
+  const cibleGlobale = ciblesCourantes().kcal;
+
+  let cases = '';
+  for(let i = 0; i < decalage; i++) cases += '<div class="case vide"></div>';
+  for(let j = 1; j <= nbJours; j++){
+    const iso = an + '-' + String(mo).padStart(2, '0') + '-' + String(j).padStart(2, '0');
+    const jour = ETAT.historique[iso];
+    const estAujourdhui = iso === isoJour();
+    if(!jour){
+      const avenir = iso > isoJour() ? ' avenir' : '';
+      cases += '<div class="case' + avenir + (estAujourdhui ? ' aujourdhui' : '') + '"><span class="j">' + j + '</span></div>';
+      continue;
+    }
+    const t = jour.totaux || {};
+    const cible = (jour.ciblesDuJour && jour.ciblesDuJour.kcal) || cibleGlobale;
+    const r = Calculs.repartition(t);
+    cases +=
+      '<button class="case notee ' + classeEcart(t.kcal || 0, cible) + (estAujourdhui ? ' aujourdhui' : '') + '" data-jour="' + iso + '" ' +
+        'aria-label="' + esc(libelleLong(iso) + ' : ' + Math.round(t.kcal || 0) + ' kcal') + '">' +
+        '<span class="j">' + j + '</span>' +
+        '<span class="nb k">' + fmt(Math.round(t.kcal || 0)) + '</span>' +
+        '<span class="mini">' +
+          '<span class="seg-prot" style="width:' + r.prot.toFixed(1) + '%"></span>' +
+          '<span class="seg-gluc" style="width:' + r.gluc.toFixed(1) + '%"></span>' +
+          '<span class="seg-lip" style="width:' + r.lip.toFixed(1) + '%"></span>' +
+        '</span>' +
+      '</button>';
+  }
+
+  const nomMois = premier.toLocaleDateString('fr-FR', {month:'long', year:'numeric'});
+  $('#h-calendrier').innerHTML =
+    '<div class="cal-nav">' +
+      '<button class="btn petit icone" data-mois="-1" aria-label="Mois précédent">‹</button>' +
+      '<span class="mois">' + esc(nomMois) + '</span>' +
+      '<button class="btn petit icone" data-mois="1" aria-label="Mois suivant">›</button>' +
+    '</div>' +
+    '<div class="cal-entetes">' + JOURS_COURTS.map(function(d){ return '<span>' + d + '</span>'; }).join('') + '</div>' +
+    '<div class="cal">' + cases + '</div>' +
+    '<div class="bloc" style="border-top:1px solid var(--line)">' +
+      '<p class="entrefilet">Bordure verte : dans un écart de 7 % de la cible. Bordure rouge : au-dessus. ' +
+      'Le trait sous les calories montre la répartition protéines / glucides / lipides.</p></div>';
+}
+
+/** Fiche détaillée d'une journée enregistrée. */
+function ficheJour(iso){
+  const j = ETAT.historique[iso];
+  if(!j) return;
+  const t = j.totaux || {};
+  const c = j.ciblesDuJour || ciblesCourantes();
+  const r = Calculs.repartition(t);
+
+  const lignes = (j.entrees || []).map(function(e){
+    const a = INDEX[e.alimentId];
+    if(!a) return '<div class="l"><span class="tres-muet">Aliment supprimé</span><span class="q">—</span></div>';
+    const n = Calculs.nutriments(e, a);
+    const u = Calculs.unite(a, e.uniteIndex);
+    // « 150 g » suffit quand l'unité est le gramme ; sinon on rappelle la quantité saisie.
+    const detail = (u.grammes || 0) === 1
+      ? fmt(Math.round(Calculs.grammes(e, a))) + ' g'
+      : fmt(Math.round(Calculs.grammes(e, a))) + ' g · ' + fmtG(e.quantite) + ' × ' + esc(u.label);
+    return '<div class="l"><span>' + esc(a.nom) + '<br><span class="q">' + detail +
+      '</span></span><span class="nb">' + fmt(Math.round(n.kcal)) + '</span></div>';
+  }).join('');
+
+  const corps =
+    '<div>' +
+      '<div class="etiq">Calories</div>' +
+      '<div class="kcal-jour"><span class="nb val" style="font-size:34px">' + fmt(Math.round(t.kcal || 0)) + '</span>' +
+      '<span class="sur">/ ' + fmt(c.kcal) + ' kcal</span></div>' +
+    '</div>' +
+    '<div class="barre-empilee" style="margin:0">' +
+      '<span class="seg-prot" style="width:' + r.prot.toFixed(1) + '%"></span>' +
+      '<span class="seg-gluc" style="width:' + r.gluc.toFixed(1) + '%"></span>' +
+      '<span class="seg-lip" style="width:' + r.lip.toFixed(1) + '%"></span>' +
+    '</div>' +
+    '<div class="grille-champs">' +
+      '<div><span class="etiq">Protéines</span><div><span class="nb" style="font-size:19px">' + fmtG(t.prot) + '</span> <span class="tres-muet">g · cible ' + fmt(c.prot) + '</span></div></div>' +
+      '<div><span class="etiq">Glucides</span><div><span class="nb" style="font-size:19px">' + fmtG(t.gluc) + '</span> <span class="tres-muet">g · cible ' + fmt(c.gluc) + '</span></div></div>' +
+      '<div><span class="etiq">Lipides</span><div><span class="nb" style="font-size:19px">' + fmtG(t.lip) + '</span> <span class="tres-muet">g · cible ' + fmt(c.lip) + '</span></div></div>' +
+      '<div><span class="etiq">Fibres</span><div><span class="nb" style="font-size:19px">' + fmtG(t.fibres) + '</span> <span class="tres-muet">g</span></div></div>' +
+    '</div>' +
+    '<div><div class="etiq" style="margin-bottom:4px">' + (j.entrees || []).length + ' aliments</div>' +
+      '<div class="detail-liste">' + (lignes || '<div class="l"><span class="tres-muet">Journée vide</span></div>') + '</div></div>';
+
+  const mod = ouvrirModale(libelleLong(iso), corps,
+    '<button class="btn danger" data-suppr>Supprimer</button><button class="btn primaire" data-charger>Charger la journée</button>');
+
+  mod.addEventListener('click', function(ev){
+    if(ev.target.closest('[data-charger]')){
+      ETAT.journal.entrees = JSON.parse(JSON.stringify(j.entrees || []));
+      sauver('journal');
+      fermerModale();
+      allerA('journal');
+      rendreListeJournal(); majEntete();
+      toast('Journée du ' + libelleCourt(iso) + ' chargée dans le journal.');
+    }
+    if(ev.target.closest('[data-suppr]')){
+      fermerModale();
+      confirmer('Supprimer cette journée ?', 'La journée du ' + libelleLong(iso) + ' sera retirée de l’historique.', 'Supprimer', function(){
+        delete ETAT.historique[iso];
+        sauver('historique');
+        rendreHistorique(); majEntete();
+        toast('Journée supprimée.');
+      });
+    }
+  });
+}
+
+function brancherHistorique(){
+  $('#ecran-historique').addEventListener('click', function(ev){
+    const nav = ev.target.closest('[data-mois]');
+    if(nav){
+      const [an, mo] = ETAT.ui.mois.split('-').map(Number);
+      const d = new Date(an, mo - 1 + Number(nav.dataset.mois), 1);
+      ETAT.ui.mois = d.getFullYear() + '-' + String(d.getMonth() + 1).padStart(2, '0');
+      sauver('ui');
+      rendreCalendrier();
+      return;
+    }
+    const c = ev.target.closest('[data-jour]');
+    if(c) ficheJour(c.dataset.jour);
+  });
+}
+
+/* =========================================================================
+   10. PROFIL, CIBLES ET ONBOARDING
+   ========================================================================= */
+const PROFIL_VIERGE = {sexe:'homme', age:30, taille:178, poids:78, activite:'modere', objectif:'masse', cibles:null};
+
+/** Construit le formulaire de profil dans un hôte et renvoie ses accesseurs. */
+function construireFormProfil(hote, p, surChangement){
+  hote.innerHTML =
+    '<div class="pile">' +
+      '<div class="champ"><span>Sexe</span><div class="segments" data-seg="sexe">' +
+        ['homme','femme'].map(function(v){
+          return '<button type="button" data-v="' + v + '" aria-pressed="' + (p.sexe === v) + '">' +
+            (v === 'homme' ? 'Homme' : 'Femme') + '</button>';
+        }).join('') + '</div></div>' +
+      '<div class="grille-champs trois">' +
+        '<label class="champ"><span>Âge</span><input type="text" inputmode="numeric" data-p="age" value="' + p.age + '"></label>' +
+        '<label class="champ"><span>Taille cm</span><input type="text" inputmode="numeric" data-p="taille" value="' + p.taille + '"></label>' +
+        '<label class="champ"><span>Poids kg</span><input type="text" inputmode="decimal" data-p="poids" value="' + String(p.poids).replace('.', ',') + '"></label>' +
+      '</div>' +
+      '<label class="champ"><span>Niveau d’activité</span><select data-p="activite">' +
+        ACTIVITES.map(function(a){
+          return '<option value="' + a.cle + '"' + (a.cle === p.activite ? ' selected' : '') + '>' +
+            esc(a.label) + ' — ' + esc(a.detail) + '</option>';
+        }).join('') + '</select></label>' +
+      '<div class="champ"><span>Objectif</span><div class="segments" data-seg="objectif">' +
+        OBJECTIFS.map(function(o){
+          return '<button type="button" data-v="' + o.cle + '" aria-pressed="' + (o.objectif === p.objectif) + '">' + esc(o.label) + '</button>';
+        }).join('') + '</div></div>' +
+    '</div>';
+
+  // Les attributs aria-pressed des objectifs sont posés ici (comparaison directe).
+  $$('[data-seg="objectif"] button', hote).forEach(function(b){
+    b.setAttribute('aria-pressed', String(b.dataset.v === p.objectif));
+  });
+
+  const courant = {sexe:p.sexe, age:p.age, taille:p.taille, poids:p.poids, activite:p.activite, objectif:p.objectif};
+
+  hote.addEventListener('click', function(ev){
+    const b = ev.target.closest('[data-seg] button');
+    if(!b) return;
+    const groupe = b.closest('[data-seg]');
+    $$('button', groupe).forEach(function(x){ x.setAttribute('aria-pressed', String(x === b)); });
+    courant[groupe.dataset.seg] = b.dataset.v;
+    if(surChangement) surChangement(lire());
+  });
+  hote.addEventListener('input', function(ev){
+    const c = ev.target.closest('[data-p]');
+    if(!c) return;
+    courant[c.dataset.p] = num(c.value);
+    if(surChangement) surChangement(lire());
+  });
+  hote.addEventListener('change', function(ev){
+    const c = ev.target.closest('select[data-p]');
+    if(!c) return;
+    courant.activite = c.value;
+    if(surChangement) surChangement(lire());
+  });
+
+  function lire(){
+    return {
+      sexe: courant.sexe,
+      age: num($('[data-p="age"]', hote).value) || 30,
+      taille: num($('[data-p="taille"]', hote).value) || 175,
+      poids: num($('[data-p="poids"]', hote).value) || 75,
+      activite: $('[data-p="activite"]', hote).value,
+      objectif: courant.objectif
+    };
+  }
+  return {lire: lire};
+}
+
+/** Bloc « cibles proposées », partagé entre onboarding et écran profil. */
+function htmlApercuCibles(p){
+  const c = Calculs.cibles(p);
+  const mb = Math.round(Calculs.mifflin(p));
+  const dep = Math.round(Calculs.depense(p));
+  const obj = Calculs.objectif(p.objectif);
+  const ecart = Math.round(obj.ecart * 100);
+  return '<div class="etiq">Estimation</div>' +
+    '<p class="entrefilet" style="margin:4px 0 0">Métabolisme de base ' + fmt(mb) + ' kcal · dépense estimée ' + fmt(dep) + ' kcal · ' +
+    (ecart === 0 ? 'aucun écart appliqué' : (ecart > 0 ? '+' : '') + ecart + ' % pour l’objectif') + '.</p>' +
+    '<div class="cibles-apercu">' +
+      '<div class="c"><span class="etiq">kcal</span><span class="nb">' + fmt(c.kcal) + '</span></div>' +
+      '<div class="c"><span class="etiq">Prot. g</span><span class="nb" style="color:var(--prot)">' + fmt(c.prot) + '</span></div>' +
+      '<div class="c"><span class="etiq">Gluc. g</span><span class="nb" style="color:var(--gluc)">' + fmt(c.gluc) + '</span></div>' +
+      '<div class="c"><span class="etiq">Lip. g</span><span class="nb" style="color:var(--lip)">' + fmt(c.lip) + '</span></div>' +
+    '</div>' +
+    '<p class="entrefilet" style="margin:8px 0 0">Protéines ' + fmt(obj.prot, 1) + ' g/kg · lipides ' +
+      fmt(obj.lip, 1) + ' g/kg · glucides en solde.</p>';
+}
+
+/* ---------- Écran 4 : profil ---------- */
+function rendreProfil(){
+  const p = ETAT.profil || PROFIL_VIERGE;
+  const c = ETAT.profil && ETAT.profil.cibles ? ETAT.profil.cibles : CIBLES_PAR_DEFAUT;
+  $('#p-contenu').innerHTML =
+    '<div class="bloc"><div id="p-form"></div></div>' +
+    '<div class="bloc"><div class="encart resultat" id="p-apercu"></div>' +
+      '<button class="btn" id="p-appliquer" style="margin-top:10px;width:100%">Recalculer les cibles</button></div>' +
+    '<div class="bloc">' +
+      '<div class="titre-bloc"><h2>Cibles quotidiennes</h2><span class="etiq">modifiables</span></div>' +
+      '<div class="grille-champs deux">' +
+        '<label class="champ"><span>Calories</span><input type="text" inputmode="numeric" data-c="kcal" value="' + c.kcal + '"></label>' +
+        '<label class="champ"><span>Protéines g</span><input type="text" inputmode="numeric" data-c="prot" value="' + c.prot + '"></label>' +
+        '<label class="champ"><span>Glucides g</span><input type="text" inputmode="numeric" data-c="gluc" value="' + c.gluc + '"></label>' +
+        '<label class="champ"><span>Lipides g</span><input type="text" inputmode="numeric" data-c="lip" value="' + c.lip + '"></label>' +
+      '</div>' +
+      '<button class="btn primaire" id="p-enregistrer" style="margin-top:12px;width:100%">Enregistrer le profil</button>' +
+      '<p class="avertissement" style="margin-top:12px">Ces valeurs sont des estimations. Pesez-vous dans les mêmes conditions ' +
+      'pendant deux à trois semaines et ajustez les calories de 100 à 200 kcal si le poids ne bouge pas dans le sens voulu.</p>' +
+    '</div>' +
+    '<div class="bloc">' +
+      '<div class="titre-bloc"><h2>Données</h2></div>' +
+      '<div class="rangee-actions">' +
+        '<button class="btn" id="p-donnees">Import / export</button>' +
+        '<button class="btn danger" id="p-reset">Tout effacer</button>' +
+      '</div>' +
+      '<p class="entrefilet" style="margin-top:10px">Tout est stocké sur cet appareil' +
+      (Stockage.disponible() ? '' : ' — attention : le stockage du navigateur est indisponible, les données seront perdues à la fermeture') +
+      '.</p>' +
+    '</div>';
+
+  const form = construireFormProfil($('#p-form'), p, function(v){
+    $('#p-apercu').innerHTML = htmlApercuCibles(v);
+  });
+  $('#p-apercu').innerHTML = htmlApercuCibles(form.lire());
+
+  $('#p-appliquer').addEventListener('click', function(){
+    const cc = Calculs.cibles(form.lire());
+    ['kcal','prot','gluc','lip'].forEach(function(k){ $('[data-c="' + k + '"]').value = cc[k]; });
+    toast('Cibles recalculées — pensez à enregistrer.');
+  });
+  $('#p-enregistrer').addEventListener('click', function(){
+    const base = form.lire();
+    base.cibles = {
+      kcal: num($('[data-c="kcal"]').value), prot: num($('[data-c="prot"]').value),
+      gluc: num($('[data-c="gluc"]').value), lip: num($('[data-c="lip"]').value)
+    };
+    ETAT.profil = base;
+    sauver('profil');
+    majEntete(); rendreHistorique();
+    toast('Profil enregistré.');
+  });
+  $('#p-donnees').addEventListener('click', modaleDonnees);
+  $('#p-reset').addEventListener('click', function(){
+    confirmer('Tout effacer ?', 'Profil, aliments et historique seront définitivement supprimés de cet appareil.', 'Tout effacer', function(){
+      ['profil','aliments','categories','journal','historique','ui'].forEach(function(k){ Stockage.supprimer(k); });
+      location.reload();
+    });
+  });
+}
+
+/* ---------- Onboarding (une seule fois, sautable) ---------- */
+function ouvrirOnboarding(){
+  const hote = $('#hote-onboarding');
+  hote.innerHTML =
+    '<div class="onb"><div class="onb-inner">' +
+      '<div>' +
+        '<h1>Définir vos cibles</h1>' +
+        '<p class="entrefilet" style="margin-top:6px">Six réponses suffisent pour proposer un point de départ. ' +
+        'Tout reste modifiable ensuite, et vous pouvez passer cette étape.</p>' +
+      '</div>' +
+      '<div class="encart"><div id="onb-form"></div></div>' +
+      '<div class="encart resultat" id="onb-apercu"></div>' +
+      '<p class="avertissement">Ces valeurs sont des estimations statistiques, pas une prescription. ' +
+      'Elles s’ajustent en observant l’évolution réelle du poids sur deux à trois semaines.</p>' +
+      '<div class="rangee-actions">' +
+        '<button class="btn" id="onb-passer">Passer</button>' +
+        '<button class="btn primaire" id="onb-valider">Utiliser ces cibles</button>' +
+      '</div>' +
+    '</div></div>';
+
+  const form = construireFormProfil($('#onb-form'), PROFIL_VIERGE, function(v){
+    $('#onb-apercu').innerHTML = htmlApercuCibles(v);
+  });
+  $('#onb-apercu').innerHTML = htmlApercuCibles(form.lire());
+
+  function terminer(){
+    ETAT.ui.onboardingVu = true;
+    sauver('ui');
+    hote.innerHTML = '';
+    rendreProfil(); majEntete();
+  }
+  $('#onb-passer').addEventListener('click', terminer);
+  $('#onb-valider').addEventListener('click', function(){
+    const p = form.lire();
+    p.cibles = Calculs.cibles(p);
+    ETAT.profil = p;
+    sauver('profil');
+    terminer();
+    toast('Cibles enregistrées.');
+  });
+}
+
+/* =========================================================================
+   11. IMPORT / EXPORT
+   ========================================================================= */
+function paquetExport(){
+  return {
+    application: 'macro-carnet', version: 1, exporteLe: new Date().toISOString(),
+    profil: ETAT.profil, categories: ETAT.categories, aliments: ETAT.aliments, historique: ETAT.historique
+  };
+}
+
+function csvHistorique(){
+  const entetes = ['date','calories','proteines_g','glucides_g','lipides_g','fibres_g','cible_calories','nb_aliments'];
+  const lignes = joursTries().map(function(d){
+    const j = ETAT.historique[d], t = j.totaux || {};
+    const c = (j.ciblesDuJour && j.ciblesDuJour.kcal) || '';
+    return [d, Math.round(t.kcal || 0), (t.prot || 0).toFixed(1), (t.gluc || 0).toFixed(1),
+            (t.lip || 0).toFixed(1), (t.fibres || 0).toFixed(1), c, (j.entrees || []).length]
+           .join(';').replace(/\./g, ',');
+  });
+  return [entetes.join(';')].concat(lignes).join('\n');
+}
+
+/**
+ * Enregistrement d'un fichier. Deux contextes :
+ *  - page publiée sur claude.ai : la capacité « downloads » demande l'accord du lecteur ;
+ *  - fichier HTML ouvert localement : téléchargement classique par lien objet.
+ */
+let _capaTelechargement = null;
+function serviceTelechargement(){
+  if(!_capaTelechargement){
+    _capaTelechargement = (window.claude && typeof window.claude.use === 'function')
+      ? window.claude.use('downloads').catch(function(){ return null; })
+      : Promise.resolve(null);
+  }
+  return _capaTelechargement;
+}
+function enregistrerFichier(nom, contenu){
+  serviceTelechargement().then(function(dl){
+    if(dl && dl.save){
+      return dl.save({filename: nom, data: contenu}).then(
+        function(){ toast('Fichier enregistré.'); },
+        function(err){
+          const code = err && err.code;
+          toast(code === 'declined' ? 'Enregistrement annulé.' : 'Enregistrement indisponible ici : utilisez « Copier ».');
+        });
+    }
+    try{
+      const blob = new Blob([contenu], {type:'text/plain;charset=utf-8'});
+      const a = document.createElement('a');
+      a.href = URL.createObjectURL(blob);
+      a.download = nom;
+      document.body.appendChild(a); a.click(); a.remove();
+      setTimeout(function(){ URL.revokeObjectURL(a.href); }, 2000);
+    }catch(e){ toast('Téléchargement indisponible ici : utilisez « Copier ».'); }
+  });
+}
+
+/** Propose le texte : copie dans le presse-papiers, et enregistrement du fichier. */
+function montrerTexte(titre, texte, nomFichier){
+  const mod = ouvrirModale(titre,
+    '<p class="entrefilet">Copiez ce contenu ou téléchargez-le pour le conserver hors de l’application.</p>' +
+    '<textarea readonly spellcheck="false">' + esc(texte) + '</textarea>',
+    '<button class="btn" data-copier>Copier</button><button class="btn primaire" data-telecharger>Enregistrer le fichier</button>');
+  $('textarea', mod).addEventListener('focus', function(){ this.select(); });
+  mod.addEventListener('click', function(ev){
+    if(ev.target.closest('[data-copier]')){
+      const zone = $('textarea', mod);
+      zone.select();
+      if(navigator.clipboard && navigator.clipboard.writeText){
+        navigator.clipboard.writeText(texte).then(function(){ toast('Copié.'); }, function(){ toast('Sélectionnez puis copiez manuellement.'); });
+      }else{
+        try{ document.execCommand('copy'); toast('Copié.'); }catch(e){ toast('Sélectionnez puis copiez manuellement.'); }
+      }
+    }
+    if(ev.target.closest('[data-telecharger]')) enregistrerFichier(nomFichier, texte);
+  });
+}
+
+function appliquerImport(donnees, remplacer){
+  if(!donnees || typeof donnees !== 'object') throw new Error('format');
+  if(Array.isArray(donnees.aliments)){
+    ETAT.aliments = remplacer ? donnees.aliments : ETAT.aliments.concat(donnees.aliments);
+  }
+  if(Array.isArray(donnees.categories)){
+    donnees.categories.forEach(function(c){ if(ETAT.categories.indexOf(c) < 0) ETAT.categories.push(c); });
+  }
+  if(donnees.historique && typeof donnees.historique === 'object'){
+    if(remplacer) ETAT.historique = donnees.historique;
+    else Object.keys(donnees.historique).forEach(function(d){ ETAT.historique[d] = donnees.historique[d]; });
+  }
+  if(donnees.profil && remplacer) ETAT.profil = donnees.profil;
+  reindexer(); sauverTout();
+  rendreTout();
+  toast('Import terminé.');
+}
+
+function modaleDonnees(){
+  const mod = ouvrirModale('Import / export',
+    '<div class="pile">' +
+      '<button class="btn" data-d="json">Exporter tout (JSON)</button>' +
+      '<button class="btn" data-d="csv">Exporter l’historique (CSV)</button>' +
+      '<hr class="sep">' +
+      '<label class="champ"><span>Importer un fichier JSON</span><input type="file" accept="application/json,.json" data-fichier></label>' +
+      '<label class="champ"><span>ou coller le contenu JSON</span><textarea data-colle placeholder="{ …" ></textarea></label>' +
+      '<button class="btn" data-d="importer">Importer (remplace les données)</button>' +
+      '<hr class="sep">' +
+      '<button class="btn" data-d="exemple">Charger la base d’exemple</button>' +
+    '</div>');
+
+  mod.addEventListener('click', function(ev){
+    const b = ev.target.closest('[data-d]');
+    if(!b) return;
+    const act = b.dataset.d;
+    if(act === 'json') montrerTexte('Export complet', JSON.stringify(paquetExport(), null, 2), 'macro-carnet-' + isoJour() + '.json');
+    if(act === 'csv'){
+      if(!joursTries().length){ toast('Historique vide.'); return; }
+      montrerTexte('Historique CSV', csvHistorique(), 'macro-carnet-historique-' + isoJour() + '.csv');
+    }
+    if(act === 'exemple'){ fermerModale(); confirmerBaseExemple(); }
+    if(act === 'importer'){
+      const texte = $('[data-colle]', mod).value.trim();
+      if(!texte){ toast('Collez un contenu JSON ou choisissez un fichier.'); return; }
+      try{ appliquerImport(JSON.parse(texte), true); fermerModale(); }
+      catch(e){ toast('JSON illisible.'); }
+    }
+  });
+
+  $('[data-fichier]', mod).addEventListener('change', function(){
+    const f = this.files && this.files[0];
+    if(!f) return;
+    const lecteur = new FileReader();
+    lecteur.onload = function(){
+      try{ appliquerImport(JSON.parse(String(lecteur.result)), true); fermerModale(); }
+      catch(e){ toast('Fichier illisible.'); }
+    };
+    lecteur.readAsText(f);
+  });
+}
+
+function confirmerBaseExemple(){
+  confirmer('Charger la base d’exemple ?',
+    'Environ 45 aliments courants seront ajoutés à votre liste. Vous pourrez masquer ou supprimer ceux que vous ne mangez pas.',
+    'Charger', function(){
+      const nouveaux = baseExemple().filter(function(n){
+        return !ETAT.aliments.some(function(a){ return normaliser(a.nom) === normaliser(n.nom); });
+      });
+      ETAT.aliments = ETAT.aliments.concat(nouveaux);
+      CATEGORIES_DEFAUT.forEach(function(c){ if(ETAT.categories.indexOf(c) < 0) ETAT.categories.push(c); });
+      reindexer(); sauver('aliments'); sauver('categories');
+      rendreTout();
+      toast(nouveaux.length + ' aliments ajoutés.');
+    });
+}
+
+/* =========================================================================
+   12. NAVIGATION, CHANGEMENT DE JOUR, AMORÇAGE
+   ========================================================================= */
+function allerA(onglet){
+  ETAT.ui.onglet = onglet;
+  sauver('ui');
+  $$('.ecran').forEach(function(s){ s.classList.toggle('actif', s.id === 'ecran-' + onglet); });
+  $$('.nav button').forEach(function(b){
+    if(b.dataset.onglet === onglet) b.setAttribute('aria-current', 'page');
+    else b.removeAttribute('aria-current');
+  });
+  if(onglet === 'historique') rendreHistorique();
+  if(onglet === 'aliments') rendreAliments();
+  if(onglet === 'profil') rendreProfil();
+  if(onglet === 'journal'){ rendreListeJournal(); majEntete(); }
+  window.scrollTo(0, 0);
+}
+
+function rendreTout(){
+  rendreListeJournal(); majEntete();
+  if(ETAT.ui.onglet === 'aliments') rendreAliments();
+  if(ETAT.ui.onglet === 'historique') rendreHistorique();
+  if(ETAT.ui.onglet === 'profil') rendreProfil();
+}
+
+/**
+ * Bascule de journée : la journée en cours part dans l'historique si elle
+ * contient quelque chose, puis le journal repart vide. L'historique et la
+ * liste d'aliments, eux, ne bougent pas.
+ */
+function verifierJour(){
+  const auj = isoJour();
+  if(ETAT.journal.date === auj) return false;
+  if(ETAT.journal.entrees.length && !ETAT.historique[ETAT.journal.date]){
+    const t = Calculs.totaux(ETAT.journal.entrees, INDEX);
+    ETAT.historique[ETAT.journal.date] = {
+      date: ETAT.journal.date,
+      entrees: JSON.parse(JSON.stringify(ETAT.journal.entrees)),
+      totaux: t,
+      ciblesDuJour: Object.assign({}, ciblesCourantes())
+    };
+    sauver('historique');
+  }
+  ETAT.journal = {date: auj, entrees: []};
+  sauver('journal');
+  return true;
+}
+
+function brancherGlobal(){
+  $$('.nav button').forEach(function(b){
+    b.addEventListener('click', function(){ allerA(b.dataset.onglet); });
+  });
+  $('#a-nouveau').addEventListener('click', function(){ formulaireAliment(null); });
+  $('#a-categories').addEventListener('click', gererCategories);
+  $('#a-donnees').addEventListener('click', modaleDonnees);
+  $('#a-recherche').addEventListener('input', function(){
+    ETAT.ui.filtreAliments = this.value;
+    rendreAliments();
+  });
+  $('#a-liste').addEventListener('click', function(ev){
+    const acte = ev.target.closest('[data-act]');
+    if(acte){
+      if(acte.dataset.act === 'nouvel-aliment') formulaireAliment(null);
+      if(acte.dataset.act === 'base-exemple') confirmerBaseExemple();
+      return;
+    }
+    const m = ev.target.closest('[data-menu]');
+    if(m) menuAliment(m.closest('.ali').dataset.id);
+  });
+
+  // Le jour peut changer pendant que l'onglet reste ouvert.
+  document.addEventListener('visibilitychange', function(){
+    if(!document.hidden && verifierJour()){ rendreTout(); toast('Nouvelle journée : le journal repart de zéro.'); }
+  });
+  setInterval(function(){
+    if(verifierJour()){ rendreTout(); }
+  }, 60000);
+}
+
+async function amorcer(){
+  const cles = ['profil','aliments','categories','journal','historique','ui'];
+  const valeurs = await Promise.all(cles.map(function(c){ return Stockage.get(c); }));
+  cles.forEach(function(c, i){
+    if(valeurs[i] != null){
+      if(c === 'ui') ETAT.ui = Object.assign(ETAT.ui, valeurs[i]);
+      else ETAT[c] = valeurs[i];
+    }
+  });
+  if(!Array.isArray(ETAT.categories) || !ETAT.categories.length) ETAT.categories = CATEGORIES_DEFAUT.slice();
+  if(!ETAT.journal || !ETAT.journal.date) ETAT.journal = {date: isoJour(), entrees: []};
+  if(!ETAT.historique || typeof ETAT.historique !== 'object') ETAT.historique = {};
+
+  reindexer();
+  verifierJour();
+
+  brancherJournal();
+  brancherHistorique();
+  brancherGlobal();
+
+  $('#j-recherche').value = ETAT.ui.recherche || '';
+  $('#a-recherche').value = ETAT.ui.filtreAliments || '';
+  allerA(ETAT.ui.onglet || 'journal');
+
+  if(!ETAT.profil && !ETAT.ui.onboardingVu) ouvrirOnboarding();
+}
+
+amorcer();
+
+})();
+</script>
+
+</body>
+</html>
