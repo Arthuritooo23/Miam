@@ -317,7 +317,7 @@ select.unite{flex:0 1 auto;min-width:96px;max-width:180px;margin-right:auto;min-
 /* --- 13. Barre d'onglets ------------------------------------------------ */
 .nav{
   position:fixed;bottom:0;left:0;right:0;z-index:40;
-  display:grid;grid-template-columns:repeat(4,1fr);gap:4px;
+  display:grid;grid-template-columns:repeat(5,1fr);gap:3px;
   max-width:640px;margin:0 auto;padding:6px 8px calc(6px + env(safe-area-inset-bottom,0px));
   background:color-mix(in srgb, var(--surface) 88%, transparent);
   backdrop-filter:blur(12px);-webkit-backdrop-filter:blur(12px);
@@ -325,7 +325,8 @@ select.unite{flex:0 1 auto;min-width:96px;max-width:180px;margin-right:auto;min-
 }
 .nav button{
   min-height:48px;border:0;border-radius:var(--r-s);background:none;color:var(--ink-3);
-  font-size:12.5px;font-weight:600;letter-spacing:.01em;
+  font-size:11.5px;font-weight:600;letter-spacing:0;padding:0 2px;
+  white-space:nowrap;overflow:hidden;text-overflow:ellipsis;
   display:flex;flex-direction:column;align-items:center;justify-content:center;gap:4px;
   transition:background .14s ease,color .14s ease;
 }
@@ -483,9 +484,50 @@ hr.sep{border:0;border-top:1px solid var(--line);margin:0}
                font-family:"IBM Plex Mono",monospace;font-size:10px;color:var(--ink-3)}
 .frequents .tete-cat{background:var(--surface-2)}
 
+
+/* --- 24. Mes repas ------------------------------------------------------ */
+.repas-carte{padding:13px 14px}
+.repas-carte + .repas-carte{margin-top:8px}
+.repas-carte .tete{display:flex;align-items:flex-start;justify-content:space-between;gap:10px}
+.repas-carte .nom{font-size:15.5px;font-weight:600;letter-spacing:-.005em;line-height:1.25}
+.repas-carte .moment{margin-top:3px}
+.repas-carte .chiffres{display:flex;align-items:baseline;gap:6px;margin-top:9px}
+.repas-carte .chiffres .nb{font-size:24px}
+.repas-carte .macros{font-family:"IBM Plex Mono",monospace;font-size:11.5px;font-variant-numeric:tabular-nums;
+                     display:flex;gap:10px;margin-top:3px}
+.repas-carte .macros .p{color:var(--prot)} .repas-carte .macros .g{color:var(--gluc)} .repas-carte .macros .l{color:var(--lip)}
+.repas-carte .compo{font-size:12px;color:var(--ink-3);margin-top:7px;line-height:1.45}
+.repas-carte .actions{display:flex;gap:8px;margin-top:11px}
+.repas-carte .actions .btn:first-child{flex:1}
+
+/* Éditeur de repas */
+.compo-l{display:grid;grid-template-columns:1fr auto;gap:4px 8px;padding:9px 0;border-bottom:1px solid var(--line);align-items:center}
+.compo-l .n{font-size:13.5px;font-weight:500;line-height:1.25}
+.compo-l .k{font-size:14px;color:var(--ink-2);text-align:right}
+.compo-l .reglage{grid-column:1/-1;display:flex;gap:6px;align-items:center;margin-top:2px}
+.compo-l input.q{width:66px;flex:none;min-height:40px;text-align:center;padding:4px;font-weight:600;
+                 background:var(--surface-2);border:1px solid var(--line-fort);border-radius:var(--r-s)}
+.compo-l select.u{flex:0 1 auto;min-width:92px;max-width:170px;min-height:40px;width:auto;padding:4px 6px;
+                  font-size:12.5px;background:var(--surface-2);border:1px solid var(--line-fort);border-radius:var(--r-s)}
+.compo-l .oter{margin-left:auto;width:40px;height:40px;border:1px solid var(--line);border-radius:var(--r-s);
+               background:var(--surface);color:var(--ink-3);flex:none}
+.compo-l .oter:hover{background:var(--alerte-doux);color:var(--alerte);border-color:var(--alerte)}
+.totaux-repas{display:flex;align-items:baseline;justify-content:space-between;gap:10px;padding:10px 12px;
+              background:var(--surface-2);border:1px solid var(--line);border-radius:var(--r-s)}
+.totaux-repas .nb{font-size:21px}
+.res-ali{max-height:240px;overflow:auto;border:1px solid var(--line);border-radius:var(--r-s);margin-top:8px}
+.res-ali:empty{display:none}
+.res-ali button{display:flex;align-items:center;justify-content:space-between;gap:10px;width:100%;
+                min-height:44px;padding:8px 11px;border:0;background:var(--surface);text-align:left}
+.res-ali button + button{border-top:1px solid var(--line)}
+.res-ali button:hover{background:var(--surface-2)}
+.res-ali .n{font-size:13.5px}
+.res-ali .kc{font-family:"IBM Plex Mono",monospace;font-size:11px;color:var(--ink-3);flex:none}
+
 /* --- 19. Petits écrans -------------------------------------------------- */
 @media (max-width:359px){
   body{font-size:14.5px}
+  .nav button{font-size:10.5px}
   .app{padding-inline:7px}
   .carte-jour{padding:12px}
   .anneau{width:88px;height:88px}
@@ -502,7 +544,7 @@ hr.sep{border:0;border-top:1px solid var(--line);margin:0}
   .app{max-width:900px;padding:calc(var(--nav-h) + 14px + env(safe-area-inset-top,0px)) 14px 30px}
   .nav{
     top:0;bottom:auto;max-width:none;border-top:0;border-bottom:1px solid var(--line);
-    grid-template-columns:repeat(4,minmax(0,150px));justify-content:center;
+    grid-template-columns:repeat(5,minmax(0,132px));justify-content:center;
     padding:7px 10px;
   }
   .nav button{min-height:42px;flex-direction:row;gap:8px;font-size:13.5px}
@@ -625,7 +667,7 @@ hr.sep{border:0;border-top:1px solid var(--line);margin:0}
   <section class="ecran" id="ecran-historique" aria-labelledby="t-histo">
     <div class="carte carte-p">
       <div class="titre-bloc">
-        <h1 id="t-histo">Historique</h1>
+        <h1 id="t-histo">Suivi</h1>
         <span class="etiq" id="h-portee">—</span>
       </div>
       <p class="entrefilet">Moyennes calculées sur les journées enregistrées.</p>
@@ -634,6 +676,22 @@ hr.sep{border:0;border-top:1px solid var(--line);margin:0}
     <div class="stats" id="h-stats"></div>
     <div class="carte graph" id="h-graph"></div>
     <div class="carte" id="h-calendrier"></div>
+  </section>
+
+  <!-- ===================== ÉCRAN : MES REPAS ============================= -->
+  <section class="ecran" id="ecran-repas" aria-labelledby="t-repas">
+    <div class="carte carte-p">
+      <div class="titre-bloc">
+        <h1 id="t-repas">Mes repas</h1>
+        <span class="etiq" id="r-compte">0</span>
+      </div>
+      <p class="entrefilet">Composez une fois les repas que vous mangez souvent. Ensuite, un seul geste
+      les ajoute au journal du jour et tous les totaux se recalculent.</p>
+      <div class="rangee-actions" style="margin-top:11px">
+        <button class="btn primaire" id="r-nouveau">Nouveau repas</button>
+      </div>
+    </div>
+    <div id="r-liste"></div>
   </section>
 
   <!-- ===================== ÉCRAN 3 : MES ALIMENTS ======================== -->
@@ -669,7 +727,8 @@ hr.sep{border:0;border-top:1px solid var(--line);margin:0}
   <!-- ===================== BARRE D'ONGLETS ============================== -->
   <nav class="nav" aria-label="Navigation principale">
     <button data-onglet="journal" aria-current="page"><span class="marque"></span>Journal</button>
-    <button data-onglet="historique"><span class="marque"></span>Historique</button>
+    <button data-onglet="repas"><span class="marque"></span>Repas</button>
+    <button data-onglet="historique"><span class="marque"></span>Suivi</button>
     <button data-onglet="aliments"><span class="marque"></span>Aliments</button>
     <button data-onglet="profil"><span class="marque"></span>Profil</button>
   </nav>
@@ -763,7 +822,7 @@ function libelleCourt(iso){
 function indexLundi(d){ return (d.getDay() + 6) % 7; }
 
 /** Version affichée dans l'écran Profil : sert à vérifier ce qui est en ligne. */
-const VERSION = '5';
+const VERSION = '6';
 
 /* =========================================================================
    2. MODULE DONNÉES — constantes du domaine
@@ -1764,7 +1823,7 @@ function rendreRecap(){
 
   let html = '<div class="carte recap">' +
     '<div class="recap-tete"><h2>Ma journée</h2>' +
-      '<button class="btn petit" data-modeles>Modèles</button></div>';
+      '<button class="btn petit" data-modeles>Mes repas</button></div>';
 
   REPAS.forEach(function(rp){
     const liste = parRepas[rp.cle];
@@ -2135,7 +2194,7 @@ function menuJournal(){
     '<div class="pile">' +
       '<button class="btn" data-m="veille">Copier la journée d’hier</button>' +
       '<button class="btn" data-m="ajouter">Ajouter un aliment à ma liste</button>' +
-      '<button class="btn" data-m="modeles">Modèles de repas</button>' +
+      '<button class="btn" data-m="modeles">Mes repas enregistrés</button>' +
       '<button class="btn" data-m="en-ligne">Chercher un aliment en ligne</button>' +
       '<button class="btn danger" data-m="vider">Vider le journal du jour</button>' +
     '</div>';
@@ -2596,57 +2655,282 @@ function enregistrerModele(cle, liste){
     });
     sauver('modeles');
     fermerModale();
-    toast('Modèle « ' + nom + ' » enregistré.');
+    toast('Repas « ' + nom + ' » enregistré. Retrouvez-le dans l’onglet Repas.');
   });
 }
 
-/** Liste des modèles : appliquer ou supprimer. */
-function modaleModeles(){
-  function corps(){
-    if(!ETAT.modeles.length){
-      return '<div class="vide-msg" style="padding:16px 0"><strong>Aucun modèle</strong>' +
-        'Saisissez un repas dans le journal, puis touchez les « ··· » de ce repas dans ' +
-        '« Ma journée » et choisissez « Enregistrer comme modèle ».</div>';
-    }
-    return '<div class="pile">' + ETAT.modeles.map(function(m){
-      const t = Calculs.totaux(m.entrees, INDEX);
-      return '<div class="ali" style="padding:10px 0" data-modele="' + esc(m.id) + '">' +
-        '<div class="info"><div class="n">' + esc(m.nom) + '</div>' +
-          '<div class="p100">' + m.entrees.length + (m.entrees.length > 1 ? ' aliments' : ' aliment') + ' · ' + fmt(Math.round(t.kcal)) + ' kcal · ' +
-          fmtG(t.prot) + ' P</div></div>' +
-        '<div class="outils">' +
-          '<button data-appliquer aria-label="Ajouter ' + esc(m.nom) + ' au journal">+</button>' +
-          '<button data-suppr aria-label="Supprimer ' + esc(m.nom) + '">×</button>' +
-        '</div></div>';
-    }).join('') + '</div>';
-  }
-  const mod = ouvrirModale('Modèles de repas', corps());
-  mod.addEventListener('click', function(ev){
-    const rangee = ev.target.closest('[data-modele]');
-    if(!rangee) return;
-    const m = ETAT.modeles.filter(function(x){ return x.id === rangee.dataset.modele; })[0];
-    if(!m) return;
+/** Ancien point d'entrée : tout se passe maintenant dans l'onglet Repas. */
+function modaleModeles(){ allerA('repas'); }
 
-    if(ev.target.closest('[data-appliquer]')){
-      let ajoutes = 0;
-      m.entrees.forEach(function(e){
-        if(!INDEX[e.alimentId]) return;            // aliment supprimé depuis
-        const existante = entreeDe(e.alimentId);
-        if(existante){ existante.quantite = e.quantite; existante.uniteIndex = e.uniteIndex; existante.repas = e.repas || m.repas; }
-        else ETAT.journal.entrees.push({alimentId:e.alimentId, quantite:e.quantite, uniteIndex:e.uniteIndex || 0, repas: e.repas || m.repas});
-        ajoutes++;
+/* =========================================================================
+   8 quater. ÉCRAN « MES REPAS »
+   L'utilisateur compose une fois ses repas habituels ; ensuite un seul geste
+   les verse dans le journal du jour et tout se recalcule. Les repas sont
+   stockés dans ETAT.modeles.
+   ========================================================================= */
+
+/** Totaux d'un repas enregistré. */
+function totauxRepas(m){ return Calculs.totaux(m.entrees, INDEX); }
+
+/**
+ * Verse un repas dans le journal du jour.
+ * Si un aliment y figure déjà, les grammages s'additionnent : manger deux fois
+ * du riz dans la journée doit compter deux fois.
+ */
+function ajouterRepasAuJournal(m){
+  let ajoutes = 0, cumules = 0;
+  m.entrees.forEach(function(e){
+    const a = INDEX[e.alimentId];
+    if(!a) return;                                   // aliment supprimé depuis
+    const existante = entreeDe(e.alimentId);
+    if(existante){
+      const gExist = Calculs.grammes(existante, a);
+      const gNouv = Calculs.grammes(e, a);
+      const uExist = Calculs.unite(a, existante.uniteIndex);
+      existante.quantite = Math.round(((gExist + gNouv) / (uExist.grammes || 1)) * 100) / 100;
+      cumules++;
+    }else{
+      ETAT.journal.entrees.push({
+        alimentId: e.alimentId, quantite: e.quantite,
+        uniteIndex: e.uniteIndex || 0, repas: m.repas || 'midi'
       });
-      sauver('journal');
-      fermerModale();
-      rendreListeJournal(); majEntete(); rendreRecap();
-      toast(ajoutes + (ajoutes > 1 ? ' aliments ajoutés.' : ' aliment ajouté.'));
+      ajoutes++;
+    }
+  });
+  sauver('journal');
+  rendreListeJournal(); majEntete(); rendreRecap();
+  toast(m.nom + ' ajouté au journal' + (cumules ? ' · ' + cumules + ' quantité' + (cumules > 1 ? 's cumulées' : ' cumulée') : '') + '.');
+}
+
+function rendreRepas(){
+  const n = ETAT.modeles.length;
+  $('#r-compte').textContent = n + (n > 1 ? ' repas' : ' repas');
+  const hote = $('#r-liste');
+
+  if(!n){
+    hote.innerHTML =
+      '<div class="carte vide-msg"><strong>Aucun repas enregistré</strong>' +
+      'Créez votre petit-déjeuner habituel, votre déjeuner d’après-séance, votre collation. ' +
+      'Vous n’aurez plus qu’à dire ce que vous avez mangé.' +
+      '<div class="rangee-actions" style="margin-top:14px;justify-content:center">' +
+        '<button class="btn primaire" data-r="nouveau">Composer un repas</button>' +
+      '</div></div>';
+    return;
+  }
+
+  hote.innerHTML = ETAT.modeles.map(function(m){
+    const t = totauxRepas(m);
+    const noms = m.entrees.map(function(e){ return INDEX[e.alimentId] ? INDEX[e.alimentId].nom : null; })
+                          .filter(Boolean);
+    const apercu = noms.slice(0, 4).join(', ') + (noms.length > 4 ? ' et ' + (noms.length - 4) + ' autres' : '');
+    return '<div class="carte repas-carte" data-m="' + esc(m.id) + '">' +
+      '<div class="tete">' +
+        '<div style="min-width:0">' +
+          '<div class="nom">' + esc(m.nom) + '</div>' +
+          '<div class="moment"><span class="pastille">' + esc(libelleRepas(m.repas)) + '</span></div>' +
+        '</div>' +
+        '<button class="menu-repas" data-menu aria-label="Actions pour ' + esc(m.nom) + '">···</button>' +
+      '</div>' +
+      '<div class="chiffres"><span class="nb">' + fmt(Math.round(t.kcal)) + '</span>' +
+        '<span class="tres-muet">kcal</span></div>' +
+      '<div class="macros"><span class="p">P ' + fmtG(t.prot) + '</span>' +
+        '<span class="g">G ' + fmtG(t.gluc) + '</span>' +
+        '<span class="l">L ' + fmtG(t.lip) + '</span></div>' +
+      '<div class="compo">' + esc(apercu || 'Aliments supprimés') + '</div>' +
+      '<div class="actions">' +
+        '<button class="btn primaire" data-ajouter>J’ai mangé ça</button>' +
+        '<button class="btn" data-modifier>Modifier</button>' +
+      '</div>' +
+    '</div>';
+  }).join('');
+}
+
+function menuRepasEnregistre(id){
+  const m = ETAT.modeles.filter(function(x){ return x.id === id; })[0];
+  if(!m) return;
+  const mod = ouvrirModale(m.nom,
+    '<div class="pile">' +
+      '<button class="btn" data-a="modifier">Modifier</button>' +
+      '<button class="btn" data-a="dupliquer">Dupliquer</button>' +
+      '<button class="btn danger" data-a="supprimer">Supprimer</button>' +
+    '</div>');
+  mod.addEventListener('click', function(ev){
+    const b = ev.target.closest('[data-a]');
+    if(!b) return;
+    fermerModale();
+    if(b.dataset.a === 'modifier') editeurRepas(m);
+    if(b.dataset.a === 'dupliquer'){
+      const c = JSON.parse(JSON.stringify(m));
+      c.id = uid('md'); c.nom = m.nom + ' (copie)';
+      ETAT.modeles.push(c); sauver('modeles'); rendreRepas();
+      toast('Repas dupliqué.');
+    }
+    if(b.dataset.a === 'supprimer'){
+      confirmer('Supprimer ' + m.nom + ' ?', 'Le repas enregistré disparaît. Vos journées passées ne changent pas.',
+        'Supprimer', function(){
+          ETAT.modeles = ETAT.modeles.filter(function(x){ return x.id !== id; });
+          sauver('modeles'); rendreRepas();
+          toast('Repas supprimé.');
+        });
+    }
+  });
+}
+
+/**
+ * Éditeur de repas. Deux règles de rendu : la liste de composition n'est
+ * reconstruite qu'à l'ajout ou au retrait d'un aliment, et la frappe dans une
+ * quantité ne met à jour que les totaux — le champ ne perd jamais le focus.
+ */
+function editeurRepas(source){
+  const edition = !!source;
+  const b = source
+    ? JSON.parse(JSON.stringify(source))
+    : {id: null, nom: '', repas: repasParDefaut(), entrees: []};
+
+  const mod = ouvrirModale(edition ? 'Modifier le repas' : 'Nouveau repas',
+    '<label class="champ"><span>Nom du repas</span>' +
+      '<input type="text" data-nom value="' + esc(b.nom) + '" placeholder="Petit-déjeuner d’entraînement"></label>' +
+    '<div class="champ"><span>Moment</span><div class="segments" data-slot>' +
+      REPAS.map(function(r){
+        return '<button type="button" data-v="' + r.cle + '" aria-pressed="' + (b.repas === r.cle) + '">' +
+          esc(r.court) + '</button>';
+      }).join('') + '</div></div>' +
+    '<div>' +
+      '<div class="etiq" style="margin-bottom:4px">Composition</div>' +
+      '<div data-compo></div>' +
+    '</div>' +
+    '<div class="totaux-repas" data-tot></div>' +
+    '<div>' +
+      '<label class="sr" for="r-ajout">Ajouter un aliment</label>' +
+      '<input type="text" id="r-ajout" data-q placeholder="Ajouter un aliment…" autocomplete="off">' +
+      '<div class="res-ali" data-res></div>' +
+    '</div>',
+    '<button class="btn" data-fermer>Annuler</button>' +
+    '<button class="btn primaire" data-valider>' + (edition ? 'Enregistrer' : 'Créer le repas') + '</button>');
+
+  function majTot(){
+    const t = Calculs.totaux(b.entrees, INDEX);
+    $('[data-tot]', mod).innerHTML =
+      '<div><span class="nb">' + fmt(Math.round(t.kcal)) + '</span> <span class="tres-muet">kcal</span></div>' +
+      '<div class="macros" style="display:flex;gap:10px;font-family:\'IBM Plex Mono\',monospace;font-size:11.5px">' +
+        '<span style="color:var(--prot)">P ' + fmtG(t.prot) + '</span>' +
+        '<span style="color:var(--gluc)">G ' + fmtG(t.gluc) + '</span>' +
+        '<span style="color:var(--lip)">L ' + fmtG(t.lip) + '</span></div>';
+    // Les kcal de chaque ligne suivent aussi
+    b.entrees.forEach(function(e, i){
+      const a = INDEX[e.alimentId];
+      const l = $('.compo-l[data-i="' + i + '"] .k', mod);
+      if(a && l) l.textContent = fmt(Math.round(Calculs.nutriments(e, a).kcal));
+    });
+  }
+
+  function majCompo(){
+    const hote = $('[data-compo]', mod);
+    if(!b.entrees.length){
+      hote.innerHTML = '<p class="entrefilet" style="padding:6px 0">Aucun aliment pour l’instant. ' +
+        'Cherchez-en un dans le champ ci-dessous.</p>';
+      majTot(); return;
+    }
+    hote.innerHTML = b.entrees.map(function(e, i){
+      const a = INDEX[e.alimentId];
+      if(!a) return '';
+      const options = (a.unites || []).map(function(u, k){
+        return '<option value="' + k + '"' + (k === (e.uniteIndex || 0) ? ' selected' : '') + '>' + esc(u.label) + '</option>';
+      }).join('');
+      return '<div class="compo-l" data-i="' + i + '">' +
+        '<div class="n">' + esc(a.nom) + '</div>' +
+        '<div class="k nb">' + fmt(Math.round(Calculs.nutriments(e, a).kcal)) + '</div>' +
+        '<div class="reglage">' +
+          '<input class="q" type="text" inputmode="decimal" data-q-ligne value="' + String(e.quantite).replace('.', ',') + '" ' +
+            'aria-label="Quantité de ' + esc(a.nom) + '">' +
+          '<select class="u" data-u-ligne aria-label="Unité pour ' + esc(a.nom) + '">' + options + '</select>' +
+          '<button class="oter" data-oter aria-label="Retirer ' + esc(a.nom) + '">×</button>' +
+        '</div>' +
+      '</div>';
+    }).join('');
+    majTot();
+  }
+
+  function majRes(){
+    const q = normaliser($('[data-q]', mod).value);
+    const zone = $('[data-res]', mod);
+    if(q.length < 1){ zone.innerHTML = ''; return; }
+    const trouves = ETAT.aliments.filter(function(a){ return normaliser(a.nom).indexOf(q) >= 0; }).slice(0, 12);
+    zone.innerHTML = trouves.length
+      ? trouves.map(function(a){
+          return '<button type="button" data-add="' + esc(a.id) + '">' +
+            '<span class="n">' + esc(a.nom) + '</span>' +
+            '<span class="kc">' + fmt(a.pour100g.kcal) + ' kcal /100 g</span></button>';
+        }).join('')
+      : '<button type="button" disabled style="color:var(--ink-3)"><span class="n">Aucun aliment de votre liste</span></button>';
+  }
+
+  majCompo();
+
+  $('[data-q]', mod).addEventListener('input', majRes);
+
+  $('[data-res]', mod).addEventListener('click', function(ev){
+    const btn = ev.target.closest('[data-add]');
+    if(!btn) return;
+    const a = INDEX[btn.dataset.add];
+    if(!a) return;
+    const hab = HABITUEL[a.id];
+    b.entrees.push({
+      alimentId: a.id,
+      quantite: hab ? hab.quantite : 100,
+      uniteIndex: hab ? (hab.uniteIndex || 0) : 0,
+      repas: b.repas
+    });
+    $('[data-q]', mod).value = '';
+    $('[data-res]', mod).innerHTML = '';
+    majCompo();
+  });
+
+  $('[data-compo]', mod).addEventListener('input', function(ev){
+    const champ = ev.target.closest('[data-q-ligne]');
+    if(!champ) return;
+    const i = Number(champ.closest('.compo-l').dataset.i);
+    b.entrees[i].quantite = num(champ.value);
+    majTot();                                     // rendu ciblé : le focus reste
+  });
+  $('[data-compo]', mod).addEventListener('change', function(ev){
+    const sel = ev.target.closest('[data-u-ligne]');
+    if(!sel) return;
+    const i = Number(sel.closest('.compo-l').dataset.i);
+    b.entrees[i].uniteIndex = Number(sel.value) || 0;
+    majTot();
+  });
+  $('[data-compo]', mod).addEventListener('click', function(ev){
+    const oter = ev.target.closest('[data-oter]');
+    if(!oter) return;
+    b.entrees.splice(Number(oter.closest('.compo-l').dataset.i), 1);
+    majCompo();
+  });
+
+  mod.addEventListener('click', function(ev){
+    const seg = ev.target.closest('[data-slot] button');
+    if(seg){
+      $$('[data-slot] button', mod).forEach(function(x){ x.setAttribute('aria-pressed', String(x === seg)); });
+      b.repas = seg.dataset.v;
       return;
     }
-    if(ev.target.closest('[data-suppr]')){
-      ETAT.modeles = ETAT.modeles.filter(function(x){ return x.id !== m.id; });
-      sauver('modeles');
-      $('.modale-corps', mod).innerHTML = corps();
+    if(!ev.target.closest('[data-valider]')) return;
+
+    b.entrees = b.entrees.filter(function(e){ return INDEX[e.alimentId] && num(e.quantite) > 0; });
+    if(!b.entrees.length){ toast('Ajoutez au moins un aliment.'); return; }
+    b.nom = $('[data-nom]', mod).value.trim() || libelleRepas(b.repas);
+
+    if(edition){
+      const cible = ETAT.modeles.filter(function(x){ return x.id === b.id; })[0];
+      if(cible){ cible.nom = b.nom; cible.repas = b.repas; cible.entrees = b.entrees; }
+    }else{
+      b.id = uid('md');
+      ETAT.modeles.push(b);
     }
+    sauver('modeles');
+    fermerModale();
+    rendreRepas();
+    toast(edition ? 'Repas mis à jour.' : 'Repas « ' + b.nom + ' » créé.');
   });
 }
 
@@ -3645,6 +3929,7 @@ function allerA(onglet){
     if(b.dataset.onglet === onglet) b.setAttribute('aria-current', 'page');
     else b.removeAttribute('aria-current');
   });
+  if(onglet === 'repas') rendreRepas();
   if(onglet === 'historique') rendreHistorique();
   if(onglet === 'aliments') rendreAliments();
   if(onglet === 'profil') rendreProfil();
@@ -3654,6 +3939,7 @@ function allerA(onglet){
 
 function rendreTout(){
   rendreListeJournal(); majEntete(); rendreRecap();
+  if(ETAT.ui.onglet === 'repas') rendreRepas();
   if(ETAT.ui.onglet === 'aliments') rendreAliments();
   if(ETAT.ui.onglet === 'historique') rendreHistorique();
   if(ETAT.ui.onglet === 'profil') rendreProfil();
@@ -3686,6 +3972,18 @@ function brancherGlobal(){
   $$('.nav button').forEach(function(b){
     b.addEventListener('click', function(){ allerA(b.dataset.onglet); });
   });
+  $('#r-nouveau').addEventListener('click', function(){ editeurRepas(null); });
+  $('#r-liste').addEventListener('click', function(ev){
+    if(ev.target.closest('[data-r="nouveau"]')){ editeurRepas(null); return; }
+    const carte = ev.target.closest('[data-m]');
+    if(!carte) return;
+    const m = ETAT.modeles.filter(function(x){ return x.id === carte.dataset.m; })[0];
+    if(!m) return;
+    if(ev.target.closest('[data-ajouter]')){ ajouterRepasAuJournal(m); return; }
+    if(ev.target.closest('[data-modifier]')){ editeurRepas(m); return; }
+    if(ev.target.closest('[data-menu]')) menuRepasEnregistre(m.id);
+  });
+
   $('#a-nouveau').addEventListener('click', function(){ formulaireAliment(null); });
   $('#a-en-ligne').addEventListener('click', function(){ rechercheEnLigne(ETAT.ui.filtreAliments); });
   $('#a-categories').addEventListener('click', gererCategories);
