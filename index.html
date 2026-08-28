@@ -11,101 +11,97 @@
 <style>
 /* =========================================================================
    MACRO CARNET — feuille de style
-   Direction : outil quotidien, dense, chiffré. Aucun dégradé, aucune icône
-   décorative. Une couleur par macronutriment, utilisée partout à l'identique.
+   Outil quotidien : les chiffres commandent. On gagne en agrément par la
+   profondeur (cartes posées sur un fond teinté, angles arrondis, ombres
+   douces) et par le rythme, jamais par la décoration. Une couleur par
+   macronutriment, la même partout : anneau, barres, calendrier.
    ========================================================================= */
 
-/* --- 1. Jetons de couleur : thème clair (état par défaut) --------------- */
+/* --- 1. Jetons : thème clair (état par défaut) -------------------------- */
 :root{
-  --bg:#F2F4F6;
+  --bg:#EEF0F4;
   --surface:#FFFFFF;
-  --surface-2:#F7F9FB;
-  --surface-3:#EDF0F4;
-  --line:#DEE3E9;
-  --line-fort:#C3CAD3;
-  --ink:#111519;
-  --ink-2:#454E58;
-  --ink-3:#78828E;
+  --surface-2:#F5F7FA;
+  --surface-3:#E8ECF1;
+  --line:#E2E6EC;
+  --line-fort:#C8CFD8;
+  --ink:#101418;
+  --ink-2:#414A55;
+  --ink-3:#6F7885;
 
   --prot:#2F62C4;
-  --gluc:#A8760B;
+  --gluc:#A2740A;
   --lip:#A8437A;
-  --prot-doux:#E4ECFA;
-  --gluc-doux:#F5EBD8;
-  --lip-doux:#F7E6F0;
 
-  --ok:#2C7A57;
+  --ok:#2A7A56;
   --alerte:#B4483C;
-  --ok-doux:#E1F0E8;
-  --alerte-doux:#F8E4E1;
+  --ok-doux:#E2F1E9;
+  --alerte-doux:#F9E5E2;
 
   --focus:#2F62C4;
-  --ombre:0 1px 2px rgba(17,21,25,.06), 0 8px 24px rgba(17,21,25,.06);
+  --ombre-1:0 1px 2px rgba(16,20,24,.05), 0 1px 3px rgba(16,20,24,.04);
+  --ombre-2:0 2px 4px rgba(16,20,24,.05), 0 12px 28px rgba(16,20,24,.08);
 
-  --r:6px;
-  --pas:4px;
-  --nav-h:58px;
+  --r:10px;
+  --r-s:7px;
+  --nav-h:60px;
 }
 
-/* --- 2. Thème sombre : réglage système (non estampillé) ------------------ */
+/* --- 2. Thème sombre : réglage système (non estampillé) ----------------- */
 @media (prefers-color-scheme: dark){
   :root:not([data-theme="light"]){
-    --bg:#0D1116;
-    --surface:#151A20;
-    --surface-2:#1B212A;
-    --surface-3:#222932;
-    --line:#252D36;
-    --line-fort:#3A434E;
-    --ink:#E9EDF2;
-    --ink-2:#AFB9C5;
-    --ink-3:#7D8794;
+    --bg:#080B0F;
+    --surface:#13181E;
+    --surface-2:#1A2028;
+    --surface-3:#232B34;
+    --line:#242C35;
+    --line-fort:#39434F;
+    --ink:#EAEEF3;
+    --ink-2:#B0BAC6;
+    --ink-3:#7F8996;
 
     --prot:#7BA5F5;
-    --gluc:#D9A63F;
-    --lip:#E07FB1;
-    --prot-doux:#1A253C;
-    --gluc-doux:#2F2915;
-    --lip-doux:#31202B;
+    --gluc:#DDAA43;
+    --lip:#E381B3;
 
-    --ok:#54B98C;
-    --alerte:#E47766;
-    --ok-doux:#16281F;
-    --alerte-doux:#2C1B18;
+    --ok:#55BA8D;
+    --alerte:#E67A69;
+    --ok-doux:#132420;
+    --alerte-doux:#2A1917;
 
     --focus:#7BA5F5;
-    --ombre:0 1px 2px rgba(0,0,0,.4), 0 8px 24px rgba(0,0,0,.35);
+    --ombre-1:0 1px 2px rgba(0,0,0,.5);
+    --ombre-2:0 2px 6px rgba(0,0,0,.5), 0 14px 32px rgba(0,0,0,.4);
   }
 }
 
-/* --- 3. Thème sombre : choix explicite du lecteur ------------------------ */
+/* --- 3. Thème sombre : choix explicite du lecteur ----------------------- */
 :root[data-theme="dark"]{
-  --bg:#0D1116;
-  --surface:#151A20;
-  --surface-2:#1B212A;
-  --surface-3:#222932;
-  --line:#252D36;
-  --line-fort:#3A434E;
-  --ink:#E9EDF2;
-  --ink-2:#AFB9C5;
-  --ink-3:#7D8794;
+  --bg:#080B0F;
+  --surface:#13181E;
+  --surface-2:#1A2028;
+  --surface-3:#232B34;
+  --line:#242C35;
+  --line-fort:#39434F;
+  --ink:#EAEEF3;
+  --ink-2:#B0BAC6;
+  --ink-3:#7F8996;
 
   --prot:#7BA5F5;
-  --gluc:#D9A63F;
-  --lip:#E07FB1;
-  --prot-doux:#1A253C;
-  --gluc-doux:#2F2915;
-  --lip-doux:#31202B;
+  --gluc:#DDAA43;
+  --lip:#E381B3;
 
-  --ok:#54B98C;
-  --alerte:#E47766;
-  --ok-doux:#16281F;
-  --alerte-doux:#2C1B18;
+  --ok:#55BA8D;
+  --alerte:#E67A69;
+  --ok-doux:#132420;
+  --alerte-doux:#2A1917;
 
   --focus:#7BA5F5;
-  --ombre:0 1px 2px rgba(0,0,0,.4), 0 8px 24px rgba(0,0,0,.35);
+  --ombre-1:0 1px 2px rgba(0,0,0,.5);
+  --ombre-2:0 2px 6px rgba(0,0,0,.5), 0 14px 32px rgba(0,0,0,.4);
 }
 
-/* --- 4. Réinitialisation minimale --------------------------------------- */
+/* --- 4. Réinitialisation ------------------------------------------------ */
 *,*::before,*::after{box-sizing:border-box}
 html{-webkit-text-size-adjust:100%}
 body{
@@ -119,45 +115,52 @@ body{
 }
 button,input,select,textarea{font:inherit;color:inherit}
 button{cursor:pointer}
-:focus-visible{outline:2px solid var(--focus);outline-offset:2px;border-radius:3px}
+[hidden]{display:none !important}
+:focus-visible{outline:2px solid var(--focus);outline-offset:2px;border-radius:4px}
 @media (prefers-reduced-motion: reduce){
   *{animation-duration:.001ms !important;transition-duration:.001ms !important}
 }
 
-/* --- 5. Utilitaires typographiques -------------------------------------- */
-.nb{font-family:"IBM Plex Sans Condensed","IBM Plex Sans",sans-serif;font-weight:700;font-variant-numeric:tabular-nums;letter-spacing:.005em}
-.mono{font-family:"IBM Plex Mono",ui-monospace,monospace;font-variant-numeric:tabular-nums}
-.etiq{font-family:"IBM Plex Mono",ui-monospace,monospace;font-size:10.5px;font-weight:500;letter-spacing:.09em;text-transform:uppercase;color:var(--ink-3)}
-.muet{color:var(--ink-2)}
+/* --- 5. Utilitaires ----------------------------------------------------- */
+.nb{font-family:"IBM Plex Sans Condensed","IBM Plex Sans",sans-serif;font-weight:700;font-variant-numeric:tabular-nums;letter-spacing:.004em}
+.etiq{font-family:"IBM Plex Mono",ui-monospace,monospace;font-size:10.5px;font-weight:500;letter-spacing:.085em;text-transform:uppercase;color:var(--ink-3)}
 .tres-muet{color:var(--ink-3)}
 .sr{position:absolute;width:1px;height:1px;padding:0;margin:-1px;overflow:hidden;clip:rect(0 0 0 0);white-space:nowrap;border:0}
+h1,h2,h3{margin:0;text-wrap:balance}
+h1{font-size:20px;font-weight:700;letter-spacing:-.015em}
+h2{font-size:15px;font-weight:600;letter-spacing:-.005em}
 
 /* --- 6. Charpente ------------------------------------------------------- */
-.app{max-width:760px;margin:0 auto;min-height:100vh;background:var(--surface);border-inline:1px solid var(--line)}
-.ecran{display:none;padding-bottom:calc(var(--nav-h) + 18px + env(safe-area-inset-bottom,0px))}
-.ecran.actif{display:block}
-.bloc{padding:14px 16px;border-bottom:1px solid var(--line)}
+.app{
+  max-width:640px;margin:0 auto;min-height:100vh;
+  padding:10px 10px calc(var(--nav-h) + 20px + env(safe-area-inset-bottom,0px));
+}
+.ecran{display:none}
+.ecran.actif{display:flex;flex-direction:column;gap:10px}
+
+/* La carte est l'unité de base : tout ce qui est posé sur le fond en est une. */
+.carte{
+  background:var(--surface);border:1px solid var(--line);border-radius:var(--r);
+  box-shadow:var(--ombre-1);overflow:hidden;
+}
+.carte-p{padding:14px 15px}
 .titre-bloc{display:flex;align-items:baseline;justify-content:space-between;gap:10px;margin-bottom:10px}
-h1,h2,h3{margin:0;text-wrap:balance}
-h1{font-size:19px;font-weight:700;letter-spacing:-.01em}
-h2{font-size:15px;font-weight:600}
-h3{font-size:13px;font-weight:600}
 
 /* --- 7. Boutons --------------------------------------------------------- */
 .btn{
   display:inline-flex;align-items:center;justify-content:center;gap:6px;
-  min-height:44px;padding:0 14px;border:1px solid var(--line-fort);border-radius:var(--r);
+  min-height:44px;padding:0 14px;border:1px solid var(--line-fort);border-radius:var(--r-s);
   background:var(--surface);color:var(--ink);font-size:14px;font-weight:500;
-  transition:background .12s ease,border-color .12s ease;
+  transition:background .14s ease,border-color .14s ease,transform .08s ease;
 }
-.btn:hover{background:var(--surface-2)}
-.btn:active{background:var(--surface-3)}
-.btn.primaire{background:var(--ink);border-color:var(--ink);color:var(--surface);font-weight:600}
-.btn.primaire:hover{opacity:.88;background:var(--ink)}
+.btn:hover{background:var(--surface-2);border-color:var(--ink-3)}
+.btn:active{transform:scale(.985)}
+.btn.primaire{background:var(--ink);border-color:var(--ink);color:var(--surface);font-weight:600;box-shadow:var(--ombre-1)}
+.btn.primaire:hover{background:var(--ink);opacity:.9}
 .btn.enregistre{background:var(--ok-doux);border-color:var(--ok);color:var(--ok)}
-.btn.danger{color:var(--alerte);border-color:var(--line-fort)}
+.btn.danger{color:var(--alerte)}
 .btn.danger:hover{background:var(--alerte-doux);border-color:var(--alerte)}
-.btn.petit{min-height:36px;padding:0 10px;font-size:13px}
+.btn.petit{min-height:36px;padding:0 11px;font-size:13px}
 .btn.icone{min-width:44px;padding:0 8px}
 .btn[disabled]{opacity:.45;cursor:not-allowed}
 .rangee-actions{display:flex;gap:8px;flex-wrap:wrap}
@@ -165,11 +168,11 @@ h3{font-size:13px;font-weight:600}
 
 /* --- 8. Champs ---------------------------------------------------------- */
 .champ{display:flex;flex-direction:column;gap:5px}
-.champ > span{font-family:"IBM Plex Mono",monospace;font-size:10.5px;letter-spacing:.09em;text-transform:uppercase;color:var(--ink-3)}
-input[type="text"],input[type="number"],input[type="date"],select,textarea{
-  min-height:44px;width:100%;padding:8px 10px;
-  background:var(--surface-2);border:1px solid var(--line-fort);border-radius:var(--r);
-  font-variant-numeric:tabular-nums;
+.champ > span{font-family:"IBM Plex Mono",monospace;font-size:10.5px;letter-spacing:.085em;text-transform:uppercase;color:var(--ink-3)}
+input[type="text"],input[type="number"],input[type="date"],input[type="file"],select,textarea{
+  min-height:44px;width:100%;padding:9px 11px;
+  background:var(--surface-2);border:1px solid var(--line-fort);border-radius:var(--r-s);
+  font-variant-numeric:tabular-nums;transition:border-color .14s ease,background .14s ease;
 }
 textarea{min-height:120px;font-family:"IBM Plex Mono",monospace;font-size:12px;line-height:1.5;resize:vertical}
 input:focus,select:focus,textarea:focus{outline:2px solid var(--focus);outline-offset:-1px;border-color:var(--focus)}
@@ -177,219 +180,305 @@ input:focus,select:focus,textarea:focus{outline:2px solid var(--focus);outline-o
 .grille-champs.trois{grid-template-columns:repeat(3,minmax(0,1fr));gap:8px}
 .grille-champs.deux{grid-template-columns:repeat(2,minmax(0,1fr))}
 
-/* Segments (sexe, objectif, activité) */
 .segments{display:flex;flex-wrap:wrap;gap:6px}
 .segments button{
   flex:1 1 auto;min-height:44px;padding:0 10px;border:1px solid var(--line-fort);
-  border-radius:var(--r);background:var(--surface-2);font-size:13.5px;font-weight:500;
+  border-radius:var(--r-s);background:var(--surface-2);font-size:13.5px;font-weight:500;
+  transition:background .14s ease,color .14s ease,border-color .14s ease;
 }
 .segments button[aria-pressed="true"]{background:var(--ink);border-color:var(--ink);color:var(--surface);font-weight:600}
 
-/* --- 9. En-tête collant du journal -------------------------------------- */
-.entete{position:sticky;top:0;z-index:30;background:var(--surface);border-bottom:1px solid var(--line-fort)}
-.entete-haut{display:flex;align-items:flex-start;justify-content:space-between;gap:12px;padding:12px 16px 8px}
-.kcal-jour{display:flex;align-items:baseline;gap:7px}
-.kcal-jour .val{font-size:40px;line-height:.95}
-.kcal-jour .sur{font-size:15px;color:var(--ink-3);font-variant-numeric:tabular-nums}
-.jour-meta{text-align:right;display:flex;flex-direction:column;gap:3px;align-items:flex-end}
-.pastille{display:inline-flex;align-items:center;gap:5px;padding:2px 7px;border-radius:99px;font-size:11px;font-weight:600;border:1px solid var(--line-fort);color:var(--ink-3);font-family:"IBM Plex Mono",monospace}
+/* --- 9. Carte du jour --------------------------------------------------- */
+.entete{position:sticky;top:0;z-index:30;display:flex;flex-direction:column;gap:10px;
+        padding-top:6px;background:linear-gradient(var(--bg) 72%, transparent)}
+.carte-jour{padding:13px 14px 12px}
+.jour-tete{display:flex;align-items:flex-start;justify-content:space-between;gap:10px;margin-bottom:11px}
+.jour-tete .date{font-size:13.5px;font-weight:600;letter-spacing:-.005em}
+.jour-tete .date::first-letter{text-transform:uppercase}
+.jour-tete .sous{font-size:11.5px;color:var(--ink-3);margin-top:1px}
+.puces{display:flex;flex-direction:column;align-items:flex-end;gap:5px;flex:none}
+.pastille{
+  display:inline-flex;align-items:center;gap:5px;padding:3px 9px;border-radius:99px;
+  font-family:"IBM Plex Mono",monospace;font-size:10.5px;font-weight:500;letter-spacing:.03em;
+  border:1px solid var(--line-fort);color:var(--ink-3);background:var(--surface-2);white-space:nowrap;
+}
 .pastille.on{background:var(--ok-doux);border-color:var(--ok);color:var(--ok)}
-.pastille.off{background:var(--surface-2)}
+.pastille.serie{background:var(--surface-3);border-color:transparent;color:var(--ink-2)}
+.pastille.serie strong{font-weight:700;color:var(--ink)}
 
-/* Barre empilée des calories par macro */
-.barre-empilee{display:flex;height:9px;border-radius:2px;overflow:hidden;background:var(--surface-3);margin:0 16px}
-.barre-empilee span{display:block;height:100%}
+/* Anneau des calories + colonne des macros */
+.bloc-kcal{display:flex;gap:15px;align-items:center}
+.anneau{position:relative;width:104px;height:104px;flex:none}
+.anneau svg{width:100%;height:100%;transform:rotate(-90deg)}
+.anneau circle{fill:none;stroke-width:9;stroke-linecap:round}
+.anneau .piste{stroke:var(--surface-3)}
+.anneau .trait{stroke:var(--ink);transition:stroke-dashoffset .55s cubic-bezier(.22,.9,.3,1),stroke .3s ease}
+.anneau.depasse .trait{stroke:var(--alerte)}
+.anneau-centre{position:absolute;inset:0;display:flex;flex-direction:column;align-items:center;justify-content:center;gap:0}
+.anneau-centre .nb{font-size:29px;line-height:1}
+.anneau-centre .etiq{font-size:9.5px;margin-top:2px}
+.col-macros{flex:1;min-width:0;display:flex;flex-direction:column;gap:9px}
+.reste{font-size:12.5px;color:var(--ink-2);font-variant-numeric:tabular-nums}
+.reste b{font-weight:600;color:var(--ink)}
+.reste.sur{color:var(--alerte)}
+
+.macro-l{display:grid;grid-template-columns:auto 1fr auto;align-items:center;gap:0 7px}
+.macro-l .puce{width:8px;height:8px;border-radius:2.5px}
+.macro-l .nom{font-size:12px;color:var(--ink-2)}
+.macro-l .val{font-size:12.5px;font-variant-numeric:tabular-nums;color:var(--ink-3);white-space:nowrap}
+.macro-l .val b{font-family:"IBM Plex Sans Condensed",sans-serif;font-weight:700;font-size:14.5px;color:var(--ink)}
+.macro-l .jauge{grid-column:1/-1;height:4px;border-radius:3px;background:var(--surface-3);margin-top:4px;overflow:hidden}
+.macro-l .jauge i{display:block;height:100%;border-radius:3px;transition:width .5s cubic-bezier(.22,.9,.3,1)}
+.puce.p,.jauge i.p{background:var(--prot)}
+.puce.g,.jauge i.g{background:var(--gluc)}
+.puce.l,.jauge i.l{background:var(--lip)}
+.macro-l.depasse .val b{color:var(--alerte)}
+
+.pied-jour{display:flex;align-items:center;justify-content:space-between;gap:10px;margin-top:12px;padding-top:11px;border-top:1px solid var(--line)}
+.barre-empilee{display:flex;height:7px;border-radius:4px;overflow:hidden;background:var(--surface-3);flex:1}
+.barre-empilee span{display:block;height:100%;transition:width .5s cubic-bezier(.22,.9,.3,1)}
 .seg-prot{background:var(--prot)} .seg-gluc{background:var(--gluc)} .seg-lip{background:var(--lip)}
-
-/* Tableau des trois macros + fibres */
-.macros{display:grid;grid-template-columns:repeat(3,1fr);gap:1px;background:var(--line);margin-top:10px;border-top:1px solid var(--line)}
-.macro{background:var(--surface);padding:8px 16px 10px}
-.macro .tete{display:flex;align-items:center;gap:5px}
-.puce{width:8px;height:8px;border-radius:2px;flex:none}
-.puce.p{background:var(--prot)} .puce.g{background:var(--gluc)} .puce.l{background:var(--lip)}
-.macro .valeur{display:flex;align-items:baseline;justify-content:space-between;gap:6px;margin-top:2px}
-.macro .valeur .q{display:flex;align-items:baseline;gap:3px;min-width:0}
-.macro .valeur .nb{font-size:21px;line-height:1.05}
-.macro .valeur .u{font-size:11px;color:var(--ink-3)}
-.macro .pct{font-size:11px;color:var(--ink-3);font-variant-numeric:tabular-nums;white-space:nowrap;flex:none}
-.jauge{height:3px;background:var(--surface-3);border-radius:2px;margin-top:6px;overflow:hidden}
-.jauge i{display:block;height:100%;border-radius:2px}
-.jauge i.p{background:var(--prot)} .jauge i.g{background:var(--gluc)} .jauge i.l{background:var(--lip)}
-.ligne-fibres{display:flex;align-items:center;justify-content:space-between;gap:10px;padding:7px 16px;border-top:1px solid var(--line);background:var(--surface-2)}
+.fibres{font-size:11.5px;color:var(--ink-3);white-space:nowrap;font-variant-numeric:tabular-nums}
+.fibres b{color:var(--ink-2);font-weight:600}
 
 /* Recherche */
-.recherche{display:flex;gap:8px;padding:10px 16px;border-top:1px solid var(--line);background:var(--surface)}
-.recherche input{background:var(--surface-2)}
+.recherche{display:flex;gap:8px;padding:9px 10px;background:var(--surface);border:1px solid var(--line);border-radius:var(--r);box-shadow:var(--ombre-1)}
+.recherche input{background:var(--surface-2);border-color:var(--line)}
 
-/* --- 10. Sections d'aliments repliables ---------------------------------- */
-.section-cat > .tete-cat{
-  display:flex;align-items:center;gap:9px;width:100%;
-  min-height:44px;padding:8px 16px;border:0;border-bottom:1px solid var(--line);
-  background:var(--surface-2);text-align:left;
+/* --- 10. Sections d'aliments -------------------------------------------- */
+.section-cat{background:var(--surface);border:1px solid var(--line);border-radius:var(--r);box-shadow:var(--ombre-1);overflow:hidden}
+.section-cat + .section-cat{margin-top:8px}
+.tete-cat{
+  display:flex;align-items:center;gap:10px;width:100%;
+  min-height:46px;padding:9px 14px;border:0;background:var(--surface);text-align:left;
+  transition:background .14s ease;
 }
-.tete-cat .chev{width:9px;height:9px;border-right:2px solid var(--ink-3);border-bottom:2px solid var(--ink-3);transform:rotate(45deg);transition:transform .15s ease;flex:none;margin-top:-3px}
+button.tete-cat:hover{background:var(--surface-2)}
+.tete-cat[aria-expanded="true"]{border-bottom:1px solid var(--line)}
+.chev{width:8px;height:8px;border-right:2px solid var(--ink-3);border-bottom:2px solid var(--ink-3);
+      transform:rotate(45deg);transition:transform .2s ease;flex:none;margin-top:-3px}
 .tete-cat[aria-expanded="false"] .chev{transform:rotate(-45deg)}
-.tete-cat .nom-cat{font-weight:600;font-size:13px;letter-spacing:.01em;flex:1}
-.tete-cat .compte{font-family:"IBM Plex Mono",monospace;font-size:11px;color:var(--ink-3)}
+.nom-cat{font-weight:600;font-size:13.5px;flex:1;letter-spacing:-.005em}
+.compte{font-family:"IBM Plex Mono",monospace;font-size:11px;color:var(--ink-3);
+        background:var(--surface-2);border-radius:99px;padding:2px 8px}
+.tete-cat .compte.actif{background:var(--ink);color:var(--surface)}
 
-/* --- 11. Ligne d'aliment ------------------------------------------------
-   Mobile : identité + calories sur la première ligne, saisie en dessous,
-   macros seulement si la ligne est renseignée. Écran large : tout sur un rang. */
+/* --- 11. Ligne d'aliment ------------------------------------------------ */
 .ligne{
   display:grid;grid-template-columns:1fr auto;
   grid-template-areas:"ident kcal" "saisie saisie" "macros macros";
-  gap:2px 10px;padding:9px 16px;border-bottom:1px solid var(--line);align-items:center;
+  gap:2px 10px;padding:10px 14px;align-items:center;
+  transition:background .18s ease;
 }
+.ligne + .ligne{border-top:1px solid var(--line)}
 .ligne.rempli{background:var(--surface-2);box-shadow:inset 3px 0 0 var(--ink)}
 .ligne .ident{grid-area:ident;min-width:0}
-.ligne .nom{font-size:14.5px;font-weight:500;line-height:1.25}
+.ligne .nom{font-size:14.5px;font-weight:500;line-height:1.3}
 .p100{font-family:"IBM Plex Mono",monospace;font-size:10.5px;line-height:1.4;color:var(--ink-3);margin-top:2px;font-variant-numeric:tabular-nums}
-.saisie{grid-area:saisie;display:flex;align-items:center;gap:6px;margin-top:5px;flex-wrap:nowrap}
-.pas{width:38px;height:44px;border:1px solid var(--line-fort);border-radius:var(--r);background:var(--surface);font-size:17px;font-weight:600;line-height:1;color:var(--ink-2);display:flex;align-items:center;justify-content:center;flex:none}
-.pas:hover{background:var(--surface-3)}
-input.qte{width:64px;flex:none;min-height:44px;text-align:center;padding:6px 4px;font-weight:600;font-variant-numeric:tabular-nums;background:var(--surface);border:1px solid var(--line-fort);border-radius:var(--r)}
-select.unite{flex:0 1 auto;min-width:96px;max-width:180px;margin-right:auto;min-height:44px;width:auto;padding:6px 6px;font-size:12.5px;background:var(--surface);border:1px solid var(--line-fort);border-radius:var(--r)}
-.kcal-ligne{grid-area:kcal;align-self:start;min-width:52px;text-align:right;font-size:19px;color:var(--ink-3)}
+.saisie{grid-area:saisie;display:flex;align-items:center;gap:6px;margin-top:6px;flex-wrap:nowrap}
+.pas{width:38px;height:44px;border:1px solid var(--line-fort);border-radius:var(--r-s);background:var(--surface);
+     font-size:18px;font-weight:600;line-height:1;color:var(--ink-2);display:flex;align-items:center;justify-content:center;flex:none;
+     transition:background .14s ease,border-color .14s ease}
+.pas:hover{background:var(--surface-3);border-color:var(--ink-3)}
+input.qte{width:64px;flex:none;min-height:44px;text-align:center;padding:6px 4px;font-weight:600;
+          font-variant-numeric:tabular-nums;background:var(--surface);border:1px solid var(--line-fort);border-radius:var(--r-s)}
+.ligne.rempli input.qte{border-color:var(--ink-3)}
+select.unite{flex:0 1 auto;min-width:96px;max-width:180px;margin-right:auto;min-height:44px;width:auto;
+             padding:6px 8px;font-size:12.5px;background:var(--surface);border:1px solid var(--line-fort);border-radius:var(--r-s)}
+.kcal-ligne{grid-area:kcal;align-self:start;min-width:54px;text-align:right;font-size:19px;color:var(--ink-3);transition:color .2s ease}
 .ligne.rempli .kcal-ligne{color:var(--ink)}
-.macros-ligne{grid-area:macros;font-family:"IBM Plex Mono",monospace;font-size:11px;font-variant-numeric:tabular-nums;display:none;gap:10px;margin-top:4px}
+.macros-ligne{grid-area:macros;font-family:"IBM Plex Mono",monospace;font-size:11px;font-variant-numeric:tabular-nums;display:none;gap:10px;margin-top:5px}
 .ligne.rempli .macros-ligne{display:flex}
 .macros-ligne .p{color:var(--prot)} .macros-ligne .g{color:var(--gluc)} .macros-ligne .l{color:var(--lip)}
-.vide-msg{padding:26px 16px;text-align:center;color:var(--ink-3);font-size:13.5px}
-@media (min-width:620px){
-  .ligne{grid-template-columns:minmax(0,1fr) auto minmax(140px,auto) auto;
-         grid-template-areas:"ident saisie macros kcal";gap:0 12px}
-  .saisie{margin-top:0}
-  .macros-ligne{margin-top:0;justify-content:flex-end}
-  select.unite{flex:none;min-width:92px}
-}
+.vide-msg{padding:30px 18px;text-align:center;color:var(--ink-3);font-size:13.5px;line-height:1.6}
+.vide-msg strong{display:block;color:var(--ink);font-size:15px;font-weight:600;margin-bottom:5px}
 
-/* --- 12. Barre d'actions basse ------------------------------------------ */
-.actions-jour{position:sticky;bottom:calc(var(--nav-h) + env(safe-area-inset-bottom,0px));z-index:25;display:flex;gap:8px;padding:10px 16px;background:var(--surface);border-top:1px solid var(--line-fort);box-shadow:0 -6px 16px rgba(17,21,25,.05)}
+/* --- 12. Barre d'actions ------------------------------------------------ */
+.actions-jour{
+  position:sticky;bottom:calc(var(--nav-h) + 8px + env(safe-area-inset-bottom,0px));z-index:25;
+  display:flex;gap:8px;padding:9px 10px;background:var(--surface);
+  border:1px solid var(--line);border-radius:var(--r);box-shadow:var(--ombre-2);
+}
 .actions-jour .btn{flex:1}
+.actions-jour .btn.icone{flex:0 0 auto}
 
 /* --- 13. Barre d'onglets ------------------------------------------------ */
 .nav{
   position:fixed;bottom:0;left:0;right:0;z-index:40;
-  display:grid;grid-template-columns:repeat(4,1fr);
-  max-width:760px;margin:0 auto;
-  background:var(--surface);border-top:1px solid var(--line-fort);
-  padding-bottom:env(safe-area-inset-bottom,0px);
+  display:grid;grid-template-columns:repeat(4,1fr);gap:4px;
+  max-width:640px;margin:0 auto;padding:6px 8px calc(6px + env(safe-area-inset-bottom,0px));
+  background:color-mix(in srgb, var(--surface) 88%, transparent);
+  backdrop-filter:blur(12px);-webkit-backdrop-filter:blur(12px);
+  border-top:1px solid var(--line);
 }
 .nav button{
-  min-height:var(--nav-h);border:0;background:none;color:var(--ink-3);
-  font-size:12px;font-weight:600;letter-spacing:.02em;
-  display:flex;flex-direction:column;align-items:center;justify-content:center;gap:3px;
-  border-top:2px solid transparent;margin-top:-1px;
+  min-height:48px;border:0;border-radius:var(--r-s);background:none;color:var(--ink-3);
+  font-size:12.5px;font-weight:600;letter-spacing:.01em;
+  display:flex;flex-direction:column;align-items:center;justify-content:center;gap:4px;
+  transition:background .14s ease,color .14s ease;
 }
-.nav button .marque{width:16px;height:2px;background:currentColor;opacity:.35;border-radius:2px}
-.nav button[aria-current="page"]{color:var(--ink)}
-.nav button[aria-current="page"] .marque{opacity:1}
+.nav button .marque{width:18px;height:2.5px;background:currentColor;opacity:.3;border-radius:2px;transition:opacity .14s ease,width .2s ease}
+.nav button:hover{color:var(--ink-2)}
+.nav button[aria-current="page"]{color:var(--ink);background:var(--surface-3)}
+.nav button[aria-current="page"] .marque{opacity:1;width:22px}
 
-/* --- 14. Historique : statistiques --------------------------------------- */
-.stats{display:grid;grid-template-columns:repeat(auto-fit,minmax(104px,1fr));gap:1px;background:var(--line);border-block:1px solid var(--line)}
-.stat{background:var(--surface);padding:10px 13px;min-width:0}
+/* --- 14. Historique ----------------------------------------------------- */
+.stats{display:grid;grid-template-columns:repeat(auto-fit,minmax(106px,1fr));gap:8px}
+.stat{background:var(--surface);border:1px solid var(--line);border-radius:var(--r);box-shadow:var(--ombre-1);padding:11px 13px;min-width:0}
 .stat .etiq{white-space:nowrap;overflow:hidden;text-overflow:ellipsis;display:block}
-.stat .u{display:block;line-height:1.3}
-.stat .v{font-size:23px;display:block;margin-top:1px}
-.stat .u{font-size:11px;color:var(--ink-3)}
+.stat .v{font-size:24px;display:block;margin-top:2px;line-height:1.1}
+.stat .u{font-size:11px;color:var(--ink-3);display:block;line-height:1.35;margin-top:1px}
 
-/* Graphique 14 jours */
-.graph{padding:14px 16px 6px;position:relative}
-.barres{display:flex;align-items:flex-end;gap:4px;height:112px;position:relative;border-bottom:1px solid var(--line-fort)}
-.barre{flex:1;display:flex;flex-direction:column;justify-content:flex-end;height:100%;position:relative}
-.barre i{display:block;width:100%;background:var(--ink-3);border-radius:2px 2px 0 0;min-height:2px}
+.graph{padding:14px 15px 10px}
+.barres{display:flex;align-items:flex-end;gap:4px;height:116px;position:relative;
+        border-bottom:1px solid var(--line-fort);padding-top:14px}
+.barre{flex:1;display:flex;flex-direction:column;justify-content:flex-end;height:100%;position:relative;border-radius:4px}
+.barre i{display:block;width:100%;background:var(--ink-3);border-radius:4px 4px 0 0;min-height:3px;
+         transition:height .5s cubic-bezier(.22,.9,.3,1)}
 .barre.sous i{background:var(--line-fort)}
 .barre.dans i{background:var(--ok)}
 .barre.sur i{background:var(--alerte)}
-.barre.absent i{background:var(--surface-3);height:3px !important;border-radius:0}
+.barre.absent i{background:var(--surface-3);height:3px !important;border-radius:2px}
 .ligne-cible{position:absolute;left:0;right:0;border-top:1px dashed var(--line-fort);pointer-events:none}
-.ligne-cible span{position:absolute;right:0;top:-15px;font-family:"IBM Plex Mono",monospace;font-size:10px;color:var(--ink-3);background:var(--surface);padding:0 3px}
-.jours-x{display:flex;gap:4px;margin-top:5px}
+.ligne-cible span{position:absolute;right:0;top:-16px;font-family:"IBM Plex Mono",monospace;font-size:10px;
+                  color:var(--ink-3);background:var(--surface);padding:0 4px;border-radius:3px}
+.jours-x{display:flex;gap:4px;margin-top:6px}
 .jours-x span{flex:1;text-align:center;font-family:"IBM Plex Mono",monospace;font-size:9.5px;color:var(--ink-3)}
 
-/* Calendrier */
-.cal-nav{display:flex;align-items:center;justify-content:space-between;gap:10px;padding:10px 16px;border-top:1px solid var(--line)}
-.cal-nav .mois{font-weight:600;font-size:14px;text-transform:capitalize}
-.cal-entetes,.cal{display:grid;grid-template-columns:repeat(7,1fr);gap:3px;padding:0 16px}
-.cal-entetes{padding-bottom:5px}
+.cal-nav{display:flex;align-items:center;justify-content:space-between;gap:10px;padding:12px 14px 8px}
+.cal-nav .mois{font-weight:600;font-size:14.5px;letter-spacing:-.005em}
+.cal-nav .mois::first-letter{text-transform:uppercase}
+.cal-entetes,.cal{display:grid;grid-template-columns:repeat(7,1fr);gap:4px;padding:0 12px}
+.cal-entetes{padding-bottom:6px}
 .cal-entetes span{text-align:center;font-family:"IBM Plex Mono",monospace;font-size:10px;color:var(--ink-3)}
 .cal{padding-bottom:14px}
 .case{
-  aspect-ratio:1/1.06;border:1px solid var(--line);border-radius:4px;background:var(--surface-2);
-  display:flex;flex-direction:column;align-items:center;justify-content:center;gap:2px;padding:2px;
-  min-height:44px;
+  aspect-ratio:1/1.05;border:1px solid var(--line);border-radius:8px;background:var(--surface-2);
+  display:flex;flex-direction:column;align-items:center;justify-content:center;gap:2px;padding:3px;
+  min-height:44px;transition:transform .12s ease,box-shadow .14s ease;
 }
 .case.vide{border-color:transparent;background:none}
-.case.avenir{opacity:.34}
+.case.avenir{opacity:.35}
 .case .j{font-family:"IBM Plex Mono",monospace;font-size:9.5px;color:var(--ink-3);line-height:1}
-.case .k{font-size:13px;line-height:1.05}
-.case .mini{display:flex;width:74%;height:3px;border-radius:2px;overflow:hidden;background:var(--line)}
+.case .k{font-size:13.5px;line-height:1.05}
+.case .mini{display:flex;width:72%;height:3.5px;border-radius:2px;overflow:hidden;background:var(--line)}
 .case .mini span{height:100%}
-.case.notee{background:var(--surface);border-color:var(--line-fort);cursor:pointer}
+button.case.notee{background:var(--surface);border-color:var(--line-fort);cursor:pointer}
+button.case.notee:hover{transform:translateY(-1px);box-shadow:var(--ombre-1)}
 .case.notee.dans{border-color:var(--ok)}
 .case.notee.sur{border-color:var(--alerte)}
-.case.notee.sous{border-color:var(--line-fort)}
 .case.aujourdhui{box-shadow:0 0 0 2px var(--ink)}
-.case.selection{background:var(--surface-3)}
 
-/* --- 15. Fiche jour / modale -------------------------------------------- */
-.voile{position:fixed;inset:0;z-index:60;background:rgba(9,12,16,.5);display:flex;align-items:flex-end;justify-content:center}
+/* --- 15. Modales -------------------------------------------------------- */
+.voile{position:fixed;inset:0;z-index:60;background:rgba(8,11,15,.55);display:flex;align-items:flex-end;justify-content:center;
+       animation:fondu .18s ease}
+@keyframes fondu{from{opacity:0}to{opacity:1}}
+@keyframes monte{from{transform:translateY(16px);opacity:.6}to{transform:translateY(0);opacity:1}}
 .modale{
-  width:100%;max-width:760px;max-height:90vh;overflow:auto;background:var(--surface);
-  border-top:1px solid var(--line-fort);border-radius:12px 12px 0 0;box-shadow:var(--ombre);
+  width:100%;max-width:640px;max-height:90vh;overflow:auto;background:var(--surface);
+  border-radius:16px 16px 0 0;box-shadow:var(--ombre-2);animation:monte .22s cubic-bezier(.22,.9,.3,1);
   padding-bottom:calc(14px + env(safe-area-inset-bottom,0px));
 }
-.modale-tete{position:sticky;top:0;background:var(--surface);display:flex;align-items:center;justify-content:space-between;gap:10px;padding:13px 16px;border-bottom:1px solid var(--line);z-index:2}
-.modale-corps{padding:14px 16px;display:flex;flex-direction:column;gap:14px}
-.modale-pied{display:flex;gap:8px;padding:12px 16px;border-top:1px solid var(--line);position:sticky;bottom:0;background:var(--surface)}
+.modale-tete{position:sticky;top:0;background:var(--surface);display:flex;align-items:center;justify-content:space-between;
+             gap:10px;padding:14px 15px;border-bottom:1px solid var(--line);z-index:2}
+.modale-corps{padding:15px;display:flex;flex-direction:column;gap:15px}
+.modale-pied{display:flex;gap:8px;padding:12px 15px;border-top:1px solid var(--line);position:sticky;bottom:0;background:var(--surface)}
 .modale-pied .btn{flex:1}
-@media (min-width:700px){
-  .voile{align-items:center}
-  .modale{border-radius:10px;border:1px solid var(--line-fort);max-height:86vh}
+@media (min-width:640px){
+  .voile{align-items:center;padding:20px}
+  .modale{border-radius:14px;border:1px solid var(--line-fort);max-height:86vh}
 }
-
-/* Liste détaillée d'une journée */
 .detail-liste{border-top:1px solid var(--line)}
-.detail-liste .l{display:flex;justify-content:space-between;gap:10px;padding:7px 0;border-bottom:1px solid var(--line);font-size:13.5px}
+.detail-liste .l{display:flex;justify-content:space-between;gap:10px;padding:9px 0;border-bottom:1px solid var(--line);font-size:13.5px}
 .detail-liste .l .q{font-family:"IBM Plex Mono",monospace;font-size:11.5px;color:var(--ink-3)}
 
-/* --- 16. Mes aliments ---------------------------------------------------- */
-.ali{display:flex;align-items:center;gap:10px;padding:9px 16px;border-bottom:1px solid var(--line)}
+/* --- 16. Mes aliments --------------------------------------------------- */
+.ali{display:flex;align-items:center;gap:10px;padding:10px 14px}
+.ali + .ali{border-top:1px solid var(--line)}
 .ali .info{flex:1;min-width:0}
 .ali .info .n{font-size:14px;font-weight:500;overflow:hidden;text-overflow:ellipsis;white-space:nowrap}
 .ali.masque{opacity:.5}
 .ali .outils{display:flex;gap:4px;flex:none}
-.ali .outils button{width:38px;height:38px;border:1px solid var(--line);border-radius:var(--r);background:var(--surface);font-size:12px;display:flex;align-items:center;justify-content:center;color:var(--ink-2)}
-.ali .outils button:hover{background:var(--surface-2);color:var(--ink)}
+.ali .outils button{width:40px;height:40px;border:1px solid var(--line);border-radius:var(--r-s);background:var(--surface);
+                    font-size:13px;display:flex;align-items:center;justify-content:center;color:var(--ink-2);
+                    transition:background .14s ease,color .14s ease}
+.ali .outils button:hover{background:var(--surface-3);color:var(--ink)}
 .unites-edit{display:flex;flex-direction:column;gap:6px}
 .unite-l{display:flex;gap:6px;align-items:center}
 .unite-l input:first-child{flex:2} .unite-l input:nth-child(2){flex:1}
-.etiquettes{display:flex;flex-wrap:wrap;gap:6px}
-.tag{display:inline-flex;align-items:center;gap:6px;padding:5px 9px;border:1px solid var(--line-fort);border-radius:99px;font-size:12.5px;background:var(--surface-2)}
-.tag button{border:0;background:none;color:var(--ink-3);font-size:14px;line-height:1;padding:0 0 0 2px}
-.tag button:hover{color:var(--alerte)}
 
-/* --- 17. Onboarding ------------------------------------------------------ */
+/* --- 17. Onboarding ----------------------------------------------------- */
 .onb{position:fixed;inset:0;z-index:80;background:var(--bg);overflow:auto}
-.onb-inner{max-width:560px;margin:0 auto;padding:22px 18px calc(30px + env(safe-area-inset-bottom,0px));display:flex;flex-direction:column;gap:18px}
-.encart{border:1px solid var(--line);border-radius:var(--r);background:var(--surface);padding:13px 14px}
-.encart.resultat{border-color:var(--line-fort)}
-.avertissement{font-size:12.5px;color:var(--ink-2);border-left:2px solid var(--line-fort);padding-left:10px}
-.cibles-apercu{display:grid;grid-template-columns:repeat(4,1fr);gap:10px;margin-top:10px}
+.onb-inner{max-width:560px;margin:0 auto;padding:26px 14px calc(30px + env(safe-area-inset-bottom,0px));
+           display:flex;flex-direction:column;gap:16px}
+.encart{border:1px solid var(--line);border-radius:var(--r);background:var(--surface);padding:14px 15px;box-shadow:var(--ombre-1)}
+.avertissement{font-size:12.5px;color:var(--ink-2);border-left:2px solid var(--line-fort);padding-left:11px;line-height:1.55}
+.cibles-apercu{display:grid;grid-template-columns:repeat(4,1fr);gap:10px;margin-top:11px}
 .cibles-apercu .c{display:flex;flex-direction:column;gap:1px}
-.cibles-apercu .c .nb{font-size:20px}
+.cibles-apercu .c .nb{font-size:21px}
 
-/* --- 18. Divers ---------------------------------------------------------- */
-.entrefilet{font-size:12.5px;color:var(--ink-3);line-height:1.5}
+/* --- 18. Divers --------------------------------------------------------- */
+.entrefilet{font-size:12.5px;color:var(--ink-3);line-height:1.55;margin:0}
 .rangee{display:flex;align-items:center;justify-content:space-between;gap:10px}
 .pile{display:flex;flex-direction:column;gap:10px}
 .toast{
   position:fixed;left:50%;transform:translateX(-50%);
-  bottom:calc(var(--nav-h) + 76px + env(safe-area-inset-bottom,0px));z-index:90;
-  background:var(--ink);color:var(--surface);padding:9px 14px;border-radius:var(--r);
-  font-size:13px;font-weight:500;box-shadow:var(--ombre);max-width:88vw;text-align:center;
+  bottom:calc(var(--nav-h) + 78px + env(safe-area-inset-bottom,0px));z-index:90;
+  background:var(--ink);color:var(--surface);padding:10px 16px;border-radius:99px;
+  font-size:13px;font-weight:500;box-shadow:var(--ombre-2);max-width:88vw;text-align:center;
+  animation:monte .22s cubic-bezier(.22,.9,.3,1);
 }
 hr.sep{border:0;border-top:1px solid var(--line);margin:0}
+
+/* --- 19. Petits écrans -------------------------------------------------- */
+@media (max-width:359px){
+  body{font-size:14.5px}
+  .app{padding-inline:7px}
+  .carte-jour{padding:12px}
+  .anneau{width:88px;height:88px}
+  .anneau-centre .nb{font-size:25px}
+  .bloc-kcal{gap:11px}
+  .ligne{padding:10px 11px}
+  input.qte{width:56px}
+  select.unite{min-width:82px}
+  .tete-cat,.ali{padding-inline:11px}
+}
+
+/* --- 20. Écrans larges : la barre d'onglets passe en haut --------------- */
+@media (min-width:900px){
+  .app{max-width:900px;padding:calc(var(--nav-h) + 14px) 14px 30px}
+  .nav{
+    top:0;bottom:auto;max-width:none;border-top:0;border-bottom:1px solid var(--line);
+    grid-template-columns:repeat(4,minmax(0,150px));justify-content:center;
+    padding:7px 10px;
+  }
+  .nav button{min-height:42px;flex-direction:row;gap:8px;font-size:13.5px}
+  .nav button .marque{width:12px;height:12px;border-radius:3px}
+  .nav button[aria-current="page"] .marque{width:12px}
+  .entete{top:calc(var(--nav-h) - 4px)}
+  .actions-jour{bottom:14px}
+  .toast{bottom:84px}
+  .bloc-kcal{gap:24px}
+  .col-macros{max-width:560px}
+  .anneau{width:124px;height:124px}
+  .anneau-centre .nb{font-size:35px}
+  .col-macros{gap:11px}
+  .macro-l .nom{font-size:13px}
+  .ligne{
+    grid-template-columns:minmax(0,1fr) auto minmax(150px,auto) auto;
+    grid-template-areas:"ident saisie macros kcal";gap:0 14px;padding:9px 15px;
+  }
+  .saisie{margin-top:0}
+  .macros-ligne{margin-top:0;justify-content:flex-end}
+  select.unite{flex:none;min-width:104px;margin-right:0}
+  .cal-entetes,.cal{gap:6px}
+  .case .k{font-size:15px}
+  .graph{padding:16px 18px 12px}
+  .barres{height:150px}
+}
+@media (min-width:1180px){
+  .app{max-width:1060px}
+}
 </style>
 </head>
 <body>
@@ -401,54 +490,65 @@ hr.sep{border:0;border-top:1px solid var(--line);margin:0}
   <section class="ecran actif" id="ecran-journal" aria-labelledby="t-journal">
     <h1 class="sr" id="t-journal">Journal du jour</h1>
 
-    <!-- En-tête collant : totaux, barre empilée, macros, recherche -->
     <div class="entete">
-      <div class="entete-haut">
-        <div>
-          <div class="etiq">Calories du jour</div>
-          <div class="kcal-jour">
-            <span class="nb val" id="j-kcal">0</span>
-            <span class="sur" id="j-kcal-cible">/ 0</span>
+      <div class="carte carte-jour">
+
+        <div class="jour-tete">
+          <div>
+            <div class="date" id="j-date">—</div>
+            <div class="sous" id="j-compte">aucun aliment saisi</div>
           </div>
-          <div class="entrefilet" id="j-reste">Aucune cible définie</div>
+          <div class="puces">
+            <span class="pastille serie" id="j-serie" hidden></span>
+            <span class="pastille" id="j-etat">non enregistré</span>
+          </div>
         </div>
-        <div class="jour-meta">
-          <div class="etiq" id="j-date">—</div>
-          <span class="pastille off" id="j-etat">non enregistré</span>
-          <span class="etiq" id="j-compte">0 aliment</span>
-        </div>
-      </div>
 
-      <div class="barre-empilee" id="j-barre" role="img" aria-label="Répartition des calories par macronutriment">
-        <span class="seg-prot" style="width:0%"></span>
-        <span class="seg-gluc" style="width:0%"></span>
-        <span class="seg-lip" style="width:0%"></span>
-      </div>
+        <div class="bloc-kcal">
+          <div class="anneau" id="j-anneau">
+            <svg viewBox="0 0 120 120" aria-hidden="true">
+              <circle class="piste" cx="60" cy="60" r="52"></circle>
+              <circle class="trait" id="j-trait" cx="60" cy="60" r="52"
+                      stroke-dasharray="326.7" stroke-dashoffset="326.7"></circle>
+            </svg>
+            <div class="anneau-centre">
+              <span class="nb" id="j-kcal">0</span>
+              <span class="etiq" id="j-kcal-cible">/ 0</span>
+            </div>
+          </div>
 
-      <div class="macros">
-        <div class="macro">
-          <div class="tete"><i class="puce p"></i><span class="etiq">Protéines</span></div>
-          <div class="valeur"><span class="q"><span class="nb" id="j-prot">0</span><span class="u">g</span></span><span class="pct" id="j-prot-pct">0 %</span></div>
-          <div class="jauge"><i class="p" id="j-prot-jauge" style="width:0%"></i></div>
-          <div class="etiq" id="j-prot-cible">cible —</div>
-        </div>
-        <div class="macro">
-          <div class="tete"><i class="puce g"></i><span class="etiq">Glucides</span></div>
-          <div class="valeur"><span class="q"><span class="nb" id="j-gluc">0</span><span class="u">g</span></span><span class="pct" id="j-gluc-pct">0 %</span></div>
-          <div class="jauge"><i class="g" id="j-gluc-jauge" style="width:0%"></i></div>
-          <div class="etiq" id="j-gluc-cible">cible —</div>
-        </div>
-        <div class="macro">
-          <div class="tete"><i class="puce l"></i><span class="etiq">Lipides</span></div>
-          <div class="valeur"><span class="q"><span class="nb" id="j-lip">0</span><span class="u">g</span></span><span class="pct" id="j-lip-pct">0 %</span></div>
-          <div class="jauge"><i class="l" id="j-lip-jauge" style="width:0%"></i></div>
-          <div class="etiq" id="j-lip-cible">cible —</div>
-        </div>
-      </div>
+          <div class="col-macros">
+            <div class="reste" id="j-reste">Aucune cible définie</div>
 
-      <div class="ligne-fibres">
-        <span class="etiq">Fibres</span>
-        <span><span class="nb" id="j-fibres" style="font-size:15px">0</span> <span class="tres-muet" style="font-size:11px">g</span></span>
+            <div class="macro-l" id="j-m-prot">
+              <i class="puce p"></i>
+              <span class="nom">Protéines</span>
+              <span class="val"><b id="j-prot">0</b> / <span id="j-prot-cible">0</span> g</span>
+              <div class="jauge"><i class="p" id="j-prot-jauge" style="width:0%"></i></div>
+            </div>
+            <div class="macro-l" id="j-m-gluc">
+              <i class="puce g"></i>
+              <span class="nom">Glucides</span>
+              <span class="val"><b id="j-gluc">0</b> / <span id="j-gluc-cible">0</span> g</span>
+              <div class="jauge"><i class="g" id="j-gluc-jauge" style="width:0%"></i></div>
+            </div>
+            <div class="macro-l" id="j-m-lip">
+              <i class="puce l"></i>
+              <span class="nom">Lipides</span>
+              <span class="val"><b id="j-lip">0</b> / <span id="j-lip-cible">0</span> g</span>
+              <div class="jauge"><i class="l" id="j-lip-jauge" style="width:0%"></i></div>
+            </div>
+          </div>
+        </div>
+
+        <div class="pied-jour">
+          <div class="barre-empilee" id="j-barre" role="img" aria-label="Répartition des calories par macronutriment">
+            <span class="seg-prot" style="width:0%"></span>
+            <span class="seg-gluc" style="width:0%"></span>
+            <span class="seg-lip" style="width:0%"></span>
+          </div>
+          <div class="fibres">Fibres <b id="j-fibres">0</b> g</div>
+        </div>
       </div>
 
       <div class="recherche">
@@ -458,19 +558,17 @@ hr.sep{border:0;border-top:1px solid var(--line);margin:0}
       </div>
     </div>
 
-    <!-- Liste des aliments par catégorie -->
     <div id="j-liste"></div>
 
-    <!-- Actions principales, atteignables au pouce -->
     <div class="actions-jour">
       <button class="btn primaire" id="j-enregistrer">Enregistrer</button>
-      <button class="btn petit icone" id="j-menu" aria-label="Autres actions du journal" title="Autres actions">···</button>
+      <button class="btn icone" id="j-menu" aria-label="Autres actions du journal" title="Autres actions">···</button>
     </div>
   </section>
 
   <!-- ===================== ÉCRAN 2 : HISTORIQUE ========================== -->
   <section class="ecran" id="ecran-historique" aria-labelledby="t-histo">
-    <div class="bloc">
+    <div class="carte carte-p">
       <div class="titre-bloc">
         <h1 id="t-histo">Historique</h1>
         <span class="etiq" id="h-portee">—</span>
@@ -478,13 +576,13 @@ hr.sep{border:0;border-top:1px solid var(--line);margin:0}
       <p class="entrefilet">Moyennes calculées sur les journées enregistrées.</p>
     </div>
     <div class="stats" id="h-stats"></div>
-    <div class="graph" id="h-graph"></div>
-    <div id="h-calendrier"></div>
+    <div class="carte graph" id="h-graph"></div>
+    <div class="carte" id="h-calendrier"></div>
   </section>
 
   <!-- ===================== ÉCRAN 3 : MES ALIMENTS ======================== -->
   <section class="ecran" id="ecran-aliments" aria-labelledby="t-ali">
-    <div class="bloc">
+    <div class="carte carte-p">
       <div class="titre-bloc">
         <h1 id="t-ali">Mes aliments</h1>
         <span class="etiq" id="a-compte">0</span>
@@ -496,7 +594,7 @@ hr.sep{border:0;border-top:1px solid var(--line);margin:0}
         <button class="btn" id="a-donnees">Données</button>
       </div>
     </div>
-    <div class="recherche" style="border-top:0">
+    <div class="recherche">
       <label class="sr" for="a-recherche">Filtrer mes aliments</label>
       <input type="text" id="a-recherche" placeholder="Filtrer…" autocomplete="off" spellcheck="false">
     </div>
@@ -505,11 +603,11 @@ hr.sep{border:0;border-top:1px solid var(--line);margin:0}
 
   <!-- ===================== ÉCRAN 4 : PROFIL ============================== -->
   <section class="ecran" id="ecran-profil" aria-labelledby="t-profil">
-    <div class="bloc">
+    <div class="carte carte-p">
       <div class="titre-bloc"><h1 id="t-profil">Profil et cibles</h1></div>
       <p class="entrefilet">Les cibles sont des estimations de départ. Ajustez-les selon l'évolution réelle de votre poids sur deux à trois semaines.</p>
     </div>
-    <div id="p-contenu"></div>
+    <div id="p-contenu" class="pile"></div>
   </section>
 
   <!-- ===================== BARRE D'ONGLETS ============================== -->
@@ -609,7 +707,7 @@ function libelleCourt(iso){
 function indexLundi(d){ return (d.getDay() + 6) % 7; }
 
 /** Version affichée dans l'écran Profil : sert à vérifier ce qui est en ligne. */
-const VERSION = '3';
+const VERSION = '4';
 
 /* =========================================================================
    2. MODULE DONNÉES — constantes du domaine
@@ -674,332 +772,565 @@ const CATEGORIES_DEFAUT = [
  */
 const TABLE_ALIMENTS = {
   'Viandes et volailles': [
-    ['Blanc de poulet cru',108,23,0,1.7,0,[['filet',150]]],
-    ['Cuisse de poulet crue sans peau',121,19,0,5,0,[['cuisse',130]]],
-    ['Poulet rôti avec peau',200,26,0,11,0],
-    ['Escalope de dinde crue',104,23.5,0,1.1,0,[['escalope',120]]],
-    ['Steak haché 5 % cru',121,21,0,4.5,0,[['steak',100]]],
-    ['Steak haché 15 % cru',215,19,0,15,0,[['steak',100]]],
-    ['Steak haché 20 % cru',255,18,0,20,0,[['steak',100]]],
+    ['Andouillette',250,17,2,20,0,[['pièce',150]]],
+    ['Bacon grillé',300,28,1,20,0,[['tranche',15]]],
     ['Bavette de bœuf crue',160,21,0,8,0],
-    ['Rumsteck cru',130,22,0,4.5,0],
-    ['Entrecôte crue',240,19,0,18,0],
-    ['Filet mignon de porc cru',116,22,0,3,0],
+    ['Blanc de poulet cru',108,23,0,1.7,0,[['filet',150]]],
+    ['Blanc de poulet cuit',150,30,0,3,0,[['filet',130]]],
+    ['Boudin noir',380,14,2,35,0],
+    ['Brochette de poulet',140,25,2,3,0,[['brochette',110]]],
+    ['Carpaccio de bœuf',130,21,0,5,0,[['portion',100]]],
+    ['Chorizo',450,24,2,38,0,[['tranche',10]]],
+    ['Coppa',350,28,0,26,0,[['tranche',10]]],
+    ['Cordon bleu',250,16,15,14,1,[['pièce',100]]],
+    ['Cuisse de poulet crue sans peau',121,19,0,5,0,[['cuisse',130]]],
     ['Côte de porc crue',175,20,0,10,0,[['côte',150]]],
-    ['Rôti de porc cuit',180,25,0,9,0,[['tranche',60]]],
-    ['Lardons fumés',250,16,1,20,0,[['portion',50]]],
+    ['Entrecôte crue',240,19,0,18,0],
+    ['Escalope de dinde crue',104,23.5,0,1.1,0,[['escalope',120]]],
+    ['Escalope de veau crue',110,21,0,2.5,0,[['escalope',120]]],
+    ['Filet mignon de porc cru',116,22,0,3,0],
+    ['Foie de volaille cru',125,20,1,5,0],
+    ['Gigot d’agneau cru',160,20,0,9,0],
     ['Jambon blanc découenné',117,20,0.8,3.6,0,[['tranche',40]]],
     ['Jambon cru',240,26,0.5,15,0,[['tranche',25]]],
-    ['Bacon grillé',300,28,1,20,0,[['tranche',15]]],
-    ['Chorizo',450,24,2,38,0,[['tranche',10]]],
-    ['Saucisson sec',460,25,2,38,0,[['tranche',8]]],
-    ['Merguez crue',300,15,2,25,0,[['pièce',70]]],
-    ['Saucisse de Strasbourg',280,12,1,25,0,[['pièce',50]]],
-    ['Escalope de veau crue',110,21,0,2.5,0,[['escalope',120]]],
-    ['Gigot d’agneau cru',160,20,0,9,0],
+    ['Jambon de dinde',105,19,1,2.5,0,[['tranche',40]]],
+    ['Knacki',270,11,2,24,0,[['pièce',35]]],
+    ['Lapin cru',135,21,0,5.5,0],
+    ['Lardons fumés',250,16,1,20,0,[['portion',50]]],
     ['Magret de canard cru',200,19,0,14,0,[['magret',300]]],
-    ['Foie de volaille cru',125,20,1,5,0],
-    ['Viande hachée de dinde 5 %',130,21,0,5,0,[['steak',100]]],
-    ['Boudin noir',380,14,2,35,0],
+    ['Merguez crue',300,15,2,25,0,[['pièce',70]]],
+    ['Mortadelle',310,15,2,27,0,[['tranche',20]]],
+    ['Nuggets de poulet',280,15,17,17,1,[['pièce',20]]],
+    ['Poulet grillé sans peau',165,31,0,4,0],
+    ['Poulet pané',240,17,15,13,1,[['pièce',100]]],
+    ['Poulet rôti avec peau',200,26,0,11,0],
     ['Pâté de campagne',320,14,2,28,0,[['tranche',30]]],
+    ['Rillettes',420,16,0,40,0,[['cuillère à soupe',25]]],
+    ['Rumsteck cru',130,22,0,4.5,0],
+    ['Rôti de bœuf cuit',175,30,0,6,0,[['tranche',60]]],
+    ['Rôti de porc cuit',180,25,0,9,0,[['tranche',60]]],
+    ['Salami',420,22,1,37,0,[['tranche',8]]],
+    ['Saucisse de Strasbourg',280,12,1,25,0,[['pièce',50]]],
+    ['Saucisse de Toulouse',290,14,1,26,0,[['pièce',100]]],
+    ['Saucisson sec',460,25,2,38,0,[['tranche',8]]],
+    ['Steak de cheval',110,21,0,2.5,0,[['steak',120]]],
+    ['Steak haché 15 % cru',215,19,0,15,0,[['steak',100]]],
+    ['Steak haché 20 % cru',255,18,0,20,0,[['steak',100]]],
+    ['Steak haché 5 % cru',121,21,0,4.5,0,[['steak',100]]],
+    ['Tartare de bœuf',150,21,1,7,0,[['portion',150]]],
+    ['Terrine de campagne',300,13,3,26,0,[['tranche',30]]],
+    ['Viande hachée de dinde 5 %',130,21,0,5,0,[['steak',100]]],
   ],
   'Poissons et fruits de mer': [
-    ['Saumon cru',180,20,0,11,0,[['pavé',130]]],
-    ['Saumon fumé',200,22,0,12,0,[['tranche',30]]],
-    ['Truite crue',130,20,0,5.5,0,[['filet',120]]],
-    ['Cabillaud cru',76,17.5,0,0.7,0,[['dos',130]]],
-    ['Colin lieu cru',80,18,0,0.8,0,[['filet',120]]],
-    ['Merlu cru',85,18,0,1.2,0],
-    ['Sole crue',80,17,0,1.2,0],
-    ['Dorade crue',110,20,0,3.5,0],
-    ['Bar cru',100,19,0,2.5,0],
-    ['Thon rouge cru',145,23,0,5,0],
-    ['Thon au naturel égoutté',116,26,0,1.2,0,[['boîte',112]]],
-    ['Thon à l’huile égoutté',190,25,0,10,0,[['boîte',112]]],
-    ['Sardines à l’huile égouttées',220,24,0,13,0,[['boîte',90]]],
-    ['Sardines au naturel',165,25,0,7,0,[['boîte',90]]],
-    ['Maquereau cru',190,19,0,12,0,[['filet',100]]],
-    ['Maquereau au vin blanc',200,18,2,13,0,[['boîte',110]]],
-    ['Hareng fumé',210,20,0,14,0],
     ['Anchois à l’huile',210,25,0,12,0,[['filet',5]]],
-    ['Crevettes cuites',100,21,0,1.5,0,[['portion',100]]],
-    ['Gambas crues',90,19,0,1,0,[['pièce',20]]],
-    ['Moules cuites',115,20,4,2.5,0,[['portion',200]]],
-    ['Huîtres',70,9,4,2,0,[['pièce',20]]],
-    ['Noix de Saint-Jacques',85,17,2,0.8,0,[['pièce',20]]],
+    ['Bar cru',100,19,0,2.5,0],
+    ['Brandade de morue',180,10,12,10,1,[['portion',200]]],
+    ['Bulots cuits',110,21,2,1.5,0],
+    ['Bâtonnets de poisson panés',210,12,18,10,1,[['pièce',30]]],
+    ['Cabillaud cru',76,17.5,0,0.7,0,[['dos',130]]],
     ['Calamar cru',80,16,1,1.2,0],
+    ['Colin lieu cru',80,18,0,0.8,0,[['filet',120]]],
+    ['Crabe cuit',85,18,0,1,0],
+    ['Crevettes cuites',100,21,0,1.5,0,[['portion',100]]],
+    ['Dorade crue',110,20,0,3.5,0],
+    ['Encornet cuit',95,18,2,1.5,0],
+    ['Espadon cru',120,20,0,4,0],
+    ['Filet de poisson pané',200,13,17,9,1,[['pièce',100]]],
+    ['Gambas crues',90,19,0,1,0,[['pièce',20]]],
+    ['Hareng fumé',210,20,0,14,0],
+    ['Huîtres',70,9,4,2,0,[['pièce',20]]],
+    ['Langoustines cuites',95,19,0,1.5,0,[['pièce',25]]],
+    ['Lieu noir cru',80,18,0,1,0,[['filet',120]]],
+    ['Maquereau au vin blanc',200,18,2,13,0,[['boîte',110]]],
+    ['Maquereau cru',190,19,0,12,0,[['filet',100]]],
+    ['Merlu cru',85,18,0,1.2,0],
+    ['Moules cuites',115,20,4,2.5,0,[['portion',200]]],
+    ['Noix de Saint-Jacques',85,17,2,0.8,0,[['pièce',20]]],
+    ['Poisson blanc vapeur',95,21,0,1,0,[['filet',130]]],
     ['Poulpe cuit',110,22,2,2,0],
+    ['Rouget cru',105,19,0,3,0],
+    ['Sardine fraîche',180,21,0,10,0,[['pièce',60]]],
+    ['Sardines au naturel',165,25,0,7,0,[['boîte',90]]],
+    ['Sardines à l’huile égouttées',220,24,0,13,0,[['boîte',90]]],
+    ['Saumon cru',180,20,0,11,0,[['pavé',130]]],
+    ['Saumon cuit',210,24,0,13,0,[['pavé',120]]],
+    ['Saumon fumé',200,22,0,12,0,[['tranche',30]]],
+    ['Sole crue',80,17,0,1.2,0],
     ['Surimi',95,9,12,1,0,[['bâtonnet',17]]],
-    ['Œufs de lompe',110,13,2,5,0,[['cuillère à soupe',15]]],
     ['Tarama',480,8,6,48,0,[['cuillère à soupe',20]]],
+    ['Thon au naturel égoutté',116,26,0,1.2,0,[['boîte',112]]],
+    ['Thon cuit',180,29,0,6,0,[['steak',120]]],
+    ['Thon rouge cru',145,23,0,5,0],
+    ['Thon à l’huile égoutté',190,25,0,10,0,[['boîte',112]]],
+    ['Truite crue',130,20,0,5.5,0,[['filet',120]]],
+    ['Truite fumée',175,22,0,9,0,[['tranche',30]]],
+    ['Œufs de lompe',110,13,2,5,0,[['cuillère à soupe',15]]],
   ],
   'Œufs et protéines en poudre': [
-    ['Œuf entier',145,12.7,0.3,10.3,0,[['pièce',50]]],
+    ['Barre de céréales',400,6,65,12,4,[['barre',25]]],
+    ['Barre protéinée',350,33,32,10,5,[['barre',60]]],
+    ['BCAA en poudre',10,2,0,0,0,[['dose',10]]],
     ['Blanc d’œuf',48,10.7,0.3,0.2,0,[['pièce',33]]],
+    ['Caséine (poudre)',360,75,6,3,0,[['dose',30]]],
+    ['Créatine monohydrate',0,0,0,0,0,[['dose',5]]],
+    ['Flan protéiné',80,12,5,1,0,[['pot',150]]],
+    ['Gainer (poudre)',380,25,60,5,2,[['dose',100]]],
     ['Jaune d’œuf',320,16,0.6,28,0,[['pièce',17]]],
-    ['Œuf dur',155,13,1,11,0,[['pièce',50]]],
     ['Omelette nature',180,13,1,14,0],
+    ['Protéine de pois (poudre)',370,78,5,5,2,[['dose',30]]],
     ['Whey (poudre)',380,78,8,5,0,[['dose',30]]],
     ['Whey isolate (poudre)',370,85,3,2,0,[['dose',30]]],
-    ['Caséine (poudre)',360,75,6,3,0,[['dose',30]]],
-    ['Protéine de pois (poudre)',370,78,5,5,2,[['dose',30]]],
-    ['Gainer (poudre)',380,25,60,5,2,[['dose',100]]],
-    ['Barre protéinée',350,33,32,10,5,[['barre',60]]],
+    ['Œuf au plat',195,13,0.5,16,0,[['pièce',55]]],
+    ['Œuf dur',155,13,1,11,0,[['pièce',50]]],
+    ['Œuf entier',145,12.7,0.3,10.3,0,[['pièce',50]]],
+    ['Œuf poché',145,13,0.5,10,0,[['pièce',50]]],
+    ['Œufs brouillés',175,12,1,13,0,[['portion',120]]],
   ],
   'Produits laitiers': [
+    ['Beurre',750,0.7,0.6,82,0,[['noisette',10]]],
+    ['Beurre allégé 40 %',400,3,1,40,0,[['noisette',10]]],
+    ['Bleu d’Auvergne',350,20,1,29,0,[['portion',30]]],
+    ['Boisson au soja nature',40,3.5,1,2,0,[['verre',200]]],
+    ['Boisson à l’avoine',45,0.8,7,1.5,0,[['verre',200]]],
+    ['Brie',330,19,1,28,0,[['portion',30]]],
+    ['Camembert',290,20,1,23,0,[['portion',30]]],
+    ['Cheddar',400,25,1,33,0,[['tranche',25]]],
+    ['Chèvre frais',210,12,3,16,0,[['portion',30]]],
+    ['Chèvre sec',380,25,2,30,0,[['portion',30]]],
+    ['Comté',410,27,0,33,0,[['portion',30]]],
+    ['Cottage cheese',100,12,3,4,0,[['portion',100]]],
+    ['Crème dessert vanille',130,3,20,4,0,[['pot',100]]],
+    ['Crème fraîche 30 %',290,2.5,3,30,0,[['cuillère à soupe',15]]],
+    ['Crème légère 15 %',155,3,4,15,0,[['cuillère à soupe',15]]],
+    ['Emmental',380,28,1,29.5,0,[['tranche',25]]],
+    ['Faisselle',75,7,3,4,0,[['portion',100]]],
+    ['Feta',265,14,1.5,22,0,[['portion',30]]],
     ['Fromage blanc 0 %',47,8,4.5,0.2,0,[['portion',100]]],
     ['Fromage blanc 3 %',76,7.5,4.5,3,0,[['portion',100]]],
     ['Fromage blanc 8 %',115,7,4,8,0,[['portion',100]]],
-    ['Skyr nature',63,11,4,0.2,0,[['pot',150]]],
-    ['Yaourt nature',61,3.5,4.7,3.2,0,[['pot',125]]],
-    ['Yaourt grec',115,5,4,9,0,[['pot',150]]],
-    ['Yaourt 0 % aux fruits',50,4,8,0.1,0,[['pot',125]]],
-    ['Petit-suisse 20 %',145,9,3,10,0,[['pièce',60]]],
-    ['Cottage cheese',100,12,3,4,0,[['portion',100]]],
-    ['Ricotta',145,9,3,11,0,[['portion',100]]],
-    ['Lait entier',65,3.2,4.8,3.6,0,[['verre',200]]],
-    ['Lait demi-écrémé',46,3.2,4.8,1.6,0,[['verre',200]]],
-    ['Lait écrémé',34,3.4,5,0.1,0,[['verre',200]]],
-    ['Lait d’amande sans sucre',15,0.5,0.3,1.2,0,[['verre',200]]],
-    ['Boisson au soja nature',40,3.5,1,2,0,[['verre',200]]],
-    ['Boisson à l’avoine',45,0.8,7,1.5,0,[['verre',200]]],
-    ['Crème fraîche 30 %',290,2.5,3,30,0,[['cuillère à soupe',15]]],
-    ['Crème légère 15 %',155,3,4,15,0,[['cuillère à soupe',15]]],
-    ['Beurre',750,0.7,0.6,82,0,[['noisette',10]]],
-    ['Beurre allégé 40 %',400,3,1,40,0,[['noisette',10]]],
-    ['Emmental',380,28,1,29.5,0,[['tranche',25]]],
-    ['Comté',410,27,0,33,0,[['portion',30]]],
-    ['Parmesan',400,33,0,28,0,[['cuillère à soupe',6]]],
-    ['Mozzarella',250,18,1.5,19,0,[['boule',125]]],
-    ['Feta',265,14,1.5,22,0,[['portion',30]]],
-    ['Chèvre frais',210,12,3,16,0,[['portion',30]]],
-    ['Camembert',290,20,1,23,0,[['portion',30]]],
-    ['Roquefort',370,19,2,31,0,[['portion',25]]],
-    ['Raclette',350,23,0,28,0,[['tranche',30]]],
-    ['Mascarpone',400,4,4,41,0,[['cuillère à soupe',20]]],
+    ['Fromage fondu en portion',270,12,7,22,0,[['portion',17]]],
+    ['Fromage frais à l’ail et fines herbes',400,7,3,40,0,[['portion',25]]],
+    ['Fromage râpé',390,26,2,31,0,[['poignée',30]]],
+    ['Fromage à pâte pressée en boule',300,23,1,23,0,[['pièce',20]]],
     ['Fromage à tartiner allégé',130,9,5,8,0,[['portion',30]]],
+    ['Gouda',360,25,2,28,0,[['tranche',25]]],
+    ['Kéfir nature',55,3.3,4.5,2.5,0,[['verre',200]]],
+    ['Lait concentré sucré',330,8,55,8,0,[['cuillère à soupe',20]]],
+    ['Lait demi-écrémé',46,3.2,4.8,1.6,0,[['verre',200]]],
+    ['Lait d’amande sans sucre',15,0.5,0.3,1.2,0,[['verre',200]]],
+    ['Lait en poudre écrémé',360,35,52,1,0,[['cuillère à soupe',10]]],
+    ['Lait entier',65,3.2,4.8,3.6,0,[['verre',200]]],
+    ['Lait écrémé',34,3.4,5,0.1,0,[['verre',200]]],
+    ['Mascarpone',400,4,4,41,0,[['cuillère à soupe',20]]],
+    ['Mozzarella',250,18,1.5,19,0,[['boule',125]]],
+    ['Parmesan',400,33,0,28,0,[['cuillère à soupe',6]]],
+    ['Petit-suisse 20 %',145,9,3,10,0,[['pièce',60]]],
+    ['Raclette',350,23,0,28,0,[['tranche',30]]],
+    ['Reblochon',330,20,1,28,0,[['portion',30]]],
+    ['Ricotta',145,9,3,11,0,[['portion',100]]],
+    ['Roquefort',370,19,2,31,0,[['portion',25]]],
+    ['Skyr aux fruits',75,10,8,0.3,0,[['pot',150]]],
+    ['Skyr nature',63,11,4,0.2,0,[['pot',150]]],
+    ['Yaourt 0 % aux fruits',50,4,8,0.1,0,[['pot',125]]],
+    ['Yaourt au soja nature',50,4,2,2.5,0,[['pot',125]]],
+    ['Yaourt grec',115,5,4,9,0,[['pot',150]]],
+    ['Yaourt nature',61,3.5,4.7,3.2,0,[['pot',125]]],
+    ['Yaourt à boire',70,3,11,1.5,0,[['bouteille',180]]],
   ],
   'Féculents et céréales': [
+    ['Blé précuit',340,12,68,1.5,4,[['portion',60]]],
+    ['Boulgour cuit',130,4.5,26,0.4,4,[['portion',200]]],
+    ['Corn flakes',380,7,84,1,3,[['portion',30]]],
+    ['Céréales chocolatées',400,7,75,7,4,[['portion',40]]],
+    ['Flocons d’avoine',372,13,60,7,9,[['portion',60],['cuillère à soupe',12]]],
+    ['Frites au four',190,3,28,7,3,[['portion',150]]],
+    ['Frites de friture',290,3.5,36,14,3,[['portion',150]]],
+    ['Galette de riz soufflé',385,8,81,2.8,2,[['pièce',9]]],
+    ['Gnocchis',170,4,33,2,2,[['portion',250]]],
+    ['Igname cuit',115,1.5,27,0.2,4,[['portion',200]]],
+    ['Manioc cuit',130,1,30,0.3,1.8,[['portion',200]]],
+    ['Millet cuit',120,3.5,23,1,1.3,[['portion',200]]],
+    ['Muesli sans sucre ajouté',380,11,60,9,8,[['portion',50]]],
+    ['Nouilles chinoises cuites',140,4.5,28,0.6,1.5,[['portion',200]]],
+    ['Nouilles ramen cuites',140,5,27,1,1.5,[['portion',200]]],
+    ['Nouilles soba cuites',100,5,21,0.1,1.5,[['portion',200]]],
+    ['Orge perlé cuit',125,2.3,28,0.4,3.8,[['portion',200]]],
+    ['Patate douce cuite',90,1.6,20,0.1,3,[['pièce',150]]],
+    ['Polenta cuite',85,2,18,0.4,1,[['portion',200]]],
+    ['Pomme de terre cuite',87,2,18,0.1,2,[['pièce',150]]],
+    ['Pommes de terre sautées',180,2.5,22,9,2,[['portion',200]]],
+    ['Purée de pomme de terre',85,2,13,2.5,1.5,[['portion',200]]],
+    ['Purée instantanée préparée',80,2,13,2,1.2,[['portion',200]]],
+    ['Pâtes complètes crues',350,13,65,2.5,7,[['portion',80]]],
+    ['Pâtes complètes cuites',145,6,27,1.2,4,[['portion',220]]],
+    ['Pâtes crues',355,12,71,1.5,3,[['portion',80]]],
+    ['Pâtes cuites',158,5.5,30,0.9,2.4,[['portion',220]]],
+    ['Pâtes fraîches cuites',165,6,31,1.5,2,[['portion',220]]],
+    ['Quinoa cru',370,14,58,6,7,[['portion',70]]],
+    ['Quinoa cuit',120,4.4,21,1.9,2.8,[['portion',200]]],
+    ['Raviolis frais',180,8,26,5,2,[['portion',250]]],
+    ['Riz basmati cuit',130,3,28,0.4,0.6,[['portion',200]]],
     ['Riz blanc cru',350,7,78,0.9,1.3,[['portion',80]]],
     ['Riz blanc cuit',130,2.6,28,0.3,0.5,[['portion',200]]],
     ['Riz complet cru',350,8,72,2.5,3.5,[['portion',80]]],
     ['Riz complet cuit',120,2.7,25,1,1.5,[['portion',200]]],
-    ['Riz basmati cuit',130,3,28,0.4,0.6,[['portion',200]]],
-    ['Pâtes crues',355,12,71,1.5,3,[['portion',80]]],
-    ['Pâtes cuites',158,5.5,30,0.9,2.4,[['portion',220]]],
-    ['Pâtes complètes crues',350,13,65,2.5,7,[['portion',80]]],
-    ['Pâtes complètes cuites',145,6,27,1.2,4,[['portion',220]]],
-    ['Semoule de blé crue',350,12,72,1,3.5,[['portion',60]]],
+    ['Riz sauvage cuit',100,4,21,0.3,1.8,[['portion',200]]],
+    ['Riz thaï cuit',135,3,29,0.3,0.6,[['portion',200]]],
+    ['Röstis',210,3,24,11,2,[['pièce',85]]],
+    ['Sarrasin cuit',110,4,20,0.7,2.7,[['portion',200]]],
     ['Semoule cuite',120,4,25,0.4,1.4,[['portion',200]]],
-    ['Boulgour cuit',130,4.5,26,0.4,4,[['portion',200]]],
-    ['Quinoa cru',370,14,58,6,7,[['portion',70]]],
-    ['Quinoa cuit',120,4.4,21,1.9,2.8,[['portion',200]]],
-    ['Flocons d’avoine',372,13,60,7,9,[['portion',60],['cuillère à soupe',12]]],
-    ['Muesli sans sucre ajouté',380,11,60,9,8,[['portion',50]]],
-    ['Corn flakes',380,7,84,1,3,[['portion',30]]],
-    ['Céréales chocolatées',400,7,75,7,4,[['portion',40]]],
-    ['Pomme de terre cuite',87,2,18,0.1,2,[['pièce',150]]],
-    ['Purée de pomme de terre',85,2,13,2.5,1.5,[['portion',200]]],
-    ['Frites au four',190,3,28,7,3,[['portion',150]]],
-    ['Frites de friture',290,3.5,36,14,3,[['portion',150]]],
-    ['Patate douce cuite',90,1.6,20,0.1,3,[['pièce',150]]],
-    ['Polenta cuite',85,2,18,0.4,1,[['portion',200]]],
-    ['Blé précuit',340,12,68,1.5,4,[['portion',60]]],
-    ['Nouilles chinoises cuites',140,4.5,28,0.6,1.5,[['portion',200]]],
-    ['Gnocchis',170,4,33,2,2,[['portion',250]]],
-    ['Galette de riz soufflé',385,8,81,2.8,2,[['pièce',9]]],
+    ['Semoule de blé crue',350,12,72,1,3.5,[['portion',60]]],
+    ['Vermicelles de riz cuits',110,2,25,0.2,1,[['portion',200]]],
+    ['Épeautre cuit',130,5,25,1,4,[['portion',200]]],
   ],
   'Pains et biscottes': [
+    ['Bagel',280,11,50,3,3,[['pièce',85]]],
     ['Baguette',270,9,55,1,2.5,[['tranche',25]]],
-    ['Pain de campagne',260,8.5,52,1.2,3,[['tranche',40]]],
-    ['Pain complet',250,9,42,2.5,6,[['tranche',35]]],
-    ['Pain aux céréales',265,10,40,5,6,[['tranche',35]]],
-    ['Pain de mie',280,8,48,6,3,[['tranche',30]]],
-    ['Pain de mie complet',245,9,40,3.5,5,[['tranche',30]]],
-    ['Pain à burger',280,9,48,5,3,[['pièce',60]]],
-    ['Tortilla / wrap',300,8,48,8,3,[['pièce',60]]],
     ['Biscotte',400,11,75,6,4,[['pièce',8]]],
+    ['Brioche',380,8,50,16,2,[['tranche',35]]],
+    ['Chapati',300,9,50,7,4,[['pièce',50]]],
     ['Cracker',380,10,75,4,3,[['pièce',6]]],
     ['Croissant',420,8,45,23,2,[['pièce',55]]],
+    ['Focaccia',330,7,45,13,2,[['part',80]]],
+    ['Muffin anglais',230,8,44,2,3,[['pièce',60]]],
+    ['Naan',320,9,50,9,2,[['pièce',90]]],
     ['Pain au chocolat',440,8,48,24,3,[['pièce',65]]],
-    ['Brioche',380,8,50,16,2,[['tranche',35]]],
+    ['Pain aux céréales',265,10,40,5,6,[['tranche',35]]],
+    ['Pain complet',250,9,42,2.5,6,[['tranche',35]]],
+    ['Pain complet aux graines',280,11,38,8,7,[['tranche',40]]],
+    ['Pain de campagne',260,8.5,52,1.2,3,[['tranche',40]]],
+    ['Pain de mie',280,8,48,6,3,[['tranche',30]]],
+    ['Pain de mie complet',245,9,40,3.5,5,[['tranche',30]]],
+    ['Pain de seigle',240,7,45,1.5,7,[['tranche',35]]],
+    ['Pain grillé suédois',360,10,68,4,10,[['pièce',10]]],
+    ['Pain pita',280,9,54,2,3,[['pièce',60]]],
+    ['Pain sans gluten',260,4,45,6,4,[['tranche',30]]],
+    ['Pain viennois',330,9,52,10,2,[['tranche',30]]],
+    ['Pain à burger',280,9,48,5,3,[['pièce',60]]],
+    ['Tortilla / wrap',300,8,48,8,3,[['pièce',60]]],
   ],
   'Légumineuses et végétal': [
-    ['Lentilles cuites',116,9,16,0.5,5,[['portion',150]]],
-    ['Lentilles corail cuites',120,9,17,0.6,4,[['portion',150]]],
-    ['Pois chiches cuits',139,8,19,2.5,6.5,[['portion',150]]],
-    ['Haricots rouges cuits',125,8,18,0.5,7,[['portion',150]]],
-    ['Haricots blancs cuits',130,8,19,0.6,6,[['portion',150]]],
+    ['Edamame cuits',125,11,8,5,5,[['portion',100]]],
     ['Flageolets cuits',115,7,17,0.5,6,[['portion',150]]],
     ['Fèves cuites',110,8,15,0.6,5,[['portion',150]]],
-    ['Petits pois cuits',80,5,12,0.4,5,[['portion',150]]],
+    ['Galette végétale aux légumes',180,6,20,8,4,[['pièce',80]]],
+    ['Haricots blancs cuits',130,8,19,0.6,6,[['portion',150]]],
+    ['Haricots mungo cuits',105,7,17,0.4,7,[['portion',150]]],
+    ['Haricots noirs cuits',130,9,18,0.5,8,[['portion',150]]],
+    ['Haricots rouges cuits',125,8,18,0.5,7,[['portion',150]]],
     ['Houmous',300,8,14,24,6,[['cuillère à soupe',25]]],
-    ['Tofu nature',120,13,2,7,1,[['portion',100]]],
-    ['Tofu fumé',145,16,2,8,1,[['portion',100]]],
-    ['Tempeh',190,19,8,11,5,[['portion',100]]],
+    ['Lentilles corail cuites',120,9,17,0.6,4,[['portion',150]]],
+    ['Lentilles cuites',116,9,16,0.5,5,[['portion',150]]],
+    ['Lupin cuit',120,16,7,3,3,[['portion',100]]],
+    ['Miso',200,12,25,6,3,[['cuillère à soupe',18]]],
+    ['Petits pois cuits',80,5,12,0.4,5,[['portion',150]]],
+    ['Pois chiches cuits',139,8,19,2.5,6.5,[['portion',150]]],
     ['Protéines de soja texturées',340,50,16,2,16,[['portion',30]]],
+    ['Seitan',140,25,4,2,1,[['portion',100]]],
     ['Steak de soja',180,16,8,9,4,[['pièce',90]]],
+    ['Tempeh',190,19,8,11,5,[['portion',100]]],
+    ['Tofu fumé',145,16,2,8,1,[['portion',100]]],
+    ['Tofu nature',120,13,2,7,1,[['portion',100]]],
+    ['Tofu soyeux',55,6,2,3,0.5,[['portion',150]]],
+    ['Yaourt de soja nature',50,4,2,2.5,0.5,[['pot',125]]],
   ],
   'Légumes': [
-    ['Brocoli cuit',35,2.8,3.1,0.4,3,[['portion',200]]],
-    ['Chou-fleur cuit',25,1.8,2.5,0.3,2.2,[['portion',200]]],
-    ['Chou vert cuit',30,2,3,0.5,3,[['portion',200]]],
-    ['Choux de Bruxelles cuits',45,3.5,5,0.6,4,[['portion',200]]],
-    ['Haricots verts cuits',31,1.8,3.4,0.2,3,[['portion',200]]],
-    ['Courgette cuite',20,1.2,2,0.3,1.2,[['portion',200]]],
+    ['Ail',130,6,28,0.5,2,[['gousse',5]]],
+    ['Algue nori',290,35,10,3,35,[['feuille',3]]],
+    ['Artichaut cuit',45,3,5,0.2,5,[['pièce',150]]],
+    ['Asperges cuites',22,2.4,1.5,0.3,2,[['portion',150]]],
     ['Aubergine cuite',30,1,4,0.4,2.5,[['portion',200]]],
-    ['Poivron rouge',30,1,5,0.3,2,[['pièce',150]]],
-    ['Poivron vert',22,0.9,3,0.2,1.8,[['pièce',150]]],
-    ['Tomate',18,0.8,2.6,0.2,1.2,[['pièce',120]]],
-    ['Tomates concassées',25,1.2,3.5,0.2,1.2,[['boîte',400]]],
+    ['Betterave cuite',45,1.8,8,0.1,2.5,[['portion',100]]],
+    ['Blette cuite',22,1.8,2,0.3,2,[['portion',200]]],
+    ['Brocoli cuit',35,2.8,3.1,0.4,3,[['portion',200]]],
     ['Carotte crue',36,0.6,7.6,0.2,2.6,[['pièce',80]]],
     ['Carottes cuites',33,0.7,6,0.3,2.8,[['portion',200]]],
-    ['Épinards cuits',24,2.7,1.2,0.5,2.6,[['portion',200]]],
-    ['Salade verte',15,1.2,1,0.2,1.5,[['portion',50]]],
-    ['Roquette',25,2.6,2,0.7,1.6,[['portion',40]]],
-    ['Concombre',12,0.6,1.8,0.1,0.7,[['pièce',300]]],
     ['Champignons de Paris',22,2.5,1,0.3,1.5,[['portion',150]]],
-    ['Oignon',40,1.2,7,0.2,1.7,[['pièce',100]]],
-    ['Ail',130,6,28,0.5,2,[['gousse',5]]],
-    ['Poireau cuit',25,1.3,3,0.3,2.5,[['portion',200]]],
+    ['Champignons shiitake',35,2.2,5,0.5,2.5,[['portion',100]]],
+    ['Chou chinois',15,1.2,1.5,0.2,1,[['portion',150]]],
+    ['Chou rouge',30,1.4,4,0.2,2.5,[['portion',150]]],
+    ['Chou vert cuit',30,2,3,0.5,3,[['portion',200]]],
+    ['Chou-fleur cuit',25,1.8,2.5,0.3,2.2,[['portion',200]]],
+    ['Choucroute crue',20,1.2,1.5,0.2,3,[['portion',200]]],
+    ['Choux de Bruxelles cuits',45,3.5,5,0.6,4,[['portion',200]]],
+    ['Concombre',12,0.6,1.8,0.1,0.7,[['pièce',300]]],
+    ['Cornichons',15,0.8,1.5,0.2,1,[['pièce',10]]],
+    ['Courgette cuite',20,1.2,2,0.3,1.2,[['portion',200]]],
+    ['Cresson',22,2.6,1,0.4,1.5,[['portion',50]]],
+    ['Câpres',25,2.5,2,0.5,3,[['cuillère à soupe',10]]],
     ['Céleri branche',15,0.7,1.5,0.2,1.6,[['branche',40]]],
-    ['Betterave cuite',45,1.8,8,0.1,2.5,[['portion',100]]],
-    ['Radis',15,0.7,2,0.1,1.5,[['pièce',10]]],
-    ['Asperges cuites',22,2.4,1.5,0.3,2,[['portion',150]]],
+    ['Céleri-rave cuit',30,1.2,3,0.3,3,[['portion',200]]],
+    ['Cœur de palmier',25,2,3,0.3,2,[['portion',100]]],
     ['Endive',17,1,2,0.2,2,[['pièce',120]]],
     ['Fenouil',25,1.2,3,0.3,2.5,[['pièce',250]]],
+    ['Germes de soja',30,3,2,0.2,1.8,[['portion',100]]],
+    ['Gingembre frais',60,1.5,12,0.6,2,[['cuillère à café',5]]],
+    ['Haricots verts cuits',31,1.8,3.4,0.2,3,[['portion',200]]],
     ['Maïs doux en conserve',90,3,15,1.5,3,[['portion',150]]],
+    ['Mâche',22,2,1.5,0.4,1.5,[['portion',50]]],
+    ['Navet cuit',22,0.8,3.5,0.2,2,[['portion',200]]],
+    ['Oignon',40,1.2,7,0.2,1.7,[['pièce',100]]],
+    ['Panais cuit',60,1.3,12,0.4,4,[['portion',200]]],
+    ['Piment frais',30,1.5,5,0.3,2,[['pièce',15]]],
+    ['Poireau cuit',25,1.3,3,0.3,2.5,[['portion',200]]],
+    ['Poivron rouge',30,1,5,0.3,2,[['pièce',150]]],
+    ['Poivron vert',22,0.9,3,0.2,1.8,[['pièce',150]]],
     ['Potiron cuit',25,1,4,0.3,1.6,[['portion',200]]],
-    ['Ratatouille',60,1.2,5,3.5,2,[['portion',250]]],
+    ['Pousses d’épinard crues',20,2.5,1,0.4,2,[['portion',60]]],
     ['Poêlée de légumes surgelés',50,2.5,6,0.5,3,[['portion',250]]],
+    ['Radis',15,0.7,2,0.1,1.5,[['pièce',10]]],
+    ['Ratatouille',60,1.2,5,3.5,2,[['portion',250]]],
+    ['Roquette',25,2.6,2,0.7,1.6,[['portion',40]]],
+    ['Salade verte',15,1.2,1,0.2,1.5,[['portion',50]]],
+    ['Tomate',18,0.8,2.6,0.2,1.2,[['pièce',120]]],
+    ['Tomates concassées',25,1.2,3.5,0.2,1.2,[['boîte',400]]],
+    ['Topinambour cuit',65,2,13,0.2,4,[['portion',200]]],
+    ['Échalote',50,1.5,10,0.2,2,[['pièce',20]]],
+    ['Épinards cuits',24,2.7,1.2,0.5,2.6,[['portion',200]]],
   ],
   'Fruits': [
+    ['Abricot',45,0.9,9,0.2,2,[['pièce',50]]],
+    ['Ananas',50,0.5,11,0.2,1.4,[['portion',150]]],
+    ['Baies de goji séchées',350,14,60,1,13,[['poignée',30]]],
     ['Banane',94,1.1,20,0.3,2.1,[['pièce',120]]],
-    ['Pomme',54,0.3,11.5,0.2,2,[['pièce',150]]],
-    ['Poire',55,0.4,12,0.2,3,[['pièce',160]]],
-    ['Orange',47,1,9,0.2,2,[['pièce',180]]],
+    ['Banane plantain cuite',120,1,29,0.3,2.5,[['pièce',180]]],
+    ['Banane séchée',350,3,80,1,7,[['poignée',30]]],
+    ['Cassis',50,1.4,9,0.4,6,[['portion',100]]],
+    ['Cerises',63,1,13,0.3,1.6,[['portion',150]]],
+    ['Citron',30,1,3,0.3,2.5,[['pièce',80]]],
+    ['Citron vert',30,0.7,4,0.2,2.8,[['pièce',60]]],
     ['Clémentine',46,0.8,9,0.2,1.7,[['pièce',70]]],
-    ['Pamplemousse',40,0.7,8,0.1,1.5,[['pièce',250]]],
-    ['Kiwi',58,1.1,10,0.5,2.5,[['pièce',75]]],
+    ['Compote sans sucre ajouté',50,0.3,11,0.2,1.3,[['gourde',90]]],
+    ['Cranberries séchées',310,0.2,75,1,5,[['poignée',30]]],
+    ['Figue fraîche',70,0.8,15,0.3,2.5,[['pièce',50]]],
     ['Fraises',33,0.7,5.6,0.3,2,[['portion',150]]],
     ['Framboises',45,1.2,5,0.6,6,[['portion',125]]],
+    ['Fruit de la passion',65,2,10,0.4,10,[['pièce',40]]],
+    ['Goyave',60,2.5,10,0.6,5,[['pièce',100]]],
+    ['Grenade',75,1.7,16,1.2,4,[['pièce',200]]],
+    ['Groseilles',35,1,6,0.2,4,[['portion',100]]],
+    ['Kaki',70,0.6,16,0.2,2,[['pièce',150]]],
+    ['Kiwi',58,1.1,10,0.5,2.5,[['pièce',75]]],
+    ['Litchi',65,0.8,15,0.3,1.3,[['pièce',12]]],
+    ['Mandarine',48,0.8,10,0.2,1.8,[['pièce',80]]],
+    ['Mangue',60,0.8,13,0.4,1.8,[['pièce',200]]],
+    ['Mangue séchée',320,2,75,1,5,[['poignée',30]]],
+    ['Melon',35,0.8,8,0.2,1,[['portion',200]]],
     ['Myrtilles',57,0.7,12,0.3,2.4,[['portion',100]]],
     ['Mûres',43,1.4,5,0.5,5,[['portion',125]]],
-    ['Cerises',63,1,13,0.3,1.6,[['portion',150]]],
-    ['Raisin',70,0.6,16,0.2,1,[['portion',150]]],
-    ['Pêche',40,0.9,8,0.2,1.8,[['pièce',150]]],
-    ['Abricot',45,0.9,9,0.2,2,[['pièce',50]]],
-    ['Prune',45,0.7,10,0.2,1.7,[['pièce',60]]],
-    ['Melon',35,0.8,8,0.2,1,[['portion',200]]],
-    ['Pastèque',30,0.6,7,0.2,0.4,[['portion',250]]],
-    ['Ananas',50,0.5,11,0.2,1.4,[['portion',150]]],
-    ['Mangue',60,0.8,13,0.4,1.8,[['pièce',200]]],
+    ['Nectarine',44,1,9,0.3,1.7,[['pièce',150]]],
+    ['Orange',47,1,9,0.2,2,[['pièce',180]]],
+    ['Pamplemousse',40,0.7,8,0.1,1.5,[['pièce',250]]],
     ['Papaye',43,0.5,10,0.3,1.7,[['portion',150]]],
-    ['Grenade',75,1.7,16,1.2,4,[['pièce',200]]],
-    ['Figue fraîche',70,0.8,15,0.3,2.5,[['pièce',50]]],
-    ['Compote sans sucre ajouté',50,0.3,11,0.2,1.3,[['gourde',90]]],
+    ['Pastèque',30,0.6,7,0.2,0.4,[['portion',250]]],
+    ['Poire',55,0.4,12,0.2,3,[['pièce',160]]],
+    ['Pomme',54,0.3,11.5,0.2,2,[['pièce',150]]],
+    ['Prune',45,0.7,10,0.2,1.7,[['pièce',60]]],
+    ['Pêche',40,0.9,8,0.2,1.8,[['pièce',150]]],
+    ['Raisin',70,0.6,16,0.2,1,[['portion',150]]],
+    ['Rhubarbe',20,0.9,2,0.2,2,[['portion',150]]],
   ],
   'Fruits secs et oléagineux': [
+    ['Abricots secs',240,3.5,50,0.5,7,[['pièce',8]]],
     ['Amandes',634,25,5,53,12,[['poignée',30]]],
-    ['Noix',698,15,5,65,6,[['poignée',30]]],
-    ['Noisettes',660,15,7,61,9,[['poignée',30]]],
-    ['Noix de cajou',580,18,26,44,3,[['poignée',30]]],
-    ['Pistaches',580,20,17,45,10,[['poignée',30]]],
+    ['Avocat',169,2,3,16,6,[['pièce',140]]],
+    ['Beurre de cacahuète',620,25,10,50,6,[['cuillère à soupe',16]]],
     ['Cacahuètes',590,25,8,49,8,[['poignée',30]]],
+    ['Chocolat noir 85 %',600,10,20,50,12,[['carré',10]]],
+    ['Dattes',285,2.5,65,0.4,7,[['pièce',8]]],
+    ['Figues sèches',250,3.5,50,1,10,[['pièce',20]]],
+    ['Graines de chia',490,17,8,31,34,[['cuillère à soupe',12]]],
+    ['Graines de courge',560,30,10,49,6,[['cuillère à soupe',10]]],
+    ['Graines de lin',530,18,2,42,27,[['cuillère à soupe',10]]],
+    ['Graines de sésame',570,18,10,50,12,[['cuillère à soupe',10]]],
+    ['Graines de tournesol',585,21,12,51,9,[['cuillère à soupe',10]]],
+    ['Noisettes',660,15,7,61,9,[['poignée',30]]],
+    ['Noix',698,15,5,65,6,[['poignée',30]]],
+    ['Noix de cajou',580,18,26,44,3,[['poignée',30]]],
+    ['Noix de coco fraîche',350,3,6,33,9,[['portion',50]]],
+    ['Noix de coco râpée',620,6,6,62,16,[['cuillère à soupe',8]]],
+    ['Noix de macadamia',720,8,5,75,9,[['poignée',30]]],
     ['Noix de pécan',690,9,4,72,9,[['poignée',30]]],
     ['Noix du Brésil',660,14,4,66,8,[['pièce',5]]],
-    ['Graines de courge',560,30,10,49,6,[['cuillère à soupe',10]]],
-    ['Graines de tournesol',585,21,12,51,9,[['cuillère à soupe',10]]],
-    ['Graines de chia',490,17,8,31,34,[['cuillère à soupe',12]]],
-    ['Graines de lin',530,18,2,42,27,[['cuillère à soupe',10]]],
-    ['Beurre de cacahuète',620,25,10,50,6,[['cuillère à soupe',16]]],
-    ['Purée d’amande',640,21,8,56,10,[['cuillère à soupe',16]]],
-    ['Avocat',169,2,3,16,6,[['pièce',140]]],
+    ['Olives noires',170,1.5,1,17,3,[['pièce',4]]],
     ['Olives vertes',145,1,1,15,3,[['pièce',4]]],
-    ['Raisins secs',300,3,70,0.5,4,[['poignée',30]]],
-    ['Abricots secs',240,3.5,50,0.5,7,[['pièce',8]]],
-    ['Dattes',285,2.5,65,0.4,7,[['pièce',8]]],
+    ['Pignons de pin',670,14,5,68,4,[['cuillère à soupe',10]]],
+    ['Pistaches',580,20,17,45,10,[['poignée',30]]],
     ['Pruneaux',240,2,57,0.4,7,[['pièce',10]]],
-    ['Figues sèches',250,3.5,50,1,10,[['pièce',20]]],
-    ['Noix de coco râpée',620,6,6,62,16,[['cuillère à soupe',8]]],
+    ['Purée de cajou',590,18,25,47,3,[['cuillère à soupe',16]]],
+    ['Purée de noisette',650,15,8,60,7,[['cuillère à soupe',16]]],
+    ['Purée d’amande',640,21,8,56,10,[['cuillère à soupe',16]]],
+    ['Raisins secs',300,3,70,0.5,4,[['poignée',30]]],
+    ['Tahini',600,17,10,54,9,[['cuillère à soupe',15]]],
+    ['Tapenade',300,3,4,30,4,[['cuillère à soupe',15]]],
   ],
   'Matières grasses': [
-    ['Huile d’olive',900,0,0,100,0,[['cuillère à soupe',10],['cuillère à café',5]]],
-    ['Huile de colza',900,0,0,100,0,[['cuillère à soupe',10]]],
-    ['Huile de tournesol',900,0,0,100,0,[['cuillère à soupe',10]]],
-    ['Huile de coco',900,0,0,100,0,[['cuillère à soupe',10]]],
-    ['Margarine',700,0.2,0.5,78,0,[['noisette',10]]],
     ['Crème de coco',200,2,3,20,1,[['cuillère à soupe',15]]],
+    ['Ghee',890,0,0,99,0,[['cuillère à soupe',12]]],
+    ['Graisse de canard',890,0,0,99,0,[['cuillère à soupe',12]]],
+    ['Huile de coco',900,0,0,100,0,[['cuillère à soupe',10]]],
+    ['Huile de colza',900,0,0,100,0,[['cuillère à soupe',10]]],
+    ['Huile de lin',900,0,0,100,0,[['cuillère à soupe',10]]],
+    ['Huile de noix',900,0,0,100,0,[['cuillère à soupe',10]]],
+    ['Huile de sésame',900,0,0,100,0,[['cuillère à soupe',10]]],
+    ['Huile de tournesol',900,0,0,100,0,[['cuillère à soupe',10]]],
+    ['Huile d’olive',900,0,0,100,0,[['cuillère à soupe',10],['cuillère à café',5]]],
+    ['Margarine',700,0.2,0.5,78,0,[['noisette',10]]],
+    ['Spray de cuisson',5,0,0,0.5,0,[['pulvérisation',1]]],
   ],
   'Plats préparés': [
-    ['Pizza margherita',250,11,30,9,2,[['part',120]]],
-    ['Lasagnes bolognaise',140,8,13,6,1,[['portion',300]]],
-    ['Hachis parmentier',120,7,12,5,1.5,[['portion',300]]],
-    ['Couscous royal',150,9,16,5,2,[['portion',350]]],
-    ['Paella',130,8,15,4,1,[['portion',300]]],
-    ['Quiche lorraine',300,11,22,19,1,[['part',130]]],
-    ['Croque-monsieur',280,15,22,15,1.5,[['pièce',150]]],
-    ['Sandwich jambon-beurre',250,10,30,10,2,[['pièce',200]]],
+    ['Blanquette de veau',130,12,5,7,0.5,[['portion',300]]],
+    ['Bo bun',140,9,18,3.5,2,[['bol',400]]],
     ['Burger classique',250,13,22,12,1.5,[['pièce',200]]],
-    ['Kebab',220,14,18,10,2,[['pièce',350]]],
-    ['Sushi au saumon',150,7,28,2,0.6,[['pièce',25]]],
-    ['Nems',230,8,25,11,1.5,[['pièce',40]]],
-    ['Riz cantonais',160,6,23,4.5,1,[['portion',300]]],
-    ['Soupe de légumes',40,1.2,6,1,1.5,[['bol',250]]],
-    ['Gratin dauphinois',160,3.5,13,10,1.5,[['portion',200]]],
-    ['Raviolis en conserve',100,4,13,3,1,[['boîte',400]]],
-    ['Salade César',180,10,6,13,1,[['portion',250]]],
+    ['Burger double',270,16,20,14,1.5,[['pièce',260]]],
+    ['Bœuf bourguignon',140,15,4,7,1,[['portion',300]]],
+    ['Cassoulet',160,9,14,8,4,[['portion',400]]],
+    ['Chili con carne',130,9,12,4.5,3,[['portion',300]]],
+    ['Choucroute garnie',150,9,4,11,2,[['portion',400]]],
+    ['Couscous royal',150,9,16,5,2,[['portion',350]]],
+    ['Croque-monsieur',280,15,22,15,1.5,[['pièce',150]]],
+    ['Curry de pois chiches',130,6,16,4.5,5,[['portion',300]]],
+    ['Dhal de lentilles',120,6,15,3.5,4,[['portion',300]]],
     ['Falafel',330,13,32,17,5,[['pièce',25]]],
+    ['Gratin dauphinois',160,3.5,13,10,1.5,[['portion',200]]],
+    ['Gratin de courgettes',110,4,6,7,2,[['portion',250]]],
+    ['Hachis parmentier',120,7,12,5,1.5,[['portion',300]]],
+    ['Hot-dog',250,10,25,12,1.5,[['pièce',150]]],
+    ['Kebab',220,14,18,10,2,[['pièce',350]]],
+    ['Lasagnes bolognaise',140,8,13,6,1,[['portion',300]]],
+    ['Moussaka',150,7,9,9,2,[['portion',300]]],
+    ['Nems',230,8,25,11,1.5,[['pièce',40]]],
+    ['Pad thaï',180,9,24,6,2,[['portion',350]]],
+    ['Paella',130,8,15,4,1,[['portion',300]]],
+    ['Pizza margherita',250,11,30,9,2,[['part',120]]],
+    ['Pizza quatre fromages',280,13,28,13,2,[['part',130]]],
+    ['Poke bowl saumon',150,10,18,4,2,[['bol',400]]],
+    ['Poulet au curry',140,13,7,7,1,[['portion',300]]],
+    ['Pâtes à la bolognaise',150,7,20,4.5,2,[['portion',300]]],
+    ['Pâtes à la carbonara',190,8,20,9,1.5,[['portion',300]]],
+    ['Quiche lorraine',300,11,22,19,1,[['part',130]]],
+    ['Raviolis en conserve',100,4,13,3,1,[['boîte',400]]],
+    ['Riz cantonais',160,6,23,4.5,1,[['portion',300]]],
+    ['Salade César',180,10,6,13,1,[['portion',250]]],
+    ['Salade de pâtes',180,5,20,9,2,[['portion',250]]],
+    ['Samoussa',270,8,28,14,2,[['pièce',40]]],
+    ['Sandwich jambon-beurre',250,10,30,10,2,[['pièce',200]]],
+    ['Soupe de légumes',40,1.2,6,1,1.5,[['bol',250]]],
+    ['Soupe miso',35,3,3,1,0.5,[['bol',250]]],
+    ['Sushi au saumon',150,7,28,2,0.6,[['pièce',25]]],
+    ['Taboulé',150,3.5,25,4,2,[['portion',200]]],
+    ['Tajine de poulet',120,12,8,4,2,[['portion',350]]],
+    ['Wok de légumes',80,3,9,3.5,3,[['portion',300]]],
+    ['Wrap au poulet',210,12,22,8,2,[['pièce',220]]],
   ],
   'Sucré et encas': [
-    ['Chocolat noir 70 %',570,9,32,43,10,[['carré',10]]],
-    ['Chocolat au lait',545,7,57,31,3,[['carré',10]]],
-    ['Pâte à tartiner',540,6,57,31,3,[['cuillère à soupe',20]]],
-    ['Miel',320,0.4,80,0,0,[['cuillère à café',8]]],
-    ['Confiture',260,0.5,62,0.2,1,[['cuillère à café',10]]],
-    ['Sucre blanc',400,0,100,0,0,[['morceau',5],['cuillère à café',5]]],
-    ['Sirop d’érable',260,0,67,0,0,[['cuillère à soupe',20]]],
-    ['Biscuit sec',450,7,72,15,2,[['pièce',8]]],
-    ['Cookie',470,6,60,23,2,[['pièce',40]]],
-    ['Madeleine',450,6,50,25,1,[['pièce',25]]],
-    ['Chips',540,6,50,34,4,[['portion',30]]],
-    ['Pop-corn nature',400,10,60,12,12,[['portion',30]]],
-    ['Glace vanille',200,3.5,24,10,0,[['boule',50]]],
-    ['Crêpe',200,6,28,7,1,[['pièce',60]]],
-    ['Gaufre',320,7,40,15,1.5,[['pièce',40]]],
-    ['Riz au lait',120,3.5,20,3,0,[['pot',120]]],
-    ['Crème dessert au chocolat',140,3,22,4.5,1,[['pot',100]]],
     ['Barre chocolatée',480,6,60,23,2,[['barre',45]]],
+    ['Beignet',420,6,45,24,2,[['pièce',60]]],
+    ['Biscuit sec',450,7,72,15,2,[['pièce',8]]],
+    ['Bonbons gélifiés',340,6,78,0.2,0,[['pièce',5]]],
+    ['Brownie',450,6,50,25,3,[['part',50]]],
+    ['Chewing-gum sans sucre',180,0,60,0.5,0,[['pièce',2]]],
+    ['Chips',540,6,50,34,4,[['portion',30]]],
+    ['Chocolat au lait',545,7,57,31,3,[['carré',10]]],
+    ['Chocolat blanc',555,6,58,32,0,[['carré',10]]],
+    ['Chocolat noir 70 %',570,9,32,43,10,[['carré',10]]],
+    ['Churros',390,5,45,21,2,[['pièce',35]]],
+    ['Compote pomme-fraise',65,0.3,15,0.2,1.2,[['gourde',90]]],
+    ['Confiture',260,0.5,62,0.2,1,[['cuillère à café',10]]],
+    ['Cookie',470,6,60,23,2,[['pièce',40]]],
+    ['Crème dessert au chocolat',140,3,22,4.5,1,[['pot',100]]],
+    ['Crêpe',200,6,28,7,1,[['pièce',60]]],
+    ['Céréales fourrées',420,7,72,11,4,[['portion',40]]],
+    ['Gaufre',320,7,40,15,1.5,[['pièce',40]]],
+    ['Glace vanille',200,3.5,24,10,0,[['boule',50]]],
+    ['Madeleine',450,6,50,25,1,[['pièce',25]]],
+    ['Miel',320,0.4,80,0,0,[['cuillère à café',8]]],
+    ['Milkshake',110,3,17,3.5,0.3,[['verre',300]]],
+    ['Mousse au chocolat',220,5,25,11,1.5,[['pot',60]]],
+    ['Muffin',400,6,50,19,2,[['pièce',70]]],
+    ['Nougat',400,7,70,10,1,[['portion',30]]],
+    ['Pain perdu',250,7,30,11,1,[['tranche',60]]],
+    ['Palmier',480,5,60,24,2,[['pièce',30]]],
+    ['Pancake',230,6,30,9,1,[['pièce',50]]],
+    ['Panna cotta',230,3,22,14,0,[['portion',100]]],
+    ['Pop-corn nature',400,10,60,12,12,[['portion',30]]],
+    ['Pâte à tartiner',540,6,57,31,3,[['cuillère à soupe',20]]],
+    ['Riz au lait',120,3.5,20,3,0,[['pot',120]]],
+    ['Sirop d’érable',260,0,67,0,0,[['cuillère à soupe',20]]],
+    ['Sorbet aux fruits',120,0.5,29,0.2,0.5,[['boule',50]]],
+    ['Spéculoos',480,6,70,19,2,[['pièce',6]]],
+    ['Sucre blanc',400,0,100,0,0,[['morceau',5],['cuillère à café',5]]],
+    ['Tarte aux pommes',250,3,35,11,2,[['part',120]]],
+    ['Tiramisu',270,5,26,16,0.5,[['portion',100]]],
+    ['Yaourt glacé',130,4,22,3,0,[['portion',100]]],
+    ['Éclair au chocolat',330,6,35,18,1,[['pièce',90]]],
   ],
   'Boissons': [
-    ['Eau',0,0,0,0,0,[['verre',250]]],
+    ['Bière blanche',48,0.5,4,0,0,[['demi',250]]],
+    ['Bière blonde',43,0.5,3.5,0,0,[['demi',250]]],
+    ['Boisson isotonique',25,0,6,0,0,[['bouteille',500]]],
+    ['Boisson énergisante',45,0,11,0,0,[['canette',250]]],
+    ['Café au lait',35,2,3,1.5,0,[['tasse',200]]],
     ['Café noir',2,0.2,0,0,0,[['tasse',100]]],
-    ['Thé nature',1,0,0,0,0,[['tasse',200]]],
+    ['Cappuccino',50,2.5,5,2,0,[['tasse',200]]],
+    ['Champagne',80,0.2,1.5,0,0,[['flûte',100]]],
+    ['Chocolat chaud',90,3,14,2.5,1,[['tasse',250]]],
+    ['Cidre brut',35,0,2.5,0,0,[['verre',200]]],
+    ['Eau',0,0,0,0,0,[['verre',250]]],
+    ['Eau pétillante aromatisée',1,0,0,0,0,[['bouteille',500]]],
+    ['Jus de pomme',46,0.1,11,0.1,0.2,[['verre',200]]],
+    ['Jus de raisin',65,0.3,16,0.1,0,[['verre',200]]],
+    ['Jus de tomate',20,0.8,3.5,0.1,0.6,[['verre',200]]],
+    ['Jus d’orange',45,0.7,10,0.2,0.2,[['verre',200]]],
+    ['Jus multifruits',48,0.4,11,0.2,0.3,[['verre',200]]],
+    ['Kombucha',25,0,6,0,0,[['verre',250]]],
+    ['Limonade',40,0,10,0,0,[['verre',250]]],
+    ['Rhum',230,0,0,0,0,[['dose',40]]],
+    ['Sirop dilué',30,0,7.5,0,0,[['verre',250]]],
+    ['Smoothie aux fruits',60,0.8,13,0.3,1.5,[['bouteille',250]]],
     ['Soda cola',42,0,10.6,0,0,[['canette',330]]],
     ['Soda light',0.3,0,0,0,0,[['canette',330]]],
-    ['Jus de pomme',46,0.1,11,0.1,0.2,[['verre',200]]],
-    ['Jus d’orange',45,0.7,10,0.2,0.2,[['verre',200]]],
-    ['Smoothie aux fruits',60,0.8,13,0.3,1.5,[['bouteille',250]]],
-    ['Bière blonde',43,0.5,3.5,0,0,[['demi',250]]],
+    ['Thé glacé',30,0,7.5,0,0,[['bouteille',330]]],
+    ['Thé nature',1,0,0,0,0,[['tasse',200]]],
+    ['Vin blanc',80,0.1,2,0,0,[['verre',125]]],
     ['Vin rouge',85,0.1,2.6,0,0,[['verre',125]]],
-    ['Boisson énergisante',45,0,11,0,0,[['canette',250]]],
-    ['Boisson isotonique',25,0,6,0,0,[['bouteille',500]]],
+    ['Vodka',230,0,0,0,0,[['dose',40]]],
+    ['Whisky',250,0,0,0,0,[['dose',40]]],
   ],
   'Condiments et sauces': [
-    ['Sauce soja',60,6,5.5,0.1,0,[['cuillère à soupe',15]]],
+    ['Bouillon cube',200,12,15,10,0,[['cube',10]]],
+    ['Cannelle moulue',250,4,55,1.5,50,[['cuillère à café',2]]],
+    ['Curcuma moulu',310,10,60,3,20,[['cuillère à café',2]]],
+    ['Gomasio',560,17,10,50,11,[['cuillère à café',5]]],
+    ['Harissa',160,4,10,11,6,[['cuillère à café',5]]],
+    ['Herbes de Provence',270,10,45,7,30,[['cuillère à café',2]]],
     ['Ketchup',102,1.3,23,0.2,1,[['cuillère à soupe',15]]],
-    ['Moutarde',145,7,4,11,3,[['cuillère à café',5]]],
+    ['Levure maltée',350,45,20,5,20,[['cuillère à soupe',5]]],
     ['Mayonnaise',700,1,2,76,0,[['cuillère à soupe',15]]],
     ['Mayonnaise allégée',300,1,6,30,0,[['cuillère à soupe',15]]],
-    ['Sauce tomate cuisinée',55,1.5,7,2,1.5,[['portion',100]]],
+    ['Moutarde',145,7,4,11,3,[['cuillère à café',5]]],
+    ['Nuoc-mâm',50,7,4,0,0,[['cuillère à soupe',15]]],
+    ['Paprika',280,14,50,13,35,[['cuillère à café',2]]],
     ['Pesto',450,5,6,45,2,[['cuillère à soupe',15]]],
-    ['Vinaigrette',450,0.5,5,48,0,[['cuillère à soupe',15]]],
+    ['Poivre moulu',250,10,55,3,25,[['cuillère à café',2]]],
+    ['Raifort',60,1.5,10,1,3,[['cuillère à café',5]]],
+    ['Sauce aigre-douce',130,0.5,30,0.5,0.5,[['cuillère à soupe',15]]],
+    ['Sauce algérienne',380,1,10,37,0.5,[['cuillère à soupe',15]]],
+    ['Sauce au yaourt',110,3,6,8,0.5,[['cuillère à soupe',15]]],
+    ['Sauce barbecue',150,1,33,0.5,1,[['cuillère à soupe',15]]],
+    ['Sauce curry',180,2,15,12,1,[['cuillère à soupe',15]]],
+    ['Sauce César',350,3,6,35,0.5,[['cuillère à soupe',15]]],
+    ['Sauce samouraï',400,1,8,40,0.5,[['cuillère à soupe',15]]],
     ['Sauce sans matière grasse',25,1,4,0.2,0,[['cuillère à soupe',15]]],
-    ['Vinaigre balsamique',90,0.5,17,0,0,[['cuillère à soupe',15]]],
-    ['Bouillon cube',200,12,15,10,0,[['cube',10]]],
-    ['Épices moulues',300,12,50,8,25,[['cuillère à café',2]]],
-    ['Levure maltée',350,45,20,5,20,[['cuillère à soupe',5]]],
+    ['Sauce soja',60,6,5.5,0.1,0,[['cuillère à soupe',15]]],
+    ['Sauce tomate cuisinée',55,1.5,7,2,1.5,[['portion',100]]],
     ['Sirop sans sucre',5,0,1,0,0,[['dose',20]]],
+    ['Sriracha',95,2,18,1,2,[['cuillère à café',5]]],
+    ['Tabasco',12,1,1,0.5,0,[['cuillère à café',5]]],
+    ['Vinaigre balsamique',90,0.5,17,0,0,[['cuillère à soupe',15]]],
+    ['Vinaigrette',450,0.5,5,48,0,[['cuillère à soupe',15]]],
+    ['Wasabi',290,7,40,10,8,[['cuillère à café',5]]],
+    ['Épices moulues',300,12,50,8,25,[['cuillère à café',2]]],
   ],
 };
 
@@ -1227,23 +1558,61 @@ function etatEnregistrement(){
 }
 
 /* ---------- En-tête collant ---------- */
+
+/** Circonférence de l'anneau (rayon 52 dans un carré de 120). */
+const CIRCONFERENCE = 2 * Math.PI * 52;
+
+/**
+ * Série en cours : jours enregistrés consécutifs, en partant d'aujourd'hui
+ * ou de la veille si la journée du jour n'est pas encore validée.
+ */
+function serieEnCours(){
+  let n = 0, d = isoJour();
+  if(!ETAT.historique[d]) d = decalerJours(d, -1);
+  while(ETAT.historique[d]){ n++; d = decalerJours(d, -1); }
+  return n;
+}
+
 function majEntete(){
   const t = ETAT.journal.entrees.length ? totauxJournal() : {kcal:0,prot:0,gluc:0,lip:0,fibres:0};
   const c = ciblesCourantes();
   const r = Calculs.repartition(t);
 
+  // --- Anneau des calories
+  const part = c.kcal > 0 ? t.kcal / c.kcal : 0;
   $('#j-kcal').textContent = fmt(Math.round(t.kcal));
-  $('#j-kcal-cible').textContent = '/ ' + fmt(c.kcal) + ' kcal';
-  const reste = Math.round(c.kcal - t.kcal);
-  $('#j-reste').textContent = reste >= 0
-    ? 'Il reste ' + fmt(reste) + ' kcal'
-    : fmt(Math.abs(reste)) + ' kcal au-dessus de la cible';
-  $('#j-reste').style.color = reste >= 0 ? '' : 'var(--alerte)';
+  $('#j-kcal-cible').textContent = '/ ' + fmt(c.kcal);
+  $('#j-trait').setAttribute('stroke-dashoffset', (CIRCONFERENCE * (1 - Math.min(1, part))).toFixed(1));
+  $('#j-anneau').classList.toggle('depasse', part > 1.02);
 
+  const reste = Math.round(c.kcal - t.kcal);
+  const zone = $('#j-reste');
+  zone.innerHTML = reste >= 0
+    ? 'Il reste <b>' + fmt(reste) + '</b> kcal'
+    : '<b>' + fmt(Math.abs(reste)) + '</b> kcal au-dessus de la cible';
+  zone.classList.toggle('sur', reste < 0);
+
+  // --- Date, compte, série
   $('#j-date').textContent = libelleLong(ETAT.journal.date);
   const nbLignes = ETAT.journal.entrees.length;
-  $('#j-compte').textContent = nbLignes + (nbLignes > 1 ? ' aliments saisis' : ' aliment saisi');
+  $('#j-compte').textContent = nbLignes === 0 ? 'aucun aliment saisi'
+    : nbLignes + (nbLignes > 1 ? ' aliments saisis' : ' aliment saisi');
 
+  const serie = serieEnCours();
+  const puceSerie = $('#j-serie');
+  puceSerie.hidden = serie < 2;
+  if(serie >= 2) puceSerie.innerHTML = 'série <strong>' + serie + '</strong> j';
+
+  // --- Macros
+  [['prot', t.prot, c.prot], ['gluc', t.gluc, c.gluc], ['lip', t.lip, c.lip]].forEach(function(m){
+    const cle = m[0], val = m[1], cible = m[2];
+    $('#j-' + cle).textContent = fmtG(val);
+    $('#j-' + cle + '-cible').textContent = fmt(cible);
+    $('#j-' + cle + '-jauge').style.width = (cible > 0 ? Math.min(100, val / cible * 100) : 0).toFixed(1) + '%';
+    $('#j-m-' + cle).classList.toggle('depasse', cible > 0 && val > cible * 1.08);
+  });
+
+  // --- Répartition et fibres
   const segs = $('#j-barre').children;
   segs[0].style.width = r.prot.toFixed(1) + '%';
   segs[1].style.width = r.gluc.toFixed(1) + '%';
@@ -1251,23 +1620,12 @@ function majEntete(){
   $('#j-barre').setAttribute('aria-label',
     'Répartition des calories : protéines ' + Math.round(r.prot) + ' %, glucides ' +
     Math.round(r.gluc) + ' %, lipides ' + Math.round(r.lip) + ' %');
+  $('#j-fibres').textContent = fmtG(t.fibres);
 
-  [['prot', t.prot, c.prot, r.prot], ['gluc', t.gluc, c.gluc, r.gluc], ['lip', t.lip, c.lip, r.lip]]
-  .forEach(function(m){
-    const cle = m[0], val = m[1], cible = m[2], pct = m[3];
-    $('#j-' + cle).textContent = fmt(val, val < 100 ? 1 : 0);
-    $('#j-' + cle + '-pct').textContent = Math.round(pct) + ' %';
-    const part = cible > 0 ? Math.min(100, val / cible * 100) : 0;
-    $('#j-' + cle + '-jauge').style.width = part.toFixed(1) + '%';
-    $('#j-' + cle + '-cible').textContent = 'cible ' + fmt(cible) + ' g';
-    $('#j-' + cle).style.color = (cible > 0 && val > cible * 1.08) ? 'var(--alerte)' : '';
-  });
-
-  $('#j-fibres').textContent = fmt(t.fibres, 1);
-
+  // --- État d'enregistrement
   const etat = etatEnregistrement();
   const past = $('#j-etat');
-  past.className = 'pastille ' + (etat === 'a_jour' ? 'on' : 'off');
+  past.className = 'pastille ' + (etat === 'a_jour' ? 'on' : '');
   past.textContent = etat === 'a_jour' ? 'enregistré' : (etat === 'modifie' ? 'modifié' : 'non enregistré');
   $('#j-enregistrer').textContent = etat === 'aucun' ? 'Enregistrer' : 'Mettre à jour';
   $('#j-enregistrer').classList.toggle('enregistre', etat === 'a_jour');
@@ -1326,7 +1684,8 @@ function rendreListeJournal(){
 
   if(!ETAT.aliments.length){
     hote.innerHTML =
-      '<div class="vide-msg">Votre liste d’aliments est vide.<br>Ajoutez ceux que vous mangez réellement — une trentaine suffit.' +
+      '<div class="carte vide-msg"><strong>Votre liste est vide</strong>' +
+      'Ajoutez les aliments que vous mangez réellement — une trentaine suffit pour couvrir vos semaines.' +
       '<div class="rangee-actions" style="margin-top:14px;justify-content:center">' +
         '<button class="btn primaire" data-act="nouvel-aliment">Ajouter un aliment</button>' +
         '<button class="btn" data-act="en-ligne">Chercher en ligne</button>' +
@@ -1343,7 +1702,8 @@ function rendreListeJournal(){
   });
 
   if(!visibles.length){
-    hote.innerHTML = '<div class="vide-msg">Aucun aliment de votre liste ne correspond à « ' + esc(ETAT.ui.recherche) + ' ».' +
+    hote.innerHTML = '<div class="carte vide-msg"><strong>Aucun résultat</strong>' +
+      'Rien ne correspond à « ' + esc(ETAT.ui.recherche) + ' » dans votre liste.' +
       '<div class="rangee-actions" style="margin-top:14px;justify-content:center">' +
         '<button class="btn" data-act="en-ligne">Chercher « ' + esc(ETAT.ui.recherche) + ' » en ligne</button>' +
         '<button class="btn" data-act="nouvel-aliment">Créer cet aliment</button>' +
@@ -1369,7 +1729,7 @@ function rendreListeJournal(){
         '<button class="tete-cat" aria-expanded="' + (replie ? 'false' : 'true') + '" data-cat="' + esc(cat) + '">' +
           '<i class="chev"></i>' +
           '<span class="nom-cat">' + esc(cat) + '</span>' +
-          '<span class="compte">' + (saisis ? saisis + '/' : '') + liste.length + '</span>' +
+          '<span class="compte' + (saisis ? ' actif' : '') + '">' + (saisis ? saisis + ' / ' : '') + liste.length + '</span>' +
         '</button>' +
         (replie ? '' : '<div class="corps-cat">' + liste.map(htmlLigne).join('') + '</div>') +
       '</section>';
@@ -1397,7 +1757,9 @@ function majLigne(id){
   if(sec){
     const total = $$('.ligne', sec).length;
     const saisis = $$('.ligne.rempli', sec).length;
-    $('.compte', sec).textContent = (saisis ? saisis + '/' : '') + total;
+    const compteur = $('.compte', sec);
+    compteur.textContent = (saisis ? saisis + ' / ' : '') + total;
+    compteur.classList.toggle('actif', saisis > 0);
   }
 }
 
@@ -1588,7 +1950,8 @@ function rendreAliments(){
   const hote = $('#a-liste');
   if(!total){
     hote.innerHTML =
-      '<div class="vide-msg">Aucun aliment enregistré.<br>Commencez par ceux que vous mangez chaque semaine.' +
+      '<div class="carte vide-msg"><strong>Aucun aliment enregistré</strong>' +
+      'Chargez la base fournie, ou commencez par ceux que vous mangez chaque semaine.' +
       '<div class="rangee-actions" style="margin-top:14px;justify-content:center">' +
         '<button class="btn primaire" data-act="nouvel-aliment">Nouvel aliment</button>' +
         '<button class="btn" data-act="en-ligne">Chercher en ligne</button>' +
@@ -1602,7 +1965,7 @@ function rendreAliments(){
     return !q || normaliser(a.nom).indexOf(q) >= 0 || normaliser(a.categorie).indexOf(q) >= 0;
   });
   if(!visibles.length){
-    hote.innerHTML = '<div class="vide-msg">Aucun résultat dans votre liste.' +
+    hote.innerHTML = '<div class="carte vide-msg"><strong>Aucun résultat</strong>Rien dans votre liste ne correspond.' +
       '<div class="rangee-actions" style="margin-top:14px;justify-content:center">' +
         '<button class="btn" data-act="en-ligne">Chercher en ligne</button></div></div>';
     return;
@@ -2108,12 +2471,12 @@ function rendreHistorique(){
   // --- Statistiques
   const f7 = fenetre(7), f30 = fenetre(30);
   const stats = [
-    {l:'Jours suivis',      v: fmt(cles.length),                       u:'journées enregistrées'},
-    {l:'kcal · 7 j',    v: f7.length ? fmt(Math.round(moyenneSur(f7,'kcal'))) : '—',  u:'moyenne par jour'},
-    {l:'kcal · 30 j',   v: f30.length ? fmt(Math.round(moyenneSur(f30,'kcal'))) : '—', u:'moyenne par jour'},
-    {l:'prot. · 7 j',   v: f7.length ? fmt(Math.round(moyenneSur(f7,'prot'))) : '—',  u:'g par jour'},
-    {l:'prot. · 30 j',  v: f30.length ? fmt(Math.round(moyenneSur(f30,'prot'))) : '—', u:'g par jour'},
-    {l:'Régularité',        v: f30.length + ' / 30',                   u:'jours notés sur 30'}
+    {l:'Jours suivis',   v: fmt(cles.length),                                          u:'journées notées'},
+    {l:'Série',          v: serieEnCours() || '—',                                     u:'jours d’affilée'},
+    {l:'kcal · 7 j',     v: f7.length ? fmt(Math.round(moyenneSur(f7,'kcal'))) : '—',  u:'moyenne par jour'},
+    {l:'kcal · 30 j',    v: f30.length ? fmt(Math.round(moyenneSur(f30,'kcal'))) : '—', u:'moyenne par jour'},
+    {l:'prot. · 7 j',    v: f7.length ? fmt(Math.round(moyenneSur(f7,'prot'))) : '—',  u:'g par jour'},
+    {l:'Régularité',     v: f30.length + ' / 30',                                      u:'sur 30 jours'}
   ];
   $('#h-stats').innerHTML = stats.map(function(s){
     return '<div class="stat"><span class="etiq">' + s.l + '</span>' +
@@ -2192,7 +2555,7 @@ function rendreCalendrier(){
     '</div>' +
     '<div class="cal-entetes">' + JOURS_COURTS.map(function(d){ return '<span>' + d + '</span>'; }).join('') + '</div>' +
     '<div class="cal">' + cases + '</div>' +
-    '<div class="bloc" style="border-top:1px solid var(--line)">' +
+    '<div style="padding:0 14px 14px">' +
       '<p class="entrefilet">Bordure verte : dans un écart de 7 % de la cible. Bordure rouge : au-dessus. ' +
       'Le trait sous les calories montre la répartition protéines / glucides / lipides.</p></div>';
 }
@@ -2374,10 +2737,10 @@ function rendreProfil(){
   const p = ETAT.profil || PROFIL_VIERGE;
   const c = ETAT.profil && ETAT.profil.cibles ? ETAT.profil.cibles : CIBLES_PAR_DEFAUT;
   $('#p-contenu').innerHTML =
-    '<div class="bloc"><div id="p-form"></div></div>' +
-    '<div class="bloc"><div class="encart resultat" id="p-apercu"></div>' +
+    '<div class="carte carte-p"><div id="p-form"></div></div>' +
+    '<div class="carte carte-p"><div class="encart resultat" id="p-apercu"></div>' +
       '<button class="btn" id="p-appliquer" style="margin-top:10px;width:100%">Recalculer les cibles</button></div>' +
-    '<div class="bloc">' +
+    '<div class="carte carte-p">' +
       '<div class="titre-bloc"><h2>Cibles quotidiennes</h2><span class="etiq">modifiables</span></div>' +
       '<div class="grille-champs deux">' +
         '<label class="champ"><span>Calories</span><input type="text" inputmode="numeric" data-c="kcal" value="' + c.kcal + '"></label>' +
@@ -2389,7 +2752,7 @@ function rendreProfil(){
       '<p class="avertissement" style="margin-top:12px">Ces valeurs sont des estimations. Pesez-vous dans les mêmes conditions ' +
       'pendant deux à trois semaines et ajustez les calories de 100 à 200 kcal si le poids ne bouge pas dans le sens voulu.</p>' +
     '</div>' +
-    '<div class="bloc">' +
+    '<div class="carte carte-p">' +
       '<div class="titre-bloc"><h2>Données</h2></div>' +
       '<div class="rangee-actions">' +
         '<button class="btn" id="p-donnees">Import / export</button>' +
@@ -2614,7 +2977,7 @@ function modaleDonnees(){
 
 function confirmerBaseExemple(){
   confirmer('Charger la base d’aliments ?',
-    'Près de 300 aliments courants seront ajoutés à votre liste, répartis en 15 catégories. ' +
+    'Plus de 500 aliments courants seront ajoutés à votre liste, répartis en 15 catégories. ' +
     'Les valeurs pour 100 g sont des repères usuels, pas des données officielles : pour un produit précis, ' +
     'l’étiquette prime. Vous pourrez masquer ou supprimer ceux que vous ne mangez pas.',
     'Charger', function(){
