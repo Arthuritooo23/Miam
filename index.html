@@ -160,6 +160,10 @@ button{cursor:pointer}
 .nb{font-family:"IBM Plex Sans Condensed","IBM Plex Sans",sans-serif;font-weight:700;font-variant-numeric:tabular-nums;letter-spacing:.004em}
 .etiq{font-family:"IBM Plex Mono",ui-monospace,monospace;font-size:10.5px;font-weight:500;letter-spacing:.085em;text-transform:uppercase;color:var(--ink-3)}
 .tres-muet{color:var(--ink-3)}
+/* Lien d'action posé dans un paragraphe, sans allure de bouton. */
+.lien{background:none;border:0;padding:0;color:var(--ink);font:inherit;
+      text-decoration:underline;text-underline-offset:2px}
+.lien:hover{color:var(--ink-2)}
 .sr{position:absolute;width:1px;height:1px;padding:0;margin:-1px;overflow:hidden;clip:rect(0 0 0 0);white-space:nowrap;border:0}
 h1,h2,h3{margin:0;text-wrap:balance}
 h1{font-size:20px;font-weight:700;letter-spacing:-.015em}
@@ -171,7 +175,7 @@ h2{font-size:15px;font-weight:600;letter-spacing:-.005em}
   padding:calc(10px + env(safe-area-inset-top,0px)) 10px calc(var(--nav-h) + 20px + env(safe-area-inset-bottom,0px));
 }
 /* Un conteneur vide ne doit pas laisser un intervalle dans la colonne. */
-#j-alerte:empty,#j-recap:empty,#h-poids:empty{display:none}
+#j-alerte:empty,#j-recap:empty,#h-poids:empty,#h-semaine:empty,#j-micro:empty{display:none}
 .ecran{display:none}
 .ecran.actif{display:flex;flex-direction:column;gap:10px;animation:apparait .18s ease}
 @keyframes apparait{from{opacity:0;transform:translateY(5px)}to{opacity:1;transform:none}}
@@ -232,7 +236,7 @@ input:focus,select:focus,textarea:focus{outline:2px solid var(--focus);outline-o
 /* La carte du jour défile ; une barre compacte prend le relais en haut. */
 .barre-collante{position:sticky;top:env(safe-area-inset-top,0px);z-index:30;display:flex;flex-direction:column;gap:8px;
                 padding:8px 0 10px;margin-top:-8px;
-                background:linear-gradient(var(--bg) 76%, transparent)}
+                background:linear-gradient(var(--bg) 88%, transparent)}
 /* Nom distinct de la miniature du calendrier : deux « mini » entraient en
    collision, le remplissage de la barre écrasait la vignette. */
 .resume-colle{
@@ -292,6 +296,9 @@ input:focus,select:focus,textarea:focus{outline:2px solid var(--focus);outline-o
   0%{transform:scale(1)} 40%{transform:scale(1.045)} 100%{transform:scale(1)}
 }
 .carte-jour.felicite .anneau{animation:battement .6s cubic-bezier(.22,.9,.3,1)}
+@keyframes bulle{0%{transform:scale(1)}45%{transform:scale(1.06)}100%{transform:scale(1)}}
+#j-reste.bouge,#j-kcal.bouge{animation:bulle .34s cubic-bezier(.22,.9,.3,1)}
+.anneau-centre .nb,.reste-nb .nb{will-change:transform}
 
 /* Macros, sur toute la largeur */
 .macros-jour{margin-top:14px;display:flex;flex-direction:column;gap:11px}
@@ -313,6 +320,10 @@ input:focus,select:focus,textarea:focus{outline:2px solid var(--focus);outline-o
 .barre-empilee span{display:block;height:100%;transition:width .55s cubic-bezier(.22,.9,.3,1)}
 .seg-prot{background:var(--prot-j)} .seg-gluc{background:var(--gluc-j)} .seg-lip{background:var(--lip-j)}
 .fibres{font-size:11.5px;color:var(--jour-ink-2);white-space:nowrap;font-variant-numeric:tabular-nums}
+.micro-jour{display:flex;gap:14px;flex-wrap:wrap;margin-top:9px;font-size:11.5px;
+            color:var(--jour-ink-2);font-variant-numeric:tabular-nums}
+.micro-jour b{color:var(--jour-ink);font-weight:600}
+.micro-jour .partiel{opacity:.7}
 .fibres b{color:var(--jour-ink);font-weight:600}
 
 /* Hors de la carte du jour, les barres reprennent les couleurs du thème. */
@@ -326,11 +337,80 @@ input:focus,select:focus,textarea:focus{outline:2px solid var(--focus);outline-o
            border-radius:var(--r);box-shadow:var(--ombre-1)}
 .recherche input{background:var(--surface-2);border-color:var(--line)}
 
+/* Dictée */
+#j-vocal svg{display:block}
+#j-vocal.ecoute,.btn.ecoute{background:var(--ink);border-color:var(--ink);color:var(--surface)}
+.transcription{margin-top:10px;padding:10px 12px;background:var(--surface-2);border:1px solid var(--line);
+               border-radius:var(--r-s);font-size:14px;line-height:1.5;color:var(--ink-2)}
+@keyframes pulseMicro{0%{opacity:1}50%{opacity:.55}100%{opacity:1}}
+.btn.ecoute{animation:pulseMicro 1.2s ease-in-out infinite}
+.dictee-l{padding:10px 0;border-top:1px solid var(--line);display:flex;flex-wrap:wrap;gap:8px;align-items:center}
+.dictee-l .d-nom{flex:1 1 100%;font-size:14.5px;font-weight:500;line-height:1.3}
+.dictee-l .d-nom .q{display:block;font-family:"IBM Plex Mono",monospace;font-size:10.5px;color:var(--ink-3);margin-top:2px}
+.dictee-l .d-champs{display:flex;gap:6px;align-items:center;flex:1 1 auto}
+.dictee-l select.autre{flex:1 1 100%;min-height:38px;font-size:12.5px}
+.dictee-l.manquant .d-nom{color:var(--ink-3)}
+
+/* Raccourcis sous la recherche : les gestes fréquents à portée de pouce,
+   au lieu d'être enterrés dans le menu « ··· ». */
+.raccourcis{display:flex;gap:7px;overflow-x:auto;scrollbar-width:none;
+            padding:2px 0 1px;-webkit-overflow-scrolling:touch}
+.raccourcis::-webkit-scrollbar{display:none}
+.rac{
+  flex:none;display:inline-flex;align-items:center;gap:6px;
+  min-height:38px;padding:0 12px;border-radius:99px;white-space:nowrap;
+  background:var(--surface);border:1px solid var(--line-fort);color:var(--ink-2);
+  font-size:12.5px;font-weight:600;letter-spacing:-.005em;
+  transition:background .14s ease,border-color .14s ease,color .14s ease,transform .12s ease;
+}
+.rac:hover{background:var(--surface-2);color:var(--ink)}
+.rac:active{transform:scale(.96)}
+.rac i.pt{width:7px;height:7px;border-radius:50%;background:var(--ink-3);flex:none}
+.rac.libre i.pt{background:var(--gluc)}
+.rac.repas i.pt{background:var(--prot)}
+.rac.nonpese i.pt{background:var(--lip)}
+.rac.actif{background:var(--ink);border-color:var(--ink);color:var(--surface)}
+.rac.actif i.pt{background:var(--surface)}
+
 /* --- 10. Listes : une seule carte, des lignes dedans -------------------
    Quinze cartes blanches empilées faisaient papier peint. Une carte, des
    séparateurs : l'œil suit une liste au lieu de compter des objets. */
 .liste-carte{background:var(--surface);border:1px solid var(--line);border-radius:var(--r);
              box-shadow:var(--ombre-1);overflow:hidden}
+
+/* Bandeau de tête d'une liste plate (résultats de recherche, habitudes). */
+.tete-liste{display:flex;align-items:center;gap:10px;min-height:38px;
+            padding:7px 14px;background:var(--surface-2);border-bottom:1px solid var(--line)}
+.tete-liste .etiq{font-size:11px;font-weight:600;letter-spacing:.06em;
+                  text-transform:uppercase;color:var(--ink-3)}
+/* Sélecteur de créneau : on ne mange pas la même chose selon l'heure. */
+.creneaux{display:flex;gap:3px;margin-left:auto;background:var(--surface-3);
+          border-radius:99px;padding:2px}
+.creneaux button{
+  border:0;background:none;color:var(--ink-3);border-radius:99px;
+  min-height:26px;padding:0 9px;font-size:11.5px;font-weight:600;white-space:nowrap;
+  transition:background .14s ease,color .14s ease;
+}
+.creneaux button:hover{color:var(--ink-2)}
+.creneaux button[aria-pressed="true"]{background:var(--surface);color:var(--ink);box-shadow:var(--ombre-1)}
+@media (max-width:389px){
+  .tete-liste{flex-wrap:wrap}
+  .creneaux button{padding:0 7px;font-size:11px}
+}
+
+/* Le parcours par catégorie devient un tiroir : présent, mais replié. */
+.parcourir{
+  display:flex;align-items:center;gap:10px;width:100%;min-height:48px;
+  padding:12px 14px;border:0;border-top:1px solid var(--line);
+  background:var(--surface-2);color:var(--ink-2);text-align:left;
+  font-size:13px;font-weight:600;letter-spacing:-.005em;
+  transition:background .14s ease,color .14s ease;
+}
+.parcourir:hover{background:var(--surface-3);color:var(--ink)}
+.parcourir[aria-expanded="true"]{color:var(--ink)}
+.parcourir .chev{transform:rotate(-45deg)}
+.parcourir[aria-expanded="true"] .chev{transform:rotate(45deg)}
+.parcourir + .section-cat{border-top:1px solid var(--line)}
 .section-cat + .section-cat{border-top:1px solid var(--line)}
 .tete-cat{
   display:flex;align-items:center;gap:10px;width:100%;
@@ -353,6 +433,23 @@ button.tete-cat:active{background:var(--surface-3)}
         background:var(--surface-3);border-radius:99px;padding:2px 8px}
 .tete-cat .compte.actif{background:var(--ink);color:var(--surface)}
 
+/* Entrée en cascade des lignes : la liste se pose au lieu d'apparaître d'un bloc.
+   Uniquement hors frappe — pendant une recherche, la liste change trop vite. */
+@keyframes poseLigne{from{opacity:0;transform:translateY(6px)}to{opacity:1;transform:none}}
+.liste-carte.anime > .ligne,
+.liste-carte.anime > .section-cat,
+.liste-carte.anime > .tete-liste,
+.liste-carte.anime > .parcourir{animation:poseLigne .26s cubic-bezier(.22,.9,.3,1) both}
+.liste-carte.anime > *:nth-child(1){animation-delay:0ms}
+.liste-carte.anime > *:nth-child(2){animation-delay:22ms}
+.liste-carte.anime > *:nth-child(3){animation-delay:44ms}
+.liste-carte.anime > *:nth-child(4){animation-delay:66ms}
+.liste-carte.anime > *:nth-child(5){animation-delay:88ms}
+.liste-carte.anime > *:nth-child(6){animation-delay:110ms}
+.liste-carte.anime > *:nth-child(7){animation-delay:130ms}
+.liste-carte.anime > *:nth-child(8){animation-delay:148ms}
+.liste-carte.anime > *:nth-child(n+9){animation-delay:164ms}
+
 /* --- 11. Ligne d'aliment ------------------------------------------------ */
 .ligne{
   display:grid;grid-template-columns:1fr auto;
@@ -363,6 +460,17 @@ button.tete-cat:active{background:var(--surface-3)}
 .ligne + .ligne{border-top:1px solid var(--line)}
 .ligne:active{background:var(--surface-3)}
 .ligne.rempli{background:var(--surface-2);box-shadow:inset 3px 0 0 var(--ink)}
+/* Une ligne qui vient d'être remplie s'annonce brièvement : on voit que ça a pris. */
+@keyframes prise{
+  0%{background:var(--surface-2);box-shadow:inset 3px 0 0 var(--ink)}
+  22%{background:color-mix(in srgb, var(--ok) 16%, var(--surface-2));box-shadow:inset 3px 0 0 var(--ok)}
+  100%{background:var(--surface-2);box-shadow:inset 3px 0 0 var(--ink)}
+}
+.ligne.prise{animation:prise .62s ease}
+.pas:active{transform:scale(.9)}
+.pas{transition:background .14s ease,border-color .14s ease,transform .1s ease}
+.kcal-ligne{transition:color .2s ease,transform .2s cubic-bezier(.22,.9,.3,1)}
+.ligne.prise .kcal-ligne{transform:scale(1.12)}
 .ligne .ident{grid-area:ident;min-width:0}
 .ligne .nom{font-size:14.5px;font-weight:500;line-height:1.3}
 .p100{font-family:"IBM Plex Mono",monospace;font-size:10.5px;line-height:1.4;color:var(--ink-3);margin-top:2px;font-variant-numeric:tabular-nums}
@@ -413,6 +521,19 @@ select.unite{flex:0 1 auto;min-width:96px;max-width:180px;margin-right:auto;min-
 .nav button:hover{color:var(--ink-2)}
 .nav button[aria-current="page"]{color:var(--ink);background:var(--surface-3)}
 .nav button[aria-current="page"] .marque{opacity:1;width:22px}
+
+/* Bilan de la semaine : on ne mange pas en jours, on mange en semaines. */
+.semaine-l{display:flex;align-items:center;gap:10px;padding:9px 0;border-top:1px solid var(--line)}
+.semaine-l:first-of-type{border-top:0}
+.semaine-l .nom{flex:1;font-size:13.5px;color:var(--ink-2)}
+.semaine-l .v{font-family:"IBM Plex Sans Condensed","IBM Plex Sans",sans-serif;font-weight:700;
+              font-size:17px;font-variant-numeric:tabular-nums}
+.semaine-l .cmp{font-size:11.5px;font-variant-numeric:tabular-nums;color:var(--ink-3);min-width:62px;text-align:right}
+.semaine-l .cmp.haut{color:var(--alerte)} .semaine-l .cmp.bas{color:var(--ok)}
+.jauge-sem{display:flex;gap:3px;margin-top:2px}
+.jauge-sem i{flex:1;height:6px;border-radius:2px;background:var(--surface-3)}
+.jauge-sem i.ok{background:var(--ok)} .jauge-sem i.hors{background:var(--line-fort)}
+.jauge-sem i.libre{background:var(--lip)}
 
 /* --- 14. Historique ----------------------------------------------------- */
 .stats{display:grid;grid-template-columns:repeat(auto-fit,minmax(106px,1fr));gap:8px}
@@ -757,6 +878,9 @@ hr.sep{border:0;border-top:1px solid var(--line);margin:0}
           </div>
           <div class="fibres">Fibres <b id="j-fibres">0</b> g</div>
         </div>
+
+        <!-- Micronutriments : n'apparaît que si les aliments saisis les portent. -->
+        <div class="micro-jour" id="j-micro" hidden></div>
       </div>
 
     <div class="barre-collante">
@@ -777,6 +901,21 @@ hr.sep{border:0;border-top:1px solid var(--line);margin:0}
         <label class="sr" for="j-recherche">Rechercher un aliment</label>
         <input type="text" id="j-recherche" placeholder="Rechercher un aliment…" autocomplete="off" spellcheck="false">
         <button class="btn petit icone" id="j-effacer-recherche" aria-label="Effacer la recherche" title="Effacer la recherche">×</button>
+        <button class="btn petit icone" id="j-vocal" aria-label="Dicter un repas" title="Dicter un repas" hidden>
+          <svg viewBox="0 0 24 24" width="18" height="18" aria-hidden="true" focusable="false">
+            <path d="M12 3a3 3 0 0 1 3 3v6a3 3 0 0 1-6 0V6a3 3 0 0 1 3-3z" fill="currentColor"></path>
+            <path d="M5 11a7 7 0 0 0 14 0M12 18v3" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"></path>
+          </svg>
+        </button>
+      </div>
+
+      <!-- Raccourcis : les trois gestes qu'on ne doit pas avoir à chercher. -->
+      <div class="raccourcis" id="j-raccourcis">
+        <button class="rac nonpese" data-rac="libre"><i class="pt"></i>Repas non pesé</button>
+        <button class="rac libre" data-rac="jour-libre" aria-pressed="false"><i class="pt"></i><span data-txt>Jour libre</span></button>
+        <button class="rac repas" data-rac="modeles"><i class="pt"></i>Mes repas</button>
+        <button class="rac" data-rac="veille"><i class="pt"></i>Copier hier</button>
+        <button class="rac" data-rac="en-ligne"><i class="pt"></i>Chercher en ligne</button>
       </div>
     </div>
 
@@ -799,6 +938,7 @@ hr.sep{border:0;border-top:1px solid var(--line);margin:0}
       </div>
       <p class="entrefilet">Moyennes calculées sur les journées enregistrées.</p>
     </div>
+    <div class="carte" id="h-semaine"></div>
     <div class="carte" id="h-poids"></div>
     <div class="stats" id="h-stats"></div>
     <div class="carte graph" id="h-graph"></div>
@@ -949,7 +1089,7 @@ function libelleCourt(iso){
 function indexLundi(d){ return (d.getDay() + 6) % 7; }
 
 /** Version affichée dans l'écran Profil : sert à vérifier ce qui est en ligne. */
-const VERSION = '8';
+const VERSION = '10';
 
 /* =========================================================================
    2. MODULE DONNÉES — constantes du domaine
@@ -1009,8 +1149,32 @@ const ESTIMATIONS_LIBRES = [
   {nom:'Brunch',                            kcal:900,  prot:35, gluc:92,  lip:45},
   {nom:'Apéro — chips, charcuterie, alcool', kcal:700, prot:16, gluc:48,  lip:46},
   {nom:'Dessert ou pâtisserie',             kcal:450,  prot:6,  gluc:56,  lip:22},
-  {nom:'Repas maison copieux',              kcal:900,  prot:40, gluc:90,  lip:40}
+  {nom:'Repas maison copieux',              kcal:900,  prot:40, gluc:90,  lip:40},
+  {nom:'Sushis — un plateau',               kcal:750,  prot:38, gluc:110, lip:16},
+  {nom:'Crêpes ou galettes',                kcal:850,  prot:24, gluc:96,  lip:38},
+  {nom:'Raclette, fondue, tartiflette',     kcal:1400, prot:56, gluc:88,  lip:88},
+  {nom:'Barbecue — viandes et accompagnements', kcal:1100, prot:62, gluc:70, lip:62},
+  {nom:'Sandwich de boulangerie + dessert', kcal:800,  prot:26, gluc:88,  lip:34},
+  {nom:'Cinéma — pop-corn et soda',         kcal:600,  prot:6,  gluc:88,  lip:26},
+  {nom:'Glace ou dessert glacé',            kcal:350,  prot:6,  gluc:42,  lip:17},
+  {nom:'Soirée arrosée — quelques verres',  kcal:500,  prot:2,  gluc:38,  lip:0}
 ];
+
+/**
+ * Un même restaurant ne pèse pas pareil selon la faim. Plutôt que de faire
+ * calculer un pourcentage, on propose quatre tailles franches.
+ */
+const TAILLES_APPETIT = [
+  {cle:'leger',  label:'Léger',        f:0.7},
+  {cle:'normal', label:'Normal',       f:1},
+  {cle:'copieux',label:'Copieux',      f:1.3},
+  {cle:'tres',   label:'Très copieux', f:1.6}
+];
+
+/** Nombre de jours sur lesquels un excès de jour libre est étalé. */
+const JOURS_LISSAGE = 6;
+/** Plancher de sécurité : on ne descend jamais une cible sous ce seuil. */
+const PLANCHER_KCAL = 1200;
 
 /**
  * Énergie stockée dans un kilo de masse corporelle perdue ou prise.
@@ -1619,6 +1783,77 @@ const TABLE_ALIMENTS = {
   ],
 };
 
+/* -------------------------------------------------------------------------
+   Cru ou cuit : l'erreur la plus coûteuse
+   100 g de riz cru donnent environ 260 g de riz cuit. Peser cuit et saisir
+   comme si c'était cru triple les calories du plat. Plutôt qu'un second
+   aliment à maintenir, on ajoute une unité « g cuit » : 1 g cuit vaut
+   100 / rendement grammes de produit cru, et tout le calcul existant suit.
+   Le rendement est le poids obtenu pour 100 g de produit cru.
+   ------------------------------------------------------------------------- */
+const RENDEMENTS_CUISSON = {
+  // Féculents crus → « g cuit » (poids obtenu pour 100 g crus)
+  'Riz blanc cru': 260, 'Riz complet cru': 250,
+  'Pâtes crues': 250, 'Pâtes complètes crues': 250,
+  'Semoule de blé crue': 250, 'Quinoa cru': 280,
+  // Viandes et poissons crus → « g cuit » (ils perdent de l'eau)
+  'Blanc de poulet cru': 70, 'Escalope de dinde crue': 70, 'Escalope de veau crue': 70,
+  'Steak haché 5 % cru': 75, 'Steak haché 15 % cru': 72, 'Steak haché 20 % cru': 70,
+  'Rumsteck cru': 72, 'Entrecôte crue': 72, 'Bavette de bœuf crue': 72,
+  'Filet mignon de porc cru': 72, 'Côte de porc crue': 72,
+  'Saumon cru': 80, 'Cabillaud cru': 78, 'Colin lieu cru': 78, 'Lieu noir cru': 78,
+  'Merlu cru': 78, 'Truite crue': 80, 'Dorade crue': 78, 'Bar cru': 78
+};
+
+/**
+ * Inverse : un aliment listé cuit reçoit une unité « g cru », parce qu'on pèse
+ * souvent le riz ou les pâtes avant cuisson tout en choisissant la ligne cuite.
+ * Valeur = grammes cuits obtenus pour 1 g cru.
+ */
+const RENDEMENTS_INVERSES = {
+  'Riz blanc cuit': 2.6, 'Riz complet cuit': 2.5, 'Riz basmati cuit': 2.5,
+  'Riz thaï cuit': 2.5, 'Riz sauvage cuit': 2.6,
+  'Pâtes cuites': 2.5, 'Pâtes complètes cuites': 2.5,
+  'Semoule cuite': 2.5, 'Boulgour cuit': 2.6, 'Quinoa cuit': 2.8,
+  'Lentilles cuites': 2.4, 'Lentilles corail cuites': 2.3,
+  'Pois chiches cuits': 2.4, 'Haricots blancs cuits': 2.4,
+  'Haricots rouges cuits': 2.4, 'Haricots noirs cuits': 2.4,
+  'Polenta cuite': 3.2, 'Épeautre cuit': 2.6, 'Orge perlé cuit': 2.8, 'Sarrasin cuit': 2.6
+};
+
+/** Étiquettes d'unités liées à la cuisson. */
+const UNITE_CUIT = 'g cuit';
+const UNITE_CRU = 'g cru';
+
+/**
+ * Pose ou remplace l'unité « g cuit » d'un aliment. `rendement` = grammes
+ * obtenus pour 100 g crus. 0 ou null retire l'unité.
+ */
+function appliquerCuisson(aliment, rendement){
+  aliment.unites = (aliment.unites || []).filter(function(u){ return u.label !== UNITE_CUIT; });
+  const r = num(rendement);
+  if(r > 0){
+    aliment.cuisson = r;
+    aliment.unites.push({label: UNITE_CUIT, grammes: Math.round(100 / r * 10000) / 10000});
+  }else{
+    delete aliment.cuisson;
+  }
+  return aliment;
+}
+
+/** Même chose dans l'autre sens : l'aliment est listé cuit, on pèse cru. */
+function appliquerCuissonInverse(aliment, gonflement){
+  aliment.unites = (aliment.unites || []).filter(function(u){ return u.label !== UNITE_CRU; });
+  const g = num(gonflement);
+  if(g > 0){
+    aliment.cuissonInverse = g;
+    aliment.unites.push({label: UNITE_CRU, grammes: Math.round(g * 1000) / 1000});
+  }else{
+    delete aliment.cuissonInverse;
+  }
+  return aliment;
+}
+
 /** Construit les objets Aliment à partir de la table compacte. */
 function baseExemple(){
   const liste = [];
@@ -1626,11 +1861,14 @@ function baseExemple(){
     TABLE_ALIMENTS[cat].forEach(function(t){
       const unites = [{label:'g', grammes:1}];
       (t[6] || []).forEach(function(u){ unites.push({label:u[0], grammes:u[1]}); });
-      liste.push({
+      const al = {
         id: uid('al'), nom: t[0], categorie: cat,
         pour100g: {kcal:t[1], prot:t[2], gluc:t[3], lip:t[4], fibres:t[5]},
         unites: unites, favori: false, masque: false
-      });
+      };
+      if(RENDEMENTS_CUISSON[t[0]]) appliquerCuisson(al, RENDEMENTS_CUISSON[t[0]]);
+      if(RENDEMENTS_INVERSES[t[0]]) appliquerCuissonInverse(al, RENDEMENTS_INVERSES[t[0]]);
+      liste.push(al);
     });
   });
   return liste;
@@ -1717,17 +1955,29 @@ const Calculs = {
       prot:   (p.prot   || 0) * f,
       gluc:   (p.gluc   || 0) * f,
       lip:    (p.lip    || 0) * f,
-      fibres: (p.fibres || 0) * f
+      fibres: (p.fibres || 0) * f,
+      // Micronutriments facultatifs : absents de la base intégrée, renseignés
+      // par Open Food Facts, par l'import Ciqual ou à la main.
+      sel:    (p.sel    || 0) * f,
+      pot:    (p.pot    || 0) * f,
+      // Sait-on quelque chose ? Sinon on n'affiche rien plutôt qu'un faux zéro.
+      selConnu: p.sel != null,
+      potConnu: p.pot != null
     };
   },
   /** Somme d'une liste d'entrées. */
   totaux: function(entrees, indexAliments){
-    const t = {kcal:0, prot:0, gluc:0, lip:0, fibres:0};
+    const t = {kcal:0, prot:0, gluc:0, lip:0, fibres:0, sel:0, pot:0,
+               selConnu:0, potConnu:0, selInconnu:0, potInconnu:0};
     (entrees || []).forEach(function(e){
       const a = e.libre ? null : indexAliments[e.alimentId];
       if(!e.libre && !a) return;
       const n = Calculs.nutriments(e, a);
       t.kcal += n.kcal; t.prot += n.prot; t.gluc += n.gluc; t.lip += n.lip; t.fibres += n.fibres;
+      t.sel += n.sel; t.pot += n.pot;
+      if(e.libre){ return; }
+      if(n.selConnu) t.selConnu++; else t.selInconnu++;
+      if(n.potConnu) t.potConnu++; else t.potInconnu++;
     });
     return t;
   },
@@ -1751,8 +2001,17 @@ const Calculs = {
     for(let i = 0; i < OBJECTIFS.length; i++) if(OBJECTIFS[i].cle === cle) return OBJECTIFS[i];
     return OBJECTIFS[1];
   },
-  /** Dépense énergétique totale estimée. */
-  depense: function(p){ return Calculs.mifflin(p) * Calculs.activite(p.activite).facteur; },
+  /**
+   * Dépense énergétique totale estimée. `correctionDepense` est l'écart, en
+   * kcal, entre la formule et ce que la balance a réellement montré : il n'est
+   * posé que si l'utilisateur l'a explicitement adopté.
+   */
+  depense: function(p){
+    const theorique = Calculs.mifflin(p) * Calculs.activite(p.activite).facteur;
+    return theorique + (p && num(p.correctionDepense) ? num(p.correctionDepense) : 0);
+  },
+  /** Dépense telle que la formule seule la donne, sans correction. */
+  depenseTheorique: function(p){ return Calculs.mifflin(p) * Calculs.activite(p.activite).facteur; },
   /**
    * Cibles proposées : calories ajustées selon l'objectif, protéines et
    * lipides au poids corporel, glucides en solde.
@@ -1789,7 +2048,12 @@ const ETAT = {
     onboardingVu: false,
     dernierExport: null,                          // date ISO de la dernière sauvegarde
     rappel: {actif: false, heure: 21},            // rappel du soir
-    alerteMasquee: null                           // jour où l'alerte de sauvegarde a été écartée
+    alerteMasquee: null,                          // jour où l'alerte de sauvegarde a été écartée
+    parcourir: false,                             // tiroir « parcourir par catégorie » ouvert
+    creneau: null,                                // créneau choisi à la main pour les habitudes
+    creneauPose: null,                            // créneau naturel au moment de ce choix
+    lissage: null,                                // {jusquA, parJour, total} : excès étalé sur la semaine
+    lissageRefuse: null                           // jour où la proposition de lissage a été écartée
   }
 };
 
@@ -1815,6 +2079,32 @@ function ciblesCourantes(){
 }
 function profilDefini(){ return !!(ETAT.profil && ETAT.profil.cibles); }
 
+/**
+ * Lissage en cours ? Un jour libre laisse un excès ; plutôt que de le subir ou
+ * de jeûner le lendemain, on le répartit sur les jours suivants.
+ */
+function lissagePrevu(dateIso){
+  const l = ETAT.ui.lissage;
+  if(!l || !l.parJour) return null;
+  if((dateIso || ETAT.journal.date) > l.jusquA) return null;
+  return l;
+}
+/** Lissage qui pèse déjà sur la cible du jour (il ne démarre que le lendemain). */
+function lissageActif(dateIso){
+  const l = lissagePrevu(dateIso);
+  if(!l || (dateIso || ETAT.journal.date) < l.depuis) return null;
+  return l;
+}
+
+/** Cibles réellement appliquées aujourd'hui : cibles du profil moins le lissage. */
+function ciblesAppliquees(){
+  const c = ciblesCourantes();
+  const l = lissageActif();
+  if(!l || ETAT.journal.libre) return c;
+  const kcal = Math.max(PLANCHER_KCAL, Math.round(c.kcal - l.parJour));
+  return {kcal: kcal, prot: c.prot, gluc: c.gluc, lip: c.lip};
+}
+
 /* =========================================================================
    6. RENDU — ÉCRAN 1 : JOURNAL DU JOUR
    Principe : aucun re-rendu global à la frappe. La saisie d'une quantité ne
@@ -1829,6 +2119,18 @@ function entreeDe(id){
   return null;
 }
 
+/**
+ * Créneau des habitudes. Il suit l'heure par défaut ; un choix manuel tient
+ * jusqu'à ce que l'heure change de repas, sans quoi on resterait bloqué sur
+ * « Matin » à 20 h.
+ */
+function creneauCourant(){
+  const naturel = repasParDefaut();
+  if(ETAT.ui.creneau && ETAT.ui.creneauPose === naturel) return ETAT.ui.creneau;
+  if(ETAT.ui.creneau){ ETAT.ui.creneau = null; ETAT.ui.creneauPose = null; }
+  return naturel;
+}
+
 /** Crée, met à jour ou retire une entrée selon la quantité saisie. */
 function definirEntree(id, quantite, uniteIndex){
   const q = num(quantite);
@@ -1839,7 +2141,7 @@ function definirEntree(id, quantite, uniteIndex){
     e.quantite = q;
     if(uniteIndex != null) e.uniteIndex = uniteIndex;
   }else{
-    ETAT.journal.entrees.push({alimentId:id, quantite:q, uniteIndex: uniteIndex || 0, repas: repasParDefaut()});
+    ETAT.journal.entrees.push({alimentId:id, quantite:q, uniteIndex: uniteIndex || 0, repas: creneauCourant()});
   }
   sauver('journal');
 }
@@ -1859,6 +2161,40 @@ function etatEnregistrement(){
 /** Circonférence de l'anneau (rayon 52 dans un carré de 120). */
 const CIRCONFERENCE = 2 * Math.PI * 52;
 
+/* ---------- Chiffres animés -----------------------------------------------
+   Un total qui saute de 1 200 à 1 800 se lit comme un remplacement ; le même
+   total qui défile se lit comme une addition. C'est la seule animation qui
+   porte de l'information : on voit de combien ça a bougé. ----------------- */
+const MOINS_ANIM = window.matchMedia && window.matchMedia('(prefers-reduced-motion: reduce)').matches;
+const compteurs = new WeakMap();
+function animerNombre(el, valeur){
+  const cible = Math.round(valeur);
+  const etat = compteurs.get(el);
+  const depart = etat ? etat.courant : cible;
+  if(etat && etat.trame) cancelAnimationFrame(etat.trame);
+  if(MOINS_ANIM || depart === cible || Math.abs(cible - depart) < 2){
+    compteurs.set(el, {courant: cible, trame: 0});
+    el.textContent = fmt(cible);
+    return;
+  }
+  const t0 = performance.now(), duree = 380;
+  const suite = {courant: depart, trame: 0};
+  compteurs.set(el, suite);
+  function pas(t){
+    const p = Math.min(1, (t - t0) / duree);
+    const e = 1 - Math.pow(1 - p, 3);                 // décélération douce
+    suite.courant = Math.round(depart + (cible - depart) * e);
+    el.textContent = fmt(suite.courant);
+    if(p < 1){ suite.trame = requestAnimationFrame(pas); }
+    else{ suite.courant = cible; suite.trame = 0; el.textContent = fmt(cible); }
+  }
+  suite.trame = requestAnimationFrame(pas);
+  // Petit ressort sur le chiffre, pour signaler que quelque chose est entré.
+  el.classList.remove('bouge');
+  void el.offsetWidth;
+  el.classList.add('bouge');
+}
+
 /**
  * Série en cours : jours enregistrés consécutifs, en partant d'aujourd'hui
  * ou de la veille si la journée du jour n'est pas encore validée.
@@ -1872,22 +2208,25 @@ function serieEnCours(){
 
 function majEntete(){
   const t = ETAT.journal.entrees.length ? totauxJournal() : {kcal:0,prot:0,gluc:0,lip:0,fibres:0};
-  const c = ciblesCourantes();
+  const c = ciblesAppliquees();
   const r = Calculs.repartition(t);
 
   // --- Anneau des calories
   const part = c.kcal > 0 ? t.kcal / c.kcal : 0;
-  $('#j-kcal').textContent = fmt(Math.round(t.kcal));
+  animerNombre($('#j-kcal'), t.kcal);
   $('#j-kcal-cible').textContent = '/ ' + fmt(c.kcal);
   $('#j-trait').setAttribute('stroke-dashoffset', (CIRCONFERENCE * (1 - Math.min(1, part))).toFixed(1));
 
   // Le chiffre sur lequel on agit : ce qu'il reste à manger.
   const reste = Math.round(c.kcal - t.kcal);
   $('#j-reste-titre').textContent = reste >= 0 ? 'Il reste' : 'Au-dessus de la cible';
-  $('#j-reste').textContent = fmt(Math.abs(reste));
+  animerNombre($('#j-reste'), Math.abs(reste));
+  const liss = lissageActif();
   $('#j-reste-sous').textContent = ETAT.journal.entrees.length
     ? fmt(Math.round(t.kcal)) + ' sur ' + fmt(c.kcal) + ' kcal'
-    : 'cible ' + fmt(c.kcal) + ' kcal';
+      + (liss && !ETAT.journal.libre ? ' · lissage −' + fmt(liss.parJour) : '')
+    : 'cible ' + fmt(c.kcal) + ' kcal'
+      + (liss && !ETAT.journal.libre ? ' · lissage −' + fmt(liss.parJour) : '');
 
   // Récompense : l'anneau vire au vert dans la zone, avec un battement au moment
   // où on y entre. Rien ne bouge si le lecteur a demandé moins d'animations.
@@ -1898,7 +2237,7 @@ function majEntete(){
   carte.classList.toggle('libre', libre);
   if(libre){
     $('#j-reste-titre').textContent = 'Journée libre';
-    $('#j-reste').textContent = fmt(Math.round(t.kcal));
+    animerNombre($('#j-reste'), t.kcal);
     $('#j-reste-sous').textContent = 'comptée sans jugement, cible ' + fmt(c.kcal) + ' kcal';
   }
   if(atteint && !carte.classList.contains('atteint')){
@@ -1910,7 +2249,7 @@ function majEntete(){
 
   // Barre compacte, visible seulement quand la carte du jour est sortie de l'écran.
   const mini = $('#j-mini');
-  $('#m-kcal').textContent = fmt(Math.round(t.kcal));
+  animerNombre($('#m-kcal'), t.kcal);
   $('#m-cible').textContent = '/ ' + fmt(c.kcal);
   $('#m-reste').textContent = reste >= 0 ? 'reste ' + fmt(reste) : '+' + fmt(Math.abs(reste));
   mini.classList.toggle('atteint', atteint);
@@ -1953,6 +2292,17 @@ function majEntete(){
     Math.round(r.gluc) + ' %, lipides ' + Math.round(r.lip) + ' %');
   $('#j-fibres').textContent = fmtG(t.fibres);
 
+  // Sel et potassium : affichés seulement si au moins un aliment les porte, et
+  // signalés comme partiels si d'autres lignes n'en savent rien.
+  const micro = $('#j-micro');
+  const bouts = [];
+  if(t.selConnu) bouts.push('Sel <b>' + fmtG(t.sel) + '</b> g' +
+    (t.selInconnu ? ' <span class="partiel">(' + t.selConnu + ' aliment' + (t.selConnu > 1 ? 's' : '') + ' sur ' + (t.selConnu + t.selInconnu) + ')</span>' : ''));
+  if(t.potConnu) bouts.push('Potassium <b>' + fmt(Math.round(t.pot)) + '</b> mg' +
+    (t.potInconnu ? ' <span class="partiel">(' + t.potConnu + ' sur ' + (t.potConnu + t.potInconnu) + ')</span>' : ''));
+  micro.hidden = !bouts.length;
+  micro.innerHTML = bouts.join('');
+
   // --- État d'enregistrement
   const etat = etatEnregistrement();
   const past = $('#j-etat');
@@ -1960,6 +2310,18 @@ function majEntete(){
   past.textContent = etat === 'a_jour' ? 'enregistré' : (etat === 'modifie' ? 'modifié' : 'non enregistré');
   $('#j-enregistrer').textContent = etat === 'aucun' ? 'Enregistrer' : 'Mettre à jour';
   $('#j-enregistrer').classList.toggle('enregistre', etat === 'a_jour');
+
+  majRaccourcis();
+}
+
+/** Le bouton « jour libre » doit dire d'un coup d'œil s'il est enclenché. */
+function majRaccourcis(){
+  const b = $('#j-raccourcis [data-rac="jour-libre"]');
+  if(!b) return;
+  const on = !!ETAT.journal.libre;
+  b.classList.toggle('actif', on);
+  b.setAttribute('aria-pressed', String(on));
+  $('[data-txt]', b).textContent = on ? 'Jour libre activé' : 'Jour libre';
 }
 
 
@@ -1967,13 +2329,14 @@ function majEntete(){
    Le principe de l'app est la liste courte : on la calcule au lieu de la
    demander. Comptage sur les 30 derniers jours, quantité habituelle retenue
    pour la proposer d'un geste. ------------------------------------------- */
-function alimentsFrequents(nombre){
+function alimentsFrequents(nombre, repas){
   const debut = decalerJours(isoJour(), -30);
   const compte = {};
   Object.keys(ETAT.historique).forEach(function(d){
     if(d < debut) return;
     (ETAT.historique[d].entrees || []).forEach(function(e){
       if(e.libre) return;
+      if(repas && (e.repas || 'midi') !== repas) return;   // filtre par créneau
       const c = compte[e.alimentId] || (compte[e.alimentId] = {n:0, quantite:e.quantite, uniteIndex:e.uniteIndex || 0});
       c.n++;
       c.quantite = e.quantite;          // la plus récente fait foi
@@ -2081,7 +2444,62 @@ function rendreAlerte(){
         '</div>' +
       '</div>';
   }
+  // 3. Lissage : un jour libre a laissé un excès, on propose de l'étaler.
+  const prevu = lissagePrevu();
+  if(prevu){
+    const demarre = !!lissageActif();
+    const restants = Math.max(0, Math.round(
+      (dateDepuisIso(prevu.jusquA) - dateDepuisIso(ETAT.journal.date)) / 86400000) + (demarre ? 1 : 0));
+    html +=
+      '<div class="carte alerte lissage">' +
+        '<div class="alerte-txt"><strong>' +
+          (demarre ? 'Lissage en cours · −' : 'Lissage prévu · −') + fmt(prevu.parJour) + ' kcal/j</strong>' +
+          fmt(prevu.total) + ' kcal étalées sur ' + JOURS_LISSAGE + ' jours. ' +
+          (demarre ? 'Encore ' + restants + (restants > 1 ? ' jours.' : ' jour.')
+                   : 'Cela commence demain, jusqu’au ' + libelleCourt(prevu.jusquA) + '.') + '</div>' +
+        '<div class="alerte-btns"><button class="btn petit" data-lissage-stop>Arrêter</button></div>' +
+      '</div>';
+  }else{
+    // Proposition : uniquement sur une journée libre nettement au-dessus.
+    const tt = ETAT.journal.entrees.length ? totauxJournal() : null;
+    const cc = ciblesCourantes();
+    const exces = tt ? Math.round(tt.kcal - cc.kcal) : 0;
+    if(ETAT.journal.libre && exces >= 300 && ETAT.ui.lissageRefuse !== ETAT.journal.date){
+      const parJour = Math.min(400, Math.round(exces / JOURS_LISSAGE));
+      html +=
+        '<div class="carte alerte lissage">' +
+          '<div class="alerte-txt"><strong>+' + fmt(exces) + ' kcal aujourd’hui</strong>' +
+            'On peut les étaler sur les ' + JOURS_LISSAGE + ' prochains jours : −' + fmt(parJour) +
+            ' kcal par jour, et la semaine retombe juste.</div>' +
+          '<div class="alerte-btns">' +
+            '<button class="btn petit primaire" data-lissage-go="' + exces + '">Lisser sur la semaine</button>' +
+            '<button class="btn petit" data-lissage-non>Non merci</button>' +
+          '</div>' +
+        '</div>';
+    }
+  }
+
   hote.innerHTML = html;
+}
+
+/* ---------- Lissage d'un jour libre ---------- */
+function lancerLissage(exces){
+  const parJour = Math.min(400, Math.round(exces / JOURS_LISSAGE));
+  ETAT.ui.lissage = {
+    depuis: decalerJours(ETAT.journal.date, 1),
+    jusquA: decalerJours(ETAT.journal.date, JOURS_LISSAGE),
+    parJour: parJour,
+    total: parJour * JOURS_LISSAGE
+  };
+  sauver('ui');
+  majEntete(); rendreAlerte();
+  toast('Lissage activé : −' + fmt(parJour) + ' kcal par jour pendant ' + JOURS_LISSAGE + ' jours.');
+}
+function arreterLissage(){
+  ETAT.ui.lissage = null;
+  sauver('ui');
+  majEntete(); rendreAlerte();
+  toast('Lissage arrêté. Les cibles reviennent à la normale.');
 }
 
 /* ---------- Liste des aliments ---------- */
@@ -2097,7 +2515,7 @@ function ordreCategories(liste){
   return ordre;
 }
 
-function htmlLigne(a){
+function htmlLigne(a, avecCategorie){
   const e = entreeDe(a.id);
   const rempli = !!(e && num(e.quantite) > 0);
   const uIdx = e ? (e.uniteIndex || 0) : 0;
@@ -2113,7 +2531,8 @@ function htmlLigne(a){
   '<div class="ligne' + (rempli ? ' rempli' : '') + '" data-id="' + esc(a.id) + '">' +
     '<div class="ident">' +
       '<div class="nom">' + esc(a.nom) + '</div>' +
-      '<div class="p100">' + fmt(p.kcal) + ' kcal · ' + fmtG(p.prot) + ' P · ' + fmtG(p.gluc) + ' G · ' + fmtG(p.lip) + ' L /100 g</div>' +
+      '<div class="p100">' + (avecCategorie ? esc(a.categorie) + ' · ' : '') +
+        fmt(p.kcal) + ' kcal · ' + fmtG(p.prot) + ' P · ' + fmtG(p.gluc) + ' G · ' + fmtG(p.lip) + ' L /100 g</div>' +
     '</div>' +
     '<div class="kcal-ligne nb">' + (rempli ? fmt(Math.round(n.kcal)) : '—') + '</div>' +
     '<div class="saisie">' +
@@ -2158,13 +2577,56 @@ function couleurCategorie(cat){
   return c;
 }
 
+/**
+ * Pertinence d'un aliment pour une recherche. On ne montre plus des rayons à
+ * parcourir : on tape, et ce qui commence par ce qu'on a tapé arrive en tête.
+ */
+const HORS_JEU = -1e9;
+function scoreRecherche(nom, q){
+  const n = normaliser(nom);
+  const i = n.indexOf(q);
+  if(i < 0) return HORS_JEU;
+  if(i === 0) return 1000 - n.length;                       // commence par
+  const avant = n.charAt(i - 1);
+  if(avant === ' ' || avant === '-' || avant === "'") return 600 - n.length;  // début de mot
+  return 200 - n.length;                                    // au milieu
+}
+
+/** L'entrée en cascade est coupée pendant la frappe : la liste changerait trop vite. */
+let ANIM_LISTE = true;
+
+/**
+ * Ce que l'écran d'accueil du journal doit proposer, dans l'ordre : ce qui est
+ * déjà saisi aujourd'hui (pour corriger sans chercher), les habitudes calculées
+ * sur 30 jours, puis — tant qu'il n'y a pas d'historique — une amorce d'aliments
+ * universels. Le but est qu'on n'ait presque jamais à taper.
+ */
+function listeHabitudes(nombre){
+  const vus = {}, out = [];
+  function pousser(a){
+    if(!a || vus[a.id] || a.masque) return;
+    vus[a.id] = true; out.push(a);
+  }
+  ETAT.journal.entrees.forEach(function(e){ if(!e.libre) pousser(INDEX[e.alimentId]); });
+  // On ne mange pas la même chose à 8 h et à 20 h : le créneau en cours passe
+  // devant, le reste des habitudes complète.
+  const parCreneau = alimentsFrequents(nombre, creneauCourant());
+  HABITUDES_CRENEAU = parCreneau.length;
+  parCreneau.forEach(function(f){ pousser(f.aliment); });
+  alimentsFrequents(nombre).forEach(function(f){ pousser(f.aliment); });
+  return out.slice(0, nombre);
+}
+let HABITUDES_CRENEAU = 0;
+
 function rendreListeJournal(){
   const hote = $('#j-liste');
+  const classeListe = 'liste-carte' + (ANIM_LISTE && !MOINS_ANIM ? ' anime' : '');
   majHabituels();
   rendreRecap();
   rendreAlerte();
 
   if(!ETAT.aliments.length){
+    hote.className = classeListe;
     hote.innerHTML =
       '<div class="vide-msg"><strong>Votre liste est vide</strong>' +
       'Ajoutez les aliments que vous mangez réellement — une trentaine suffit pour couvrir vos semaines.' +
@@ -2177,66 +2639,87 @@ function rendreListeJournal(){
   }
 
   const q = normaliser(ETAT.ui.recherche);
-  const visibles = ETAT.aliments.filter(function(a){
-    if(a.masque) return false;
-    if(!q) return true;
-    return normaliser(a.nom).indexOf(q) >= 0 || normaliser(a.categorie).indexOf(q) >= 0;
-  });
 
-  if(!visibles.length){
-    hote.innerHTML = '<div class="vide-msg"><strong>Aucun résultat</strong>' +
-      'Rien ne correspond à « ' + esc(ETAT.ui.recherche) + ' » dans votre liste.' +
-      '<div class="rangee-actions" style="margin-top:14px;justify-content:center">' +
-        '<button class="btn" data-act="en-ligne">Chercher « ' + esc(ETAT.ui.recherche) + ' » en ligne</button>' +
-        '<button class="btn" data-act="nouvel-aliment">Créer cet aliment</button>' +
-      '</div></div>';
+  /* ---------- Une recherche est en cours : une liste plate, classée ------ */
+  if(q){
+    const trouves = ETAT.aliments
+      .filter(function(a){ return !a.masque; })
+      .map(function(a){ return {a: a, s: Math.max(scoreRecherche(a.nom, q), scoreRecherche(a.categorie, q) - 400)}; })
+      .filter(function(x){ return x.s > -1000; })
+      .sort(function(x, y){ return y.s - x.s || x.a.nom.localeCompare(y.a.nom, 'fr'); })
+      .slice(0, 60);
+
+    hote.className = classeListe;
+    if(!trouves.length){
+      hote.innerHTML = '<div class="vide-msg"><strong>Aucun résultat</strong>' +
+        'Rien ne correspond à « ' + esc(ETAT.ui.recherche) +' » dans votre liste.' +
+        '<div class="rangee-actions" style="margin-top:14px;justify-content:center">' +
+          '<button class="btn" data-act="en-ligne">Chercher en ligne</button>' +
+          '<button class="btn" data-act="nouvel-aliment">Créer cet aliment</button>' +
+        '</div></div>';
+      return;
+    }
+    hote.innerHTML =
+      '<div class="tete-liste"><span class="etiq">' + trouves.length +
+        (trouves.length > 1 ? ' résultats' : ' résultat') + '</span></div>' +
+      trouves.map(function(x){ return htmlLigne(x.a, true); }).join('');
     return;
   }
 
-  const parCat = {};
-  visibles.forEach(function(a){
-    const c = a.categorie || 'Sans catégorie';
-    (parCat[c] = parCat[c] || []).push(a);
-  });
-
+  /* ---------- Pas de recherche : les habitudes, puis le parcours --------- */
   let html = '';
-
-  // « Fréquents » : seulement hors recherche, et seulement s'il y a de quoi.
-  if(!q){
-    const freq = alimentsFrequents(15);
-    if(freq.length >= 3){
-      const replie = !!ETAT.ui.repliees['__frequents'];
-      const saisis = freq.filter(function(f){ const e = entreeDe(f.aliment.id); return e && num(e.quantite) > 0; }).length;
-      html +=
-        '<section class="section-cat frequents">' +
-          '<button class="tete-cat cf" aria-expanded="' + (replie ? 'false' : 'true') + '" data-cat="__frequents">' +
-            '<i class="chev"></i>' +
-            '<span class="nom-cat">Fréquents</span>' +
-            '<span class="compte' + (saisis ? ' actif' : '') + '">' + (saisis ? saisis + ' / ' : '') + freq.length + '</span>' +
-          '</button>' +
-          (replie ? '' : '<div class="corps-cat">' + freq.map(function(f){ return htmlLigne(f.aliment); }).join('') + '</div>') +
-        '</section>';
-    }
+  const habitudes = listeHabitudes(15);
+  // Rien d'inventé : tant qu'il n'y a pas d'habitudes réelles, l'écran reste nu
+  // et c'est la recherche qui travaille.
+  if(habitudes.length){
+    const saisis = habitudes.filter(function(a){ const e = entreeDe(a.id); return e && num(e.quantite) > 0; }).length;
+    const creneau = creneauCourant();
+    html +=
+      '<div class="tete-liste">' +
+        '<span class="etiq">Vos habitudes</span>' +
+        '<div class="creneaux" role="group" aria-label="Créneau des habitudes">' +
+          REPAS.map(function(r){
+            return '<button type="button" data-creneau="' + r.cle + '" aria-pressed="' +
+              (r.cle === creneau) + '">' + esc(r.court) + '</button>';
+          }).join('') +
+        '</div>' +
+        '<span class="compte' + (saisis ? ' actif' : '') + '">' + (saisis ? saisis + ' / ' : '') + habitudes.length + '</span>' +
+      '</div>' +
+      habitudes.map(function(a){ return htmlLigne(a); }).join('');
   }
 
-  ordreCategories(visibles).forEach(function(cat){
-    const liste = parCat[cat];
-    if(!liste || !liste.length) return;
-    // Une recherche en cours déplie tout : on veut voir les résultats.
-    const replie = q ? false : !!ETAT.ui.repliees[cat];
-    const saisis = liste.filter(function(a){ const e = entreeDe(a.id); return e && num(e.quantite) > 0; }).length;
-    html +=
-      '<section class="section-cat">' +
-        '<button class="tete-cat ' + couleurCategorie(cat) + '" aria-expanded="' + (replie ? 'false' : 'true') + '" data-cat="' + esc(cat) + '">' +
-          '<i class="chev"></i>' +
-          '<span class="nom-cat">' + esc(cat) + '</span>' +
-          '<span class="compte' + (saisis ? ' actif' : '') + '">' + (saisis ? saisis + ' / ' : '') + liste.length + '</span>' +
-        '</button>' +
-        (replie ? '' : '<div class="corps-cat">' + liste.map(htmlLigne).join('') + '</div>') +
-      '</section>';
-  });
+  const ouvert = !!ETAT.ui.parcourir;
+  html +=
+    '<button class="parcourir" data-parcourir aria-expanded="' + ouvert + '">' +
+      '<i class="chev"></i><span>Parcourir les ' + ETAT.aliments.length + ' aliments par catégorie</span>' +
+    '</button>';
+
+  if(ouvert){
+    const visibles = ETAT.aliments.filter(function(a){ return !a.masque; });
+    const parCat = {};
+    visibles.forEach(function(a){
+      const c = a.categorie || 'Sans catégorie';
+      (parCat[c] = parCat[c] || []).push(a);
+    });
+    ordreCategories(visibles).forEach(function(cat){
+      const liste = parCat[cat];
+      if(!liste || !liste.length) return;
+      const replie = !!ETAT.ui.repliees[cat];
+      const saisis = liste.filter(function(a){ const e = entreeDe(a.id); return e && num(e.quantite) > 0; }).length;
+      html +=
+        '<section class="section-cat">' +
+          '<button class="tete-cat ' + couleurCategorie(cat) + '" aria-expanded="' + (replie ? 'false' : 'true') + '" data-cat="' + esc(cat) + '">' +
+            '<i class="chev"></i>' +
+            '<span class="nom-cat">' + esc(cat) + '</span>' +
+            '<span class="compte' + (saisis ? ' actif' : '') + '">' + (saisis ? saisis + ' / ' : '') + liste.length + '</span>' +
+          '</button>' +
+          (replie ? '' : '<div class="corps-cat">' + liste.map(function(a){ return htmlLigne(a); }).join('') + '</div>') +
+        '</section>';
+    });
+  }
+
+  hote.className = classeListe;
   hote.innerHTML = html;
-  hote.className = 'liste-carte';
 }
 
 /** Met à jour une seule ligne après saisie (sans reconstruire la liste). */
@@ -2249,6 +2732,11 @@ function majUneLigne(li, id){
   const a = INDEX[id];
   const e = entreeDe(id);
   const rempli = !!(e && num(e.quantite) > 0);
+  // Passage de vide à rempli : une pulsation courte confirme la prise en compte.
+  if(rempli && !li.classList.contains('rempli') && !MOINS_ANIM){
+    li.classList.add('prise');
+    setTimeout(function(){ li.classList.remove('prise'); }, 640);
+  }
   li.classList.toggle('rempli', rempli);
   const n = rempli ? Calculs.nutriments(e, a) : null;
   $('.kcal-ligne', li).textContent = rempli ? fmt(Math.round(n.kcal)) : '—';
@@ -2285,6 +2773,20 @@ function brancherJournal(){
       if(acte.dataset.act === 'nouvel-aliment') formulaireAliment(null);
       if(acte.dataset.act === 'base-exemple') confirmerBaseExemple();
       if(acte.dataset.act === 'en-ligne') rechercheEnLigne(ETAT.ui.recherche);
+      return;
+    }
+    const cre = ev.target.closest('[data-creneau]');
+    if(cre){
+      ETAT.ui.creneau = cre.dataset.creneau;
+      ETAT.ui.creneauPose = repasParDefaut();
+      sauver('ui');
+      ANIM_LISTE = false; rendreListeJournal(); ANIM_LISTE = true;
+      return;
+    }
+    if(ev.target.closest('[data-parcourir]')){
+      ETAT.ui.parcourir = !ETAT.ui.parcourir;
+      sauver('ui');
+      rendreListeJournal();
       return;
     }
     const tete = ev.target.closest('.tete-cat');
@@ -2341,8 +2843,15 @@ function brancherJournal(){
   // Recherche instantanée : le champ est hors de la liste, le focus est préservé.
   $('#j-recherche').addEventListener('input', function(){
     ETAT.ui.recherche = this.value;
+    ANIM_LISTE = false;
     rendreListeJournal();
+    ANIM_LISTE = true;
   });
+  // Dictée : le bouton n'apparaît que si le navigateur sait écouter.
+  const btnVocal = $('#j-vocal');
+  btnVocal.hidden = !Vocal.disponible();
+  btnVocal.addEventListener('click', modaleVocale);
+
   $('#j-effacer-recherche').addEventListener('click', function(){
     ETAT.ui.recherche = '';
     $('#j-recherche').value = '';
@@ -2361,10 +2870,29 @@ function brancherJournal(){
     if(l) ficheEntree(l.dataset.entree);
   });
 
+  // Raccourcis : les gestes fréquents, à un doigt sous la recherche.
+  $('#j-raccourcis').addEventListener('click', function(ev){
+    const b = ev.target.closest('[data-rac]');
+    if(!b) return;
+    if(b.dataset.rac === 'modeles') allerA('repas');
+    if(b.dataset.rac === 'libre') repasLibre(null);
+    if(b.dataset.rac === 'veille') copierLaVeille();
+    if(b.dataset.rac === 'en-ligne') rechercheEnLigne(ETAT.ui.recherche);
+    if(b.dataset.rac === 'jour-libre') basculerJourLibre();
+  });
+
   // Alerte de sauvegarde
   $('#j-alerte').addEventListener('click', function(ev){
     if(ev.target.closest('[data-enregistrer-vite]')){ enregistrerJournee(); rendreAlerte(); return; }
     if(ev.target.closest('[data-sauver]')){ modaleDonnees(); return; }
+    const go = ev.target.closest('[data-lissage-go]');
+    if(go){ lancerLissage(Number(go.dataset.lissageGo)); return; }
+    if(ev.target.closest('[data-lissage-stop]')){ arreterLissage(); return; }
+    if(ev.target.closest('[data-lissage-non]')){
+      ETAT.ui.lissageRefuse = ETAT.journal.date;
+      sauver('ui'); rendreAlerte();
+      return;
+    }
     if(ev.target.closest('[data-plus-tard]')){
       ETAT.ui.alerteMasquee = isoJour();
       sauver('ui');
@@ -2392,7 +2920,7 @@ function enregistrerJournee(){
     date: ETAT.journal.date,
     entrees: JSON.parse(JSON.stringify(ETAT.journal.entrees)),
     totaux: {kcal:t.kcal, prot:t.prot, gluc:t.gluc, lip:t.lip, fibres:t.fibres},
-    ciblesDuJour: Object.assign({}, ciblesCourantes()),
+    ciblesDuJour: Object.assign({}, ciblesAppliquees()),
     libre: !!ETAT.journal.libre
   };
   sauver('historique');
@@ -2418,6 +2946,16 @@ function viderJournal(){
   toast('Journal vidé.');
 }
 
+/** Bascule « jour libre » : la cible est mise de côté, les calories restent comptées. */
+function basculerJourLibre(){
+  ETAT.journal.libre = !ETAT.journal.libre;
+  sauver('journal');
+  majEntete(); rendreAlerte();
+  toast(ETAT.journal.libre
+    ? 'Journée libre. Les calories sont comptées, la cible est mise de côté.'
+    : 'Journée redevenue normale.');
+}
+
 function menuJournal(){
   const corps =
     '<div class="pile">' +
@@ -2436,14 +2974,7 @@ function menuJournal(){
     if(!b) return;
     fermerModale();
     if(b.dataset.m === 'libre') repasLibre(null);
-    if(b.dataset.m === 'jour-libre'){
-      ETAT.journal.libre = !ETAT.journal.libre;
-      sauver('journal');
-      majEntete(); rendreAlerte();
-      toast(ETAT.journal.libre
-        ? 'Journée libre. Les calories sont comptées, la cible est mise de côté.'
-        : 'Journée redevenue normale.');
-    }
+    if(b.dataset.m === 'jour-libre') basculerJourLibre();
     if(b.dataset.m === 'veille') copierLaVeille();
     if(b.dataset.m === 'vider') viderJournal();
     if(b.dataset.m === 'ajouter') formulaireAliment(null);
@@ -2670,13 +3201,23 @@ const OFF = {
       id: null,
       nom: marque && nom.toLowerCase().indexOf(marque.toLowerCase()) < 0 ? nom + ' — ' + marque : nom,
       categorie: ETAT.categories[0] || 'Sans catégorie',
-      pour100g: {
-        kcal: Math.round(kcal || 0),
-        prot: Math.round((prot || 0) * 10) / 10,
-        gluc: Math.round((gluc || 0) * 10) / 10,
-        lip:  Math.round((lip  || 0) * 10) / 10,
-        fibres: Math.round((val('fiber_100g') || 0) * 10) / 10
-      },
+      pour100g: (function(){
+        const p100 = {
+          kcal: Math.round(kcal || 0),
+          prot: Math.round((prot || 0) * 10) / 10,
+          gluc: Math.round((gluc || 0) * 10) / 10,
+          lip:  Math.round((lip  || 0) * 10) / 10,
+          fibres: Math.round((val('fiber_100g') || 0) * 10) / 10
+        };
+        // Sel et potassium : présents sur beaucoup de fiches, on les reprend.
+        // Open Food Facts donne le sodium en grammes, le potassium en grammes.
+        let sel = val('salt_100g');
+        if(sel == null && val('sodium_100g') != null) sel = val('sodium_100g') * 2.5;
+        if(sel != null) p100.sel = Math.round(sel * 100) / 100;
+        const pot = val('potassium_100g');
+        if(pot != null) p100.pot = Math.round(pot * 1000);   // en milligrammes
+        return p100;
+      })(),
       unites: unites,
       favori: false,
       masque: false,
@@ -2808,6 +3349,320 @@ function rechercheEnLigne(termeInitial){
   if(termeInitial) lancer();
 }
 
+
+
+/* =========================================================================
+   8 sexies. SAISIE VOCALE
+   « Deux cents grammes de riz et un blanc de poulet » : c'est la seule chose
+   qui fasse encore gagner du temps une fois la liste courte en place. Tout se
+   passe dans le navigateur — la reconnaissance vocale de la plateforme, aucune
+   donnée envoyée par l'app. On n'ajoute jamais rien sans confirmation : la
+   dictée propose, l'utilisateur valide.
+   ========================================================================= */
+const MOTS_NOMBRES = {
+  'zero':0,'un':1,'une':1,'deux':2,'trois':3,'quatre':4,'cinq':5,'six':6,'sept':7,
+  'huit':8,'neuf':9,'dix':10,'onze':11,'douze':12,'quinze':15,'vingt':20,
+  'trente':30,'quarante':40,'cinquante':50,'soixante':60,'cent':100,'cents':100,
+  'demi':0.5,'demie':0.5
+};
+
+/** Mots d'unité reconnus → libellé d'unité cherché sur l'aliment. */
+const MOTS_UNITES = [
+  {test:/^(g|gr|gramme|grammes)$/,          label:'g'},
+  {test:/^(kg|kilo|kilos|kilogramme|kilogrammes)$/, label:'g', facteur:1000},
+  {test:/^(ml|millilitre|millilitres)$/,    label:'g'},
+  {test:/^(piece|pieces|unite|unites)$/,    label:'pièce'},
+  {test:/^(tranche|tranches)$/,             label:'tranche'},
+  {test:/^(portion|portions|part|parts)$/,  label:'portion'},
+  {test:/^(verre|verres)$/,                 label:'verre'},
+  {test:/^(bol|bols)$/,                     label:'bol'},
+  {test:/^(cuillere|cuilleres|cuillere a soupe|cuilleres a soupe)$/, label:'cuillère à soupe'},
+  {test:/^(cac|cuillere a cafe|cuilleres a cafe)$/, label:'cuillère à café'}
+];
+
+/** Mots trop courants pour identifier un aliment à eux seuls. */
+const MOTS_VIDES = ['avec','sans','tout','tous','toute','pour','dans','plus','moins','bien',
+  'cette','celui','mais','donc','alors','aussi','encore','juste','petit','petite','grand','grande',
+  'existe','truc','chose','machin'];
+
+/** Singulier approximatif : la dictée dit « trois œufs », la liste dit « Œuf ». */
+function singulier(mot){
+  return String(mot).replace(/(\w{3,})s\b/g, '$1').replace(/(\w{3,})x\b/g, '$1');
+}
+
+const Vocal = {
+  /** La reconnaissance vocale du navigateur, si elle existe. */
+  moteur: function(){
+    return window.SpeechRecognition || window.webkitSpeechRecognition || null;
+  },
+  disponible: function(){ return !!Vocal.moteur(); },
+
+  /**
+   * Analyse une phrase dictée et renvoie une liste d'intentions :
+   * { texte, quantite, unite, aliment, candidats }.
+   */
+  analyser: function(phrase){
+    // « et », virgules, « plus » : autant de séparateurs entre deux aliments.
+    const morceaux = normaliser(phrase)
+      .replace(/\bplus\b/g, ',')
+      .replace(/\bet\b/g, ',')
+      .split(/[,;]+/)
+      .map(function(m){ return m.trim(); })
+      .filter(Boolean);
+
+    return morceaux.map(Vocal.analyserMorceau);
+  },
+
+  analyserMorceau: function(txt){
+    const res = {texte: txt, quantite: null, unite: null, aliment: null, candidats: []};
+    let reste = txt;
+
+    // 1. Quantité : chiffres d'abord, sinon mots-nombres accolés (« deux cents »).
+    const chiffres = reste.match(/(\d+(?:[.,]\d+)?)/);
+    if(chiffres){
+      res.quantite = parseFloat(chiffres[1].replace(',', '.'));
+      reste = reste.replace(chiffres[0], ' ').replace(/\s+/g, ' ').trim();
+    }else{
+      const mots = reste.split(/\s+/);
+      let valeur = 0, pris = 0;
+      for(let i = 0; i < mots.length && i < 3; i++){
+        const v = MOTS_NOMBRES[mots[i]];
+        if(v == null) break;
+        // « deux cents » = 2 × 100 ; « vingt cinq » = 20 + 5.
+        valeur = (v === 100 && valeur > 0) ? valeur * 100 : valeur + v;
+        pris = i + 1;
+      }
+      if(pris){ res.quantite = valeur; reste = mots.slice(pris).join(' '); }
+    }
+
+    // 2. Unité : premier groupe de mots reconnu en tête de ce qui reste.
+    let facteur = 1;
+    reste = reste.trim();
+    const essais = [reste.split(/\s+/).slice(0, 3).join(' '), reste.split(/\s+/).slice(0, 2).join(' '), reste.split(/\s+/)[0] || ''];
+    for(let i = 0; i < essais.length; i++){
+      const e = essais[i].trim();
+      const trouve = MOTS_UNITES.filter(function(u){ return u.test.test(e); })[0];
+      if(trouve){
+        res.unite = trouve.label;
+        facteur = trouve.facteur || 1;
+        reste = reste.slice(e.length).trim();
+        break;
+      }
+    }
+    if(facteur !== 1 && res.quantite != null) res.quantite = res.quantite * facteur;
+
+    // 3. Le reste est le nom de l'aliment, débarrassé des liaisons.
+    reste = reste.replace(/^(de la|de l|du|des|de|d|le|la|les|un|une)\s+/, '').trim();
+    res.nomDit = reste;
+    if(!reste) return res;
+
+    const visibles = ETAT.aliments.filter(function(a){ return !a.masque; });
+    const chercher = function(q){
+      return visibles
+        .map(function(a){ return {a: a, s: scoreRecherche(a.nom, q)}; })
+        .filter(function(x){ return x.s > -1000; })
+        .sort(function(x, y){ return y.s - x.s || x.a.nom.localeCompare(y.a.nom, 'fr'); })
+        .slice(0, 8)
+        .map(function(x){ return x.a; });
+    };
+    res.candidats = chercher(reste);
+    // La dictée met des pluriels là où la liste est au singulier, et l'inverse.
+    if(!res.candidats.length) res.candidats = chercher(singulier(reste));
+
+    // Toujours rien : mot à mot, en ignorant les mots vides et les mots courts,
+    // et en exigeant qu'au moins un mot tombe en début de mot dans le nom —
+    // sinon « pas » suffirait à faire remonter « Pastèque ».
+    if(!res.candidats.length){
+      const mots = reste.split(/\s+/)
+        .map(singulier)
+        .filter(function(m){ return m.length >= 4 && MOTS_VIDES.indexOf(m) < 0; });
+      const scores = {};
+      visibles.forEach(function(a){
+        let s = 0, solide = false;
+        mots.forEach(function(m){
+          const v = scoreRecherche(a.nom, m);
+          if(v > -1000){ s += v; if(v >= 500) solide = true; }
+        });
+        if(solide) scores[a.id] = s;
+      });
+      res.candidats = Object.keys(scores)
+        .sort(function(x, y){ return scores[y] - scores[x]; })
+        .slice(0, 8)
+        .map(function(id){ return INDEX[id]; });
+    }
+
+    res.aliment = res.candidats[0] || null;
+    return res;
+  },
+
+  /** Index de l'unité de l'aliment correspondant au mot dicté. */
+  indexUnite: function(aliment, motUnite, quantite){
+    const unites = (aliment && aliment.unites) || [{label:'g', grammes:1}];
+    if(motUnite){
+      for(let i = 0; i < unites.length; i++){
+        if(normaliser(unites[i].label) === normaliser(motUnite)) return i;
+      }
+    }
+    // Aucune unité dite : un petit nombre désigne des pièces si l'aliment en a.
+    if(!motUnite && quantite != null && quantite <= 10){
+      for(let i = 0; i < unites.length; i++){
+        const l = normaliser(unites[i].label);
+        if(l !== 'g' && l !== 'g cuit' && l !== 'g cru') return i;
+      }
+    }
+    return 0;
+  }
+};
+
+/** Fenêtre de dictée : écoute, propose, laisse corriger, puis ajoute. */
+function modaleVocale(){
+  const Moteur = Vocal.moteur();
+  if(!Moteur){
+    ouvrirModale('Dicter un repas',
+      '<p class="entrefilet">La reconnaissance vocale n’est pas disponible dans ce navigateur. ' +
+      'Elle fonctionne aujourd’hui sur Chrome (Android, ordinateur) et Safari (iOS 16+). ' +
+      'En attendant, la recherche au clavier reste le chemin le plus court.</p>',
+      '<button class="btn primaire" data-fermer>Fermer</button>');
+    return;
+  }
+
+  const mod = ouvrirModale('Dicter un repas',
+    '<div class="dictee" data-etat="pret">' +
+      '<button class="btn primaire" data-ecouter style="width:100%">Parler</button>' +
+      '<p class="entrefilet" style="margin-top:8px">Dites par exemple : ' +
+        '« deux cents grammes de riz blanc cuit, cent cinquante de blanc de poulet et une banane ». ' +
+        'Rien n’est ajouté avant votre validation.</p>' +
+      '<div class="transcription" data-transcription hidden></div>' +
+      '<div data-resultats></div>' +
+    '</div>',
+    '<button class="btn" data-fermer>Annuler</button>' +
+    '<button class="btn primaire" data-vocal-valider disabled>Ajouter au journal</button>');
+
+  let lignes = [];
+  const reco = new Moteur();
+  reco.lang = 'fr-FR';
+  reco.continuous = false;
+  reco.interimResults = true;
+  reco.maxAlternatives = 1;
+
+  const zoneT = $('[data-transcription]', mod);
+  const zoneR = $('[data-resultats]', mod);
+  const bouton = $('[data-ecouter]', mod);
+
+  function rendreResultats(){
+    if(!lignes.length){ zoneR.innerHTML = ''; $('[data-vocal-valider]', mod).disabled = true; return; }
+    zoneR.innerHTML = '<div class="etiq" style="margin:12px 0 6px">Compris</div>' +
+      lignes.map(function(l, i){
+        if(!l.aliment){
+          return '<div class="dictee-l manquant" data-i="' + i + '">' +
+            '<div class="d-nom">« ' + esc(l.nomDit || l.texte) +' »<span class="q">aucun aliment de votre liste ne correspond</span></div>' +
+            '<button class="btn petit" data-chercher="' + i + '">Chercher</button></div>';
+        }
+        const uIdx = l.uniteIndex != null ? l.uniteIndex : Vocal.indexUnite(l.aliment, l.unite, l.quantite);
+        const u = Calculs.unite(l.aliment, uIdx);
+        const q = l.quantite != null ? l.quantite : (u.grammes === 1 ? 100 : 1);
+        const n = Calculs.nutriments({quantite:q, uniteIndex:uIdx}, l.aliment);
+        return '<div class="dictee-l" data-i="' + i + '">' +
+          '<div class="d-nom">' + esc(l.aliment.nom) +
+            '<span class="q">' + fmtG(q) + ' × ' + esc(u.label) + ' · ' + fmt(Math.round(n.kcal)) + ' kcal</span></div>' +
+          '<div class="d-champs">' +
+            '<input class="qte" type="text" inputmode="decimal" data-q="' + i + '" value="' + String(q).replace('.', ',') + '" aria-label="Quantité pour ' + esc(l.aliment.nom) + '">' +
+            '<select class="unite" data-u="' + i + '" aria-label="Unité pour ' + esc(l.aliment.nom) + '">' +
+              l.aliment.unites.map(function(x, k){
+                return '<option value="' + k + '"' + (k === uIdx ? ' selected' : '') + '>' + esc(x.label) + '</option>';
+              }).join('') +
+            '</select>' +
+            '<button class="btn petit icone" data-suppr="' + i + '" aria-label="Retirer cette ligne">×</button>' +
+          '</div>' +
+          (l.candidats.length > 1
+            ? '<select class="autre" data-alt="' + i + '" aria-label="Autre aliment que ' + esc(l.aliment.nom) + '">' +
+                l.candidats.map(function(c){
+                  return '<option value="' + esc(c.id) + '"' + (c.id === l.aliment.id ? ' selected' : '') + '>' + esc(c.nom) + '</option>';
+                }).join('') + '</select>'
+            : '') +
+        '</div>';
+      }).join('');
+    $('[data-vocal-valider]', mod).disabled = !lignes.some(function(l){ return l.aliment; });
+  }
+
+  reco.onresult = function(ev){
+    let texte = '';
+    for(let i = 0; i < ev.results.length; i++) texte += ev.results[i][0].transcript;
+    zoneT.hidden = false;
+    zoneT.textContent = '« ' + texte + ' »';
+    if(ev.results[ev.results.length - 1].isFinal){
+      lignes = Vocal.analyser(texte).map(function(l){
+        l.uniteIndex = l.aliment ? Vocal.indexUnite(l.aliment, l.unite, l.quantite) : 0;
+        return l;
+      });
+      rendreResultats();
+    }
+  };
+  reco.onerror = function(e){
+    bouton.textContent = 'Parler';
+    bouton.classList.remove('ecoute');
+    zoneT.hidden = false;
+    zoneT.textContent = e.error === 'not-allowed'
+      ? 'Micro refusé. Autorisez le microphone dans les réglages du navigateur.'
+      : 'Rien n’a été capté. Réessayez.';
+  };
+  reco.onend = function(){
+    bouton.textContent = lignes.length ? 'Reprendre la dictée' : 'Parler';
+    bouton.classList.remove('ecoute');
+  };
+
+  mod.addEventListener('click', function(ev){
+    if(ev.target.closest('[data-ecouter]')){
+      lignes = []; rendreResultats();
+      zoneT.hidden = false; zoneT.textContent = 'À vous…';
+      bouton.textContent = 'J’écoute…';
+      bouton.classList.add('ecoute');
+      try{ reco.start(); }catch(e){ /* déjà démarré */ }
+      return;
+    }
+    const sup = ev.target.closest('[data-suppr]');
+    if(sup){ lignes.splice(Number(sup.dataset.suppr), 1); rendreResultats(); return; }
+    const ch = ev.target.closest('[data-chercher]');
+    if(ch){
+      const l = lignes[Number(ch.dataset.chercher)];
+      fermerModale();
+      $('#j-recherche').value = l.nomDit || l.texte;
+      ETAT.ui.recherche = $('#j-recherche').value;
+      rendreListeJournal();
+      return;
+    }
+    if(!ev.target.closest('[data-vocal-valider]')) return;
+
+    let n = 0;
+    lignes.forEach(function(l, i){
+      if(!l.aliment) return;
+      const q = num($('[data-q="' + i + '"]', mod).value);
+      if(q <= 0) return;
+      const uIdx = Number($('[data-u="' + i + '"]', mod).value) || 0;
+      const existante = entreeDe(l.aliment.id);
+      if(existante && existante.uniteIndex === uIdx) existante.quantite = num(existante.quantite) + q;
+      else definirEntree(l.aliment.id, q, uIdx);
+      n++;
+    });
+    sauver('journal');
+    fermerModale();
+    rendreListeJournal(); majEntete(); rendreRecap();
+    toast(n ? n + (n > 1 ? ' aliments ajoutés.' : ' aliment ajouté.') : 'Rien à ajouter.');
+  });
+
+  mod.addEventListener('change', function(ev){
+    const alt = ev.target.closest('[data-alt]');
+    if(alt){
+      const l = lignes[Number(alt.dataset.alt)];
+      l.aliment = INDEX[alt.value];
+      l.uniteIndex = Vocal.indexUnite(l.aliment, l.unite, l.quantite);
+      rendreResultats();
+      return;
+    }
+    const u = ev.target.closest('[data-u]');
+    if(u){ lignes[Number(u.dataset.u)].uniteIndex = Number(u.value) || 0; }
+  });
+}
 
 /* =========================================================================
    8 ter. REPAS ET MODÈLES
@@ -3207,6 +4062,11 @@ function repasLibre(idExistant){
     '</div>' +
     '<label class="champ"><span>Nom</span>' +
       '<input type="text" data-nom value="' + esc(b.nom) + '" placeholder="Restaurant avec Paul"></label>' +
+    '<div class="champ"><span>Quelle taille ?</span><div class="segments" data-taille>' +
+      TAILLES_APPETIT.map(function(x, i){
+        return '<button type="button" data-t="' + i + '" aria-pressed="' + (i === 1) + '">' +
+          esc(x.label) + '</button>';
+      }).join('') + '</div></div>' +
     '<div class="champ"><span>Calories estimées</span>' +
       '<div class="saisie-libre">' +
         '<button class="pas" data-pas="-1" aria-label="Retirer 50 kcal">−</button>' +
@@ -3222,6 +4082,14 @@ function repasLibre(idExistant){
     '<div class="totaux-repas" data-apercu></div>',
     (existante ? '<button class="btn danger" data-retirer>Retirer</button>' : '<button class="btn" data-fermer>Annuler</button>') +
     '<button class="btn primaire" data-valider>' + (existante ? 'Enregistrer' : 'Ajouter au journal') + '</button>');
+
+  b.taille = 1;   // index dans TAILLES_APPETIT — « Normal » par défaut
+
+  /** Calories du modèle choisi, corrigées de la taille d'appétit. */
+  function kcalModele(){
+    if(b.modele == null) return null;
+    return Math.round(ESTIMATIONS_LIBRES[b.modele].kcal * TAILLES_APPETIT[b.taille].f / 10) * 10;
+  }
 
   /** Les macros suivent les calories, dans la proportion du modèle choisi. */
   function repartir(kcal){
@@ -3258,9 +4126,24 @@ function repasLibre(idExistant){
       $$('[data-choix] button', mod).forEach(function(z){ z.classList.toggle('actif', z === choix); });
       b.modele = i;
       if(!$('[data-nom]', mod).value.trim()) $('[data-nom]', mod).value = x.nom;
-      repartir(x.kcal);
-      $('[data-kcal]', mod).value = x.kcal;
+      const k = kcalModele();
+      repartir(k);
+      $('[data-kcal]', mod).value = k;
       majApercu();
+      return;
+    }
+    const taille = ev.target.closest('[data-taille] button');
+    if(taille){
+      const avant = TAILLES_APPETIT[b.taille].f;
+      $$('[data-taille] button', mod).forEach(function(z){ z.setAttribute('aria-pressed', String(z === taille)); });
+      b.taille = Number(taille.dataset.t);
+      // Avec un modèle, on recalcule depuis lui ; sinon on met la saisie à l'échelle.
+      let k = kcalModele();
+      if(k == null){
+        k = Math.round(num($('[data-kcal]', mod).value) * TAILLES_APPETIT[b.taille].f / avant / 10) * 10;
+      }
+      $('[data-kcal]', mod).value = k || '';
+      repartir(k || 0); majApercu();
       return;
     }
     const pas = ev.target.closest('[data-pas]');
@@ -3326,6 +4209,12 @@ function formulaireAliment(aliment, prerempli){
     return '<label class="champ"><span>' + libelle + '</span>' +
       '<input type="text" inputmode="decimal" data-n="' + cle + '" value="' + String(val || 0).replace('.', ',') + '"></label>';
   };
+  // Champ facultatif : vide veut dire « je ne sais pas », pas « zéro ».
+  const champOpt = function(cle, libelle, val, aide){
+    return '<label class="champ"><span>' + libelle + '</span>' +
+      '<input type="text" inputmode="decimal" data-o="' + cle + '" placeholder="' + esc(aide) + '" value="' +
+      (val == null ? '' : String(val).replace('.', ',')) + '"></label>';
+  };
 
   const corps =
     '<label class="champ"><span>Nom</span><input type="text" data-nom value="' + esc(a.nom) + '" placeholder="Blanc de poulet cru"></label>' +
@@ -3342,6 +4231,22 @@ function formulaireAliment(aliment, prerempli){
       '</div>' +
       '<button class="btn petit" data-calc style="margin-top:8px">Déduire les calories des macros</button>' +
       '<p class="entrefilet" style="margin:6px 0 0">Toujours saisir les valeurs pour 100 g, quelle que soit l’unité d’affichage.</p>' +
+    '</div>' +
+    '<div>' +
+      '<div class="etiq" style="margin-bottom:6px">Facultatif — laisser vide si inconnu</div>' +
+      '<div class="grille-champs">' +
+        champOpt('sel', 'Sel g', a.pour100g.sel, 'inconnu') +
+        champOpt('pot', 'Potassium mg', a.pour100g.pot, 'inconnu') +
+      '</div>' +
+    '</div>' +
+    '<div>' +
+      '<div class="etiq" style="margin-bottom:6px">Cuisson</div>' +
+      '<div class="grille-champs">' +
+        champOpt('cuisson', 'Poids cuit pour 100 g crus', a.cuisson, 'ex. 260') +
+        champOpt('cuissonInverse', 'Poids cuit pour 1 g cru', a.cuissonInverse, 'ex. 2,6') +
+      '</div>' +
+      '<p class="entrefilet" style="margin:6px 0 0">Renseigner l’un <em>ou</em> l’autre selon que les valeurs ci-dessus décrivent l’aliment cru ou cuit. ' +
+        'Une unité « g cuit » ou « g cru » est ajoutée automatiquement : 100 g de riz cru donnent environ 260 g cuits.</p>' +
     '</div>' +
     '<div>' +
       '<div class="etiq" style="margin-bottom:6px">Unités et équivalent en grammes</div>' +
@@ -3361,6 +4266,8 @@ function formulaireAliment(aliment, prerempli){
   let unites = JSON.parse(JSON.stringify(a.unites && a.unites.length ? a.unites : [{label:'g', grammes:1}]));
 
   function rendreUnites(){
+    // Les unités « g cuit » / « g cru » sont dérivées des champs de cuisson.
+    unites = unites.filter(function(u){ return u.label !== UNITE_CUIT && u.label !== UNITE_CRU; });
     $('[data-unites]', mod).innerHTML = unites.map(function(u, i){
       return '<div class="unite-l" data-i="' + i + '">' +
         '<input type="text" data-u-label value="' + esc(u.label) + '" aria-label="Libellé de l’unité ' + (i+1) + '" placeholder="tranche">' +
@@ -3427,11 +4334,22 @@ function formulaireAliment(aliment, prerempli){
     if(!unites.length) unites = [{label:'g', grammes:1}];
 
     const val = function(k){ return num($('[data-n="' + k + '"]', mod).value); };
+    const opt = function(k){
+      const champ = $('[data-o="' + k + '"]', mod);
+      const brut = champ ? champ.value.trim() : '';
+      return brut === '' ? null : num(brut);
+    };
     const cible = est_modif ? INDEX[a.id] : {id: uid('al'), favori:false, masque:false};
     cible.nom = nom;
     cible.categorie = cat;
     cible.pour100g = {kcal: val('kcal'), prot: val('prot'), gluc: val('gluc'), lip: val('lip'), fibres: val('fibres')};
+    const sel = opt('sel'), pot = opt('pot');
+    if(sel != null) cible.pour100g.sel = sel;
+    if(pot != null) cible.pour100g.pot = pot;
     cible.unites = unites;
+    appliquerCuisson(cible, opt('cuisson'));
+    appliquerCuissonInverse(cible, opt('cuissonInverse'));
+    unites = cible.unites;
     if(!est_modif) ETAT.aliments.push(cible);
 
     reindexer(); sauver('aliments');
@@ -3641,8 +4559,15 @@ function rendrePoids(){
           (Math.abs(ecart) < 120
             ? 'Votre cible de ' + fmt(cible) + ' kcal est cohérente avec ce que montre la balance.'
             : 'Votre cible est de ' + fmt(cible) + ' kcal, soit ' + (ecart > 0 ? fmt(ecart) + ' kcal de moins' : fmt(-ecart) + ' kcal de plus') +
-              ' que cette estimation. Ajustez dans Profil si l’écart se confirme.') +
+              ' que cette estimation.') +
         '</p>' +
+        (profilDefini()
+          ? '<div class="rangee-actions" style="margin-top:10px">' +
+              '<button class="btn petit primaire" data-adopter="' + dr.depense + '">Recalculer ma cible sur cette dépense</button>' +
+            '</div>' +
+            '<p class="entrefilet" style="margin-top:6px">La formule de Mifflin-St Jeor est une moyenne de population. ' +
+              'Votre balance, elle, parle de vous : après ' + dr.jours + ' jours, elle est plus fiable.</p>'
+          : '') +
       '</div>';
   }else{
     estimation =
@@ -3664,6 +4589,110 @@ function rendrePoids(){
       svgPoids() +
       estimation +
     '</div>';
+}
+
+/* ---------- Bilan de la semaine -----------------------------------------
+   Le calendrier montre des jours ; personne ne mange en jours. Une semaine
+   moyenne juste vaut mieux que sept journées parfaites, et cette carte est le
+   seul endroit où l'on voit la tendance plutôt que l'incident. --------- */
+
+/** Les 7 dates d'une semaine commençant un lundi, décalée de `semainesAvant`. */
+function semaineDe(semainesAvant){
+  const auj = dateDepuisIso(isoJour());
+  const lundi = new Date(auj);
+  lundi.setDate(lundi.getDate() - indexLundi(auj) - 7 * (semainesAvant || 0));
+  const out = [];
+  for(let i = 0; i < 7; i++){
+    const d = new Date(lundi); d.setDate(d.getDate() + i);
+    out.push(d.getFullYear() + '-' + String(d.getMonth()+1).padStart(2,'0') + '-' + String(d.getDate()).padStart(2,'0'));
+  }
+  return out;
+}
+
+/** Agrégats d'une semaine : moyennes sur les jours effectivement enregistrés. */
+function bilanSemaine(dates){
+  const jours = dates.map(function(d){ return ETAT.historique[d] ? {iso:d, j:ETAT.historique[d]} : null; })
+                     .filter(Boolean);
+  if(!jours.length) return null;
+  let kcal = 0, prot = 0, dansCible = 0, protTenue = 0, libres = 0;
+  jours.forEach(function(x){
+    const t = x.j.totaux || {};
+    const c = x.j.ciblesDuJour || ciblesCourantes();
+    kcal += t.kcal || 0;
+    prot += t.prot || 0;
+    if(x.j.libre) libres++;
+    else if(c.kcal > 0 && Math.abs((t.kcal || 0) - c.kcal) <= c.kcal * 0.07) dansCible++;
+    if(c.prot > 0 && (t.prot || 0) >= c.prot * 0.9) protTenue++;
+  });
+  return {
+    notes: jours.length, dates: dates,
+    kcal: Math.round(kcal / jours.length), prot: Math.round(prot / jours.length),
+    dansCible: dansCible, protTenue: protTenue, libres: libres,
+    total: Math.round(kcal)
+  };
+}
+
+function rendreSemaine(){
+  const hote = $('#h-semaine');
+  const dates = semaineDe(0);
+  const b = bilanSemaine(dates);
+  if(!b){ hote.innerHTML = ''; return; }
+  const prec = bilanSemaine(semaineDe(1));
+  const c = ciblesCourantes();
+
+  const comparer = function(actuel, avant, unite){
+    if(!avant) return '<span class="cmp">—</span>';
+    const d = actuel - avant;
+    if(Math.abs(d) < 1) return '<span class="cmp">=</span>';
+    return '<span class="cmp ' + (d > 0 ? 'haut' : 'bas') + '">' +
+      (d > 0 ? '+' : '−') + fmt(Math.abs(Math.round(d))) + (unite || '') + '</span>';
+  };
+
+  // Une pastille par jour de la semaine : dans la cible, hors cible, libre, vide.
+  const pastilles = dates.map(function(d){
+    const j = ETAT.historique[d];
+    if(!j) return '<i title="' + esc(libelleCourt(d)) + ' : non enregistré"></i>';
+    if(j.libre) return '<i class="libre" title="' + esc(libelleCourt(d)) + ' : jour libre"></i>';
+    const cj = j.ciblesDuJour || c;
+    const dans = cj.kcal > 0 && Math.abs((j.totaux.kcal || 0) - cj.kcal) <= cj.kcal * 0.07;
+    return '<i class="' + (dans ? 'ok' : 'hors') + '" title="' + esc(libelleCourt(d)) + ' : ' +
+      fmt(Math.round(j.totaux.kcal || 0)) + ' kcal"></i>';
+  }).join('');
+
+  hote.innerHTML =
+    '<div class="carte-p">' +
+      '<div class="titre-bloc"><h2>Cette semaine</h2>' +
+        '<span class="etiq">' + b.notes + ' / 7 jours notés</span></div>' +
+      '<div class="jauge-sem" role="img" aria-label="État de chaque jour de la semaine">' + pastilles + '</div>' +
+      '<div class="semaine-l"><span class="nom">Calories, moyenne par jour</span>' +
+        '<span class="v">' + fmt(b.kcal) + '</span>' + comparer(b.kcal, prec && prec.kcal) + '</div>' +
+      '<div class="semaine-l"><span class="nom">Protéines, moyenne par jour</span>' +
+        '<span class="v" style="color:var(--prot)">' + fmt(b.prot) + ' g</span>' + comparer(b.prot, prec && prec.prot) + '</div>' +
+      '<div class="semaine-l"><span class="nom">Jours dans la cible</span>' +
+        '<span class="v">' + b.dansCible + '</span><span class="cmp">sur ' + (b.notes - b.libres) + '</span></div>' +
+      '<div class="semaine-l"><span class="nom">Protéines tenues</span>' +
+        '<span class="v">' + b.protTenue + '</span><span class="cmp">sur ' + b.notes + '</span></div>' +
+      '<p class="entrefilet" style="margin-top:10px">' + phraseSemaine(b, prec, c) + '</p>' +
+    '</div>';
+}
+
+/** Une phrase, pas un tableau de plus : ce que la semaine dit vraiment. */
+function phraseSemaine(b, prec, c){
+  if(b.notes < 3) return 'Trop peu de jours notés pour dire quoi que ce soit — revenez en fin de semaine.';
+  const ecart = b.kcal - c.kcal;
+  const bouts = [];
+  if(Math.abs(ecart) <= c.kcal * 0.05){
+    bouts.push('La moyenne de la semaine tombe sur votre cible : c’est exactement ce qui compte, même si des journées ont débordé.');
+  }else if(ecart > 0){
+    bouts.push('Vous êtes ' + fmt(ecart) + ' kcal par jour au-dessus de la cible, soit ' + fmt(ecart * 7) + ' kcal sur la semaine.');
+  }else{
+    bouts.push('Vous êtes ' + fmt(-ecart) + ' kcal par jour sous la cible.');
+  }
+  if(b.protTenue < b.notes - 1) bouts.push('Les protéines ne suivent pas : ' + b.protTenue + ' jour' +
+    (b.protTenue > 1 ? 's' : '') + ' sur ' + b.notes + ' seulement.');
+  if(b.libres) bouts.push(b.libres + ' jour' + (b.libres > 1 ? 's' : '') + ' libre' + (b.libres > 1 ? 's' : '') + ' compté' +
+    (b.libres > 1 ? 's' : '') + ' à part.');
+  return bouts.join(' ');
 }
 
 function rendreHistorique(){
@@ -3712,6 +4741,7 @@ function rendreHistorique(){
       return '<span>' + dateDepuisIso(d).getDate() + '</span>';
     }).join('') + '</div>';
 
+  rendreSemaine();
   rendrePoids();
   rendreCalendrier();
 }
@@ -3836,8 +4866,34 @@ function ficheJour(iso){
   });
 }
 
+/**
+ * Adopte la dépense mesurée comme base de calcul. On ne touche pas au profil
+ * (poids, taille, activité restent vrais) : on mémorise un décalage, appliqué
+ * ensuite au même calcul de cibles. Réversible d'un bouton dans Profil.
+ */
+function adopterDepense(depense){
+  const p = ETAT.profil;
+  if(!p || !p.cibles) return;
+  const theorique = Calculs.depenseTheorique(p);
+  p.correctionDepense = Math.round(depense - theorique);
+  p.cibles = Calculs.cibles(p);
+  sauver('profil');
+  rendrePoids(); rendreProfil(); majEntete(); rendreHistorique();
+  toast('Cible recalculée : ' + fmt(p.cibles.kcal) + ' kcal par jour.');
+}
+
 function brancherHistorique(){
   $('#h-poids').addEventListener('click', function(ev){
+    const ad = ev.target.closest('[data-adopter]');
+    if(ad){
+      const d = Number(ad.dataset.adopter);
+      confirmer('Recalculer la cible sur votre dépense mesurée ?',
+        'La nouvelle base sera ' + fmt(d) + ' kcal par jour au lieu de l’estimation théorique. ' +
+        'Votre objectif (prise, maintien, perte) et vos grammes de protéines et de lipides ne changent pas. ' +
+        'Réversible dans Profil.',
+        'Recalculer', function(){ adopterDepense(d); });
+      return;
+    }
     if(!ev.target.closest('[data-poids-ok]')) return;
     const v = num($('[data-poids]').value);
     if(v <= 0 || v > 400){ toast('Poids invalide.'); return; }
@@ -3979,9 +5035,12 @@ function htmlApercuCibles(p){
   const dep = Math.round(Calculs.depense(p));
   const obj = Calculs.objectif(p.objectif);
   const ecart = Math.round(obj.ecart * 100);
+  const corr = num(p.correctionDepense);
   return '<div class="etiq">Estimation</div>' +
     '<p class="entrefilet" style="margin:4px 0 0">Métabolisme de base ' + fmt(mb) + ' kcal · dépense estimée ' + fmt(dep) + ' kcal · ' +
     (ecart === 0 ? 'aucun écart appliqué' : (ecart > 0 ? '+' : '') + ecart + ' % pour l’objectif') + '.</p>' +
+    (corr ? '<p class="entrefilet" style="margin:4px 0 0">Dépense corrigée de ' + (corr > 0 ? '+' : '−') + fmt(Math.abs(corr)) +
+              ' kcal d’après vos pesées. <button class="lien" data-annuler-correction>Revenir à la formule</button></p>' : '') +
     '<div class="cibles-apercu">' +
       '<div class="c"><span class="etiq">kcal</span><span class="nb">' + fmt(c.kcal) + '</span></div>' +
       '<div class="c"><span class="etiq">Prot. g</span><span class="nb" style="color:var(--prot)">' + fmt(c.prot) + '</span></div>' +
@@ -4043,18 +5102,35 @@ function rendreProfil(){
       '.</p>' +
     '</div>';
 
+  // La correction issue des pesées n'est pas un champ du formulaire : on la
+  // reporte à chaque lecture pour qu'elle reste appliquée.
+  const avecCorrection = function(v){
+    if(ETAT.profil && ETAT.profil.correctionDepense) v.correctionDepense = ETAT.profil.correctionDepense;
+    return v;
+  };
   const form = construireFormProfil($('#p-form'), p, function(v){
-    $('#p-apercu').innerHTML = htmlApercuCibles(v);
+    $('#p-apercu').innerHTML = htmlApercuCibles(avecCorrection(v));
   });
-  $('#p-apercu').innerHTML = htmlApercuCibles(form.lire());
+  $('#p-apercu').innerHTML = htmlApercuCibles(avecCorrection(form.lire()));
+
+  $('#p-apercu').addEventListener('click', function(ev){
+    if(!ev.target.closest('[data-annuler-correction]')) return;
+    if(ETAT.profil){
+      delete ETAT.profil.correctionDepense;
+      ETAT.profil.cibles = Calculs.cibles(ETAT.profil);
+      sauver('profil');
+      rendreProfil(); majEntete(); rendrePoids();
+      toast('Retour à la dépense théorique.');
+    }
+  });
 
   $('#p-appliquer').addEventListener('click', function(){
-    const cc = Calculs.cibles(form.lire());
+    const cc = Calculs.cibles(avecCorrection(form.lire()));
     ['kcal','prot','gluc','lip'].forEach(function(k){ $('[data-c="' + k + '"]').value = cc[k]; });
     toast('Cibles recalculées — pensez à enregistrer.');
   });
   $('#p-enregistrer').addEventListener('click', function(){
-    const base = form.lire();
+    const base = avecCorrection(form.lire());
     base.cibles = {
       kcal: num($('[data-c="kcal"]').value), prot: num($('[data-c="prot"]').value),
       gluc: num($('[data-c="gluc"]').value), lip: num($('[data-c="lip"]').value)
@@ -4242,6 +5318,7 @@ function modaleDonnees(){
       '<button class="btn" data-d="importer">Importer (remplace les données)</button>' +
       '<hr class="sep">' +
       '<button class="btn" data-d="exemple">Charger la base d’aliments</button>' +
+      '<button class="btn" data-d="ciqual">Importer la table Ciqual (ANSES)</button>' +
     '</div>');
 
   mod.addEventListener('click', function(ev){
@@ -4259,6 +5336,7 @@ function modaleDonnees(){
       montrerTexte('Historique CSV', csvHistorique(), 'macro-carnet-historique-' + isoJour() + '.csv');
     }
     if(act === 'exemple'){ fermerModale(); confirmerBaseExemple(); }
+    if(act === 'ciqual'){ fermerModale(); modaleCiqual(); }
     if(act === 'importer'){
       const texte = $('[data-colle]', mod).value.trim();
       if(!texte){ toast('Collez un contenu JSON ou choisissez un fichier.'); return; }
@@ -4276,6 +5354,212 @@ function modaleDonnees(){
       catch(e){ toast('Fichier illisible.'); }
     };
     lecteur.readAsText(f);
+  });
+}
+
+/* =========================================================================
+   IMPORT DE LA TABLE CIQUAL (ANSES)
+   La table officielle est un fichier de 3 200 aliments et 60 nutriments ;
+   l'embarquer dans la page la ferait tripler de poids et la figerait sur une
+   version. On la lit à la demande : l'utilisateur dépose le fichier exporté en
+   CSV depuis le classeur Ciqual, l'app reconnaît les colonnes, convertit les
+   décimales françaises et les mentions « traces », « - », « < 0,1 », puis
+   fusionne sans écraser ce qui existe déjà.
+   Données : ANSES-Ciqual, licence ouverte (Etalab). Citer la source.
+   ========================================================================= */
+
+/** Découpe une ligne CSV en tenant compte des guillemets. */
+function decouperCsv(ligne, sep){
+  const out = [];
+  let champ = '', dansGuillemets = false;
+  for(let i = 0; i < ligne.length; i++){
+    const c = ligne[i];
+    if(dansGuillemets){
+      if(c === '"'){
+        if(ligne[i+1] === '"'){ champ += '"'; i++; }
+        else dansGuillemets = false;
+      }else champ += c;
+    }else if(c === '"') dansGuillemets = true;
+    else if(c === sep){ out.push(champ); champ = ''; }
+    else champ += c;
+  }
+  out.push(champ);
+  return out;
+}
+
+/**
+ * Valeur nutritionnelle Ciqual → nombre.
+ * La table écrit « - » (non déterminé), « traces », « < 0,1 » et sépare les
+ * décimales par une virgule. Un « - » n'est pas un zéro : il devient null.
+ */
+function valeurCiqual(brut){
+  if(brut == null) return null;
+  let v = String(brut).trim().replace(/\s|\u00a0/g, '');
+  if(!v || v === '-' || v === '—') return null;
+  if(/^traces$/i.test(v)) return 0;
+  v = v.replace('<', '').replace(',', '.');
+  const n = parseFloat(v);
+  return isFinite(n) ? n : null;
+}
+
+/** Rapproche un intitulé de colonne Ciqual du champ interne correspondant. */
+const COLONNES_CIQUAL = [
+  {cle:'nom',    test:/^alim_nom_fr$|nom.*aliment|libell/i},
+  {cle:'groupe', test:/alim_grp_nom_fr|groupe/i},
+  {cle:'sousgr', test:/alim_ssgrp_nom_fr|sous.?groupe/i},
+  {cle:'kcal',   test:/kcal/i},
+  {cle:'kj',     test:/kj/i},
+  {cle:'prot',   test:/prot[ée]ines.*6[.,]25|^prot[ée]ines/i},
+  {cle:'gluc',   test:/^glucides/i},
+  {cle:'lip',    test:/^lipides/i},
+  {cle:'fibres', test:/fibres/i},
+  {cle:'sel',    test:/^sel\b|chlorure de sodium/i},
+  {cle:'sodium', test:/^sodium/i},
+  {cle:'pot',    test:/^potassium/i}
+];
+
+function reperColonnes(entetes){
+  const map = {};
+  entetes.forEach(function(h, i){
+    const titre = String(h).replace(/^\ufeff/, '').trim();
+    COLONNES_CIQUAL.forEach(function(c){
+      if(map[c.cle] == null && c.test.test(titre)) map[c.cle] = i;
+    });
+  });
+  return map;
+}
+
+/** Convertit le texte CSV complet en aliments du modèle interne. */
+function lireCiqual(texte){
+  const lignes = String(texte).split(/\r?\n/).filter(function(l){ return l.trim() !== ''; });
+  if(lignes.length < 2) throw new Error('Fichier vide.');
+  // Ciqual s'exporte en point-virgule ; on accepte aussi la tabulation et la virgule.
+  const candidats = [';', '\t', ','];
+  let sep = ';', meilleur = 0;
+  candidats.forEach(function(c){
+    const n = decouperCsv(lignes[0], c).length;
+    if(n > meilleur){ meilleur = n; sep = c; }
+  });
+  const cols = reperColonnes(decouperCsv(lignes[0], sep));
+  if(cols.nom == null) throw new Error('Colonne « alim_nom_fr » introuvable.');
+  if(cols.kcal == null && cols.kj == null) throw new Error('Aucune colonne de calories.');
+
+  const aliments = [], groupes = {};
+  for(let i = 1; i < lignes.length; i++){
+    const c = decouperCsv(lignes[i], sep);
+    const nom = (c[cols.nom] || '').trim();
+    if(!nom) continue;
+    let kcal = cols.kcal != null ? valeurCiqual(c[cols.kcal]) : null;
+    if(kcal == null && cols.kj != null){
+      const kj = valeurCiqual(c[cols.kj]);
+      if(kj != null) kcal = kj / 4.184;
+    }
+    const prot = cols.prot != null ? valeurCiqual(c[cols.prot]) : null;
+    const gluc = cols.gluc != null ? valeurCiqual(c[cols.gluc]) : null;
+    const lip  = cols.lip  != null ? valeurCiqual(c[cols.lip])  : null;
+    if(kcal == null && prot == null && gluc == null && lip == null) continue;
+
+    const p100 = {
+      kcal: Math.round(kcal || 0),
+      prot: Math.round((prot || 0) * 10) / 10,
+      gluc: Math.round((gluc || 0) * 10) / 10,
+      lip:  Math.round((lip  || 0) * 10) / 10,
+      fibres: Math.round((cols.fibres != null ? (valeurCiqual(c[cols.fibres]) || 0) : 0) * 10) / 10
+    };
+    let sel = cols.sel != null ? valeurCiqual(c[cols.sel]) : null;
+    if(sel == null && cols.sodium != null){
+      const sod = valeurCiqual(c[cols.sodium]);           // Ciqual donne le sodium en mg
+      if(sod != null) sel = sod * 2.5 / 1000;
+    }
+    if(sel != null) p100.sel = Math.round(sel * 100) / 100;
+    const pot = cols.pot != null ? valeurCiqual(c[cols.pot]) : null;
+    if(pot != null) p100.pot = Math.round(pot);
+
+    const groupe = ((cols.sousgr != null && c[cols.sousgr]) || (cols.groupe != null && c[cols.groupe]) || 'Ciqual').trim();
+    groupes[groupe] = true;
+    aliments.push({
+      id: uid('al'), nom: nom, categorie: groupe, pour100g: p100,
+      unites: [{label:'g', grammes:1}], favori:false, masque:false, source:'ciqual'
+    });
+  }
+  return {aliments: aliments, groupes: Object.keys(groupes)};
+}
+
+/** Fenêtre d'import : aperçu, choix du périmètre, fusion. */
+function modaleCiqual(){
+  const mod = ouvrirModale('Table Ciqual (ANSES)',
+    '<p class="entrefilet">Téléchargez <em>Table Ciqual 2020_FR</em> sur ciqual.anses.fr, ouvrez le classeur et ' +
+      'enregistrez-le au format <strong>CSV</strong> (séparateur point-virgule). Déposez ensuite le fichier ici : ' +
+      'l’app reconnaît les colonnes toute seule.</p>' +
+    '<label class="champ"><span>Fichier CSV Ciqual</span>' +
+      '<input type="file" accept=".csv,text/csv,text/plain" data-ciqual-fichier></label>' +
+    '<label class="rangee" style="gap:9px;justify-content:flex-start;margin-top:4px">' +
+      '<input type="checkbox" data-ciqual-remplacer style="width:22px;height:22px;min-height:0;flex:none">' +
+      '<span style="font-size:14px">Mettre à jour les aliments de même nom déjà présents</span></label>' +
+    '<div data-ciqual-apercu></div>' +
+    '<p class="entrefilet">Source : ANSES-Ciqual, licence ouverte. Les valeurs sont fournies pour 100 g de partie comestible.</p>',
+    '<button class="btn" data-fermer>Fermer</button>' +
+    '<button class="btn primaire" data-ciqual-valider disabled>Ajouter à ma liste</button>');
+
+  let lot = null;
+
+  $('[data-ciqual-fichier]', mod).addEventListener('change', function(){
+    const f = this.files && this.files[0];
+    if(!f) return;
+    const apercu = $('[data-ciqual-apercu]', mod);
+    apercu.innerHTML = '<p class="entrefilet">Lecture…</p>';
+    const lecteur = new FileReader();
+    lecteur.onload = function(){
+      try{
+        lot = lireCiqual(String(lecteur.result));
+      }catch(e){
+        lot = null;
+        apercu.innerHTML = '<div class="encart alerte-doux"><strong>Fichier non reconnu.</strong> ' + esc(e.message) + '</div>';
+        $('[data-ciqual-valider]', mod).disabled = true;
+        return;
+      }
+      const connus = {};
+      ETAT.aliments.forEach(function(a){ connus[normaliser(a.nom)] = true; });
+      const neufs = lot.aliments.filter(function(a){ return !connus[normaliser(a.nom)]; }).length;
+      apercu.innerHTML =
+        '<div class="encart resultat" style="margin-top:10px">' +
+          '<div class="etiq">Aperçu</div>' +
+          '<p class="entrefilet" style="margin-top:4px">' + fmt(lot.aliments.length) + ' aliments lus, ' +
+            fmt(lot.groupes.length) + ' groupes. <strong>' + fmt(neufs) + ' nouveaux</strong> pour votre liste.</p>' +
+          '<p class="entrefilet" style="margin-top:4px">Exemples : ' +
+            lot.aliments.slice(0, 3).map(function(a){
+              return esc(a.nom) + ' (' + fmt(a.pour100g.kcal) + ' kcal)';
+            }).join(' · ') + '</p>' +
+        '</div>';
+      $('[data-ciqual-valider]', mod).disabled = false;
+    };
+    lecteur.readAsText(f, 'utf-8');
+  });
+
+  mod.addEventListener('click', function(ev){
+    if(!ev.target.closest('[data-ciqual-valider]') || !lot) return;
+    const remplacer = $('[data-ciqual-remplacer]', mod).checked;
+    const parNom = {};
+    ETAT.aliments.forEach(function(a){ parNom[normaliser(a.nom)] = a; });
+    let ajoutes = 0, majs = 0;
+    lot.aliments.forEach(function(n){
+      const existant = parNom[normaliser(n.nom)];
+      if(existant){
+        if(remplacer){ existant.pour100g = n.pour100g; existant.source = 'ciqual'; majs++; }
+        return;
+      }
+      ETAT.aliments.push(n);
+      parNom[normaliser(n.nom)] = n;
+      ajoutes++;
+    });
+    lot.groupes.forEach(function(g){
+      if(ETAT.categories.indexOf(g) < 0){ ETAT.categories.push(g); ETAT.ui.repliees[g] = true; }
+    });
+    reindexer();
+    sauver('aliments'); sauver('categories'); sauver('ui');
+    fermerModale();
+    rendreAliments(); rendreListeJournal(); majEntete();
+    toast(fmt(ajoutes) + ' aliments ajoutés' + (majs ? ', ' + fmt(majs) + ' mis à jour' : '') + '.');
   });
 }
 
@@ -4341,11 +5625,13 @@ function verifierJour(){
       date: ETAT.journal.date,
       entrees: JSON.parse(JSON.stringify(ETAT.journal.entrees)),
       totaux: t,
-      ciblesDuJour: Object.assign({}, ciblesCourantes())
+      ciblesDuJour: Object.assign({}, ciblesAppliquees())
     };
     sauver('historique');
   }
   ETAT.journal = {date: auj, entrees: [], libre: false};
+  // Un lissage arrivé à son terme ne doit pas traîner.
+  if(ETAT.ui.lissage && auj > ETAT.ui.lissage.jusquA){ ETAT.ui.lissage = null; sauver('ui'); }
   sauver('journal');
   return true;
 }
@@ -4437,6 +5723,17 @@ async function amorcer(){
 }
 
 amorcer();
+
+/* Points d'entrée de vérification : uniquement des fonctions d'analyse, sans
+   effet de bord. Servent aux tests automatisés et au diagnostic. */
+window.MacroCarnet = {
+  version: VERSION,
+  analyserDictee: Vocal.analyser,
+  uniteDictee: Vocal.indexUnite,
+  lireCiqual: lireCiqual,
+  uniteDe: Calculs.unite,
+  vocalDisponible: Vocal.disponible
+};
 
 })();
 </script>
