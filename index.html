@@ -233,7 +233,9 @@ input:focus,select:focus,textarea:focus{outline:2px solid var(--focus);outline-o
 .barre-collante{position:sticky;top:env(safe-area-inset-top,0px);z-index:30;display:flex;flex-direction:column;gap:8px;
                 padding:8px 0 10px;margin-top:-8px;
                 background:linear-gradient(var(--bg) 76%, transparent)}
-.mini{
+/* Nom distinct de la miniature du calendrier : deux « mini » entraient en
+   collision, le remplissage de la barre écrasait la vignette. */
+.resume-colle{
   display:flex;align-items:center;gap:12px;padding:10px 14px;
   background:var(--jour-bg);color:var(--jour-ink);border-radius:var(--r);box-shadow:var(--ombre-2);
   animation:apparait .18s ease;
@@ -243,9 +245,9 @@ input:focus,select:focus,textarea:focus{outline:2px solid var(--focus);outline-o
 .mini-chiffres .sur{font-size:11.5px;color:var(--jour-ink-2);font-variant-numeric:tabular-nums}
 .mini-chiffres .reste{font-size:11.5px;color:var(--jour-ink-2);font-variant-numeric:tabular-nums;
                       padding-left:7px;border-left:1px solid var(--jour-ligne)}
-.mini .barre-empilee{height:6px}
-.mini.atteint .mini-chiffres .nb{color:var(--ok)}
-.mini.depasse .mini-chiffres .nb{color:var(--alerte)}
+.resume-colle .barre-empilee{height:6px}
+.resume-colle.atteint .mini-chiffres .nb{color:var(--ok)}
+.resume-colle.depasse .mini-chiffres .nb{color:var(--alerte)}
 .carte-jour{
   padding:15px 16px 13px;background:var(--jour-bg);color:var(--jour-ink);
   border:0;border-radius:var(--r-g);box-shadow:var(--ombre-2);
@@ -429,29 +431,34 @@ select.unite{flex:0 1 auto;min-width:96px;max-width:180px;margin-right:auto;min-
 .barre.dans i{background:var(--ok)}
 .barre.sur i{background:var(--alerte)}
 .barre.absent i{background:var(--surface-3);height:3px !important;border-radius:2px}
-.ligne-cible{position:absolute;left:0;right:0;border-top:1px dashed var(--line-fort);pointer-events:none}
-.ligne-cible span{position:absolute;right:0;top:-16px;font-family:"IBM Plex Mono",monospace;font-size:10px;
-                  color:var(--ink-3);background:var(--surface);padding:0 4px;border-radius:3px}
+.ligne-cible{position:absolute;left:0;right:0;border-top:1px dashed var(--line-fort);pointer-events:none;z-index:2}
+.ligne-cible span{position:absolute;right:0;top:-15px;font-family:"IBM Plex Mono",monospace;font-size:10px;
+                  color:var(--ink-2);background:var(--surface);padding:1px 5px;border-radius:4px;
+                  box-shadow:0 0 0 3px var(--surface);white-space:nowrap}
 .jours-x{display:flex;gap:4px;margin-top:6px}
 .jours-x span{flex:1;text-align:center;font-family:"IBM Plex Mono",monospace;font-size:9.5px;color:var(--ink-3)}
 
 .cal-nav{display:flex;align-items:center;justify-content:space-between;gap:10px;padding:12px 14px 8px}
 .cal-nav .mois{font-weight:600;font-size:14.5px;letter-spacing:-.005em}
 .cal-nav .mois::first-letter{text-transform:uppercase}
-.cal-entetes,.cal{display:grid;grid-template-columns:repeat(7,1fr);gap:4px;padding:0 12px}
+/* Le calendrier se resserre au lieu de déborder : marges, écarts et tailles
+   de texte suivent la largeur réelle de l'écran. */
+.cal-entetes,.cal{display:grid;grid-template-columns:repeat(7,minmax(0,1fr));
+                  gap:clamp(2px,1vw,6px);padding:0 clamp(6px,2.5vw,14px)}
 .cal-entetes{padding-bottom:6px}
 .cal-entetes span{text-align:center;font-family:"IBM Plex Mono",monospace;font-size:10px;color:var(--ink-3)}
 .cal{padding-bottom:14px}
 .case{
-  aspect-ratio:1/1.05;border:1px solid var(--line);border-radius:8px;background:var(--surface-2);
-  display:flex;flex-direction:column;align-items:center;justify-content:center;gap:2px;padding:3px;
-  min-height:44px;transition:transform .12s ease,box-shadow .14s ease;
+  aspect-ratio:1/1.12;border:1px solid var(--line);border-radius:7px;background:var(--surface-2);
+  display:flex;flex-direction:column;align-items:center;justify-content:center;gap:1px;
+  padding:clamp(1px,0.6vw,4px);min-height:42px;overflow:hidden;
+  transition:transform .12s ease,box-shadow .14s ease;
 }
 .case.vide{border-color:transparent;background:none}
 .case.avenir{opacity:.35}
-.case .j{font-family:"IBM Plex Mono",monospace;font-size:9.5px;color:var(--ink-3);line-height:1}
-.case .k{font-size:13.5px;line-height:1.05}
-.case .mini{display:flex;width:72%;height:3.5px;border-radius:2px;overflow:hidden;background:var(--line)}
+.case .j{font-family:"IBM Plex Mono",monospace;font-size:clamp(8px,2.3vw,10px);color:var(--ink-3);line-height:1}
+.case .k{font-size:clamp(9.5px,3.1vw,14px);line-height:1.05;letter-spacing:-.02em}
+.case .mini{display:flex;width:76%;height:3px;border-radius:2px;overflow:hidden;background:var(--line);flex:none}
 .case .mini span{height:100%}
 button.case.notee{background:var(--surface);border-color:var(--line-fort);cursor:pointer}
 button.case.notee:hover{transform:translateY(-1px);box-shadow:var(--ombre-1)}
@@ -602,6 +609,27 @@ hr.sep{border:0;border-top:1px solid var(--line);margin:0}
 .res-ali .n{font-size:13.5px}
 .res-ali .kc{font-family:"IBM Plex Mono",monospace;font-size:11px;color:var(--ink-3);flex:none}
 
+
+/* --- 25. Repas non pesé et jour libre ----------------------------------- */
+.choix-libres{display:flex;flex-direction:column;gap:6px;max-height:230px;overflow:auto}
+.choix-libres button{
+  display:flex;align-items:center;justify-content:space-between;gap:10px;width:100%;
+  min-height:46px;padding:9px 12px;border:1px solid var(--line-fort);border-radius:var(--r-s);
+  background:var(--surface-2);text-align:left;transition:background .14s ease,border-color .14s ease;
+}
+.choix-libres button:hover{background:var(--surface-3);border-color:var(--ink-3)}
+.choix-libres button.actif{background:var(--ink);border-color:var(--ink);color:var(--surface)}
+.choix-libres .n{font-size:13.5px;font-weight:500}
+.choix-libres .kc{font-family:"IBM Plex Mono",monospace;font-size:11.5px;opacity:.75;flex:none}
+.saisie-libre{display:flex;align-items:center;gap:7px}
+.saisie-libre input.qte{width:96px;font-size:16px}
+
+.carte-jour .pastille.libre{background:rgba(226,129,177,.16);border-color:var(--lip-j);color:var(--lip-j)}
+.carte-jour.libre .anneau .trait{stroke:var(--lip-j)}
+.carte-jour.libre .reste-nb .nb{color:var(--lip-j)}
+.resume-colle.libre .mini-chiffres .nb{color:var(--lip-j)}
+.case.notee.libre{border-style:dashed;border-color:var(--lip)}
+
 /* --- 19. Petits écrans -------------------------------------------------- */
 @media (max-width:359px){
   body{font-size:14.5px}
@@ -646,7 +674,8 @@ hr.sep{border:0;border-top:1px solid var(--line);margin:0}
   .saisie{margin-top:0}
   .macros-ligne{margin-top:0;justify-content:flex-end}
   select.unite{flex:none;min-width:104px;margin-right:0}
-  .cal-entetes,.cal{gap:6px}
+  .cal-entetes,.cal{gap:6px;padding-inline:16px}
+  .case{aspect-ratio:1/1.05}
   .case .k{font-size:15px}
   .graph{padding:16px 18px 12px}
   .barres{height:150px}
@@ -673,6 +702,7 @@ hr.sep{border:0;border-top:1px solid var(--line);margin:0}
             <div class="sous" id="j-compte">aucun aliment saisi</div>
           </div>
           <div class="puces">
+            <span class="pastille libre" id="j-libre" hidden>jour libre</span>
             <span class="pastille serie" id="j-serie" hidden></span>
             <span class="pastille" id="j-etat">non enregistré</span>
           </div>
@@ -730,7 +760,7 @@ hr.sep{border:0;border-top:1px solid var(--line);margin:0}
       </div>
 
     <div class="barre-collante">
-      <div class="mini" id="j-mini" hidden>
+      <div class="resume-colle" id="j-mini" hidden>
         <div class="mini-chiffres">
           <span class="nb" id="m-kcal">0</span>
           <span class="sur" id="m-cible">/ 0</span>
@@ -919,7 +949,7 @@ function libelleCourt(iso){
 function indexLundi(d){ return (d.getDay() + 6) % 7; }
 
 /** Version affichée dans l'écran Profil : sert à vérifier ce qui est en ligne. */
-const VERSION = '7';
+const VERSION = '8';
 
 /* =========================================================================
    2. MODULE DONNÉES — constantes du domaine
@@ -964,6 +994,23 @@ function repasParDefaut(){
   if(h < 18) return 'collation';
   return 'soir';
 }
+
+/**
+ * Repas qu'on ne pèse pas : restaurant, fast-food, apéro. Ordres de grandeur
+ * observés pour un repas complet d'adulte. Ce sont des estimations grossières,
+ * annoncées comme telles : mieux vaut un chiffre approché qu'une journée vide.
+ */
+const ESTIMATIONS_LIBRES = [
+  {nom:'Fast-food — burger, frites, soda', kcal:1100, prot:38, gluc:120, lip:50},
+  {nom:'Pizzeria — une pizza entière',     kcal:1000, prot:42, gluc:112, lip:40},
+  {nom:'Restaurant — entrée, plat, dessert', kcal:1300, prot:50, gluc:130, lip:62},
+  {nom:'Kebab ou tacos avec frites',       kcal:1200, prot:50, gluc:118, lip:56},
+  {nom:'Asiatique — nouilles ou riz sauté', kcal:800,  prot:30, gluc:100, lip:28},
+  {nom:'Brunch',                            kcal:900,  prot:35, gluc:92,  lip:45},
+  {nom:'Apéro — chips, charcuterie, alcool', kcal:700, prot:16, gluc:48,  lip:46},
+  {nom:'Dessert ou pâtisserie',             kcal:450,  prot:6,  gluc:56,  lip:22},
+  {nom:'Repas maison copieux',              kcal:900,  prot:40, gluc:90,  lip:40}
+];
 
 /**
  * Énergie stockée dans un kilo de masse corporelle perdue ou prise.
@@ -1655,8 +1702,14 @@ const Calculs = {
     const u = Calculs.unite(aliment, entree.uniteIndex);
     return num(entree.quantite) * (u.grammes || 0);
   },
-  /** Nutriments apportés par une entrée. */
+  /** Nutriments apportés par une entrée (pesée ou estimée). */
   nutriments: function(entree, aliment){
+    if(entree && entree.libre){
+      return {
+        kcal: entree.kcal || 0, prot: entree.prot || 0, gluc: entree.gluc || 0,
+        lip: entree.lip || 0, fibres: entree.fibres || 0
+      };
+    }
     const f = Calculs.facteur(entree, aliment);
     const p = (aliment && aliment.pour100g) || {};
     return {
@@ -1671,8 +1724,8 @@ const Calculs = {
   totaux: function(entrees, indexAliments){
     const t = {kcal:0, prot:0, gluc:0, lip:0, fibres:0};
     (entrees || []).forEach(function(e){
-      const a = indexAliments[e.alimentId];
-      if(!a) return;
+      const a = e.libre ? null : indexAliments[e.alimentId];
+      if(!e.libre && !a) return;
       const n = Calculs.nutriments(e, a);
       t.kcal += n.kcal; t.prot += n.prot; t.gluc += n.gluc; t.lip += n.lip; t.fibres += n.fibres;
     });
@@ -1723,7 +1776,7 @@ const ETAT = {
   profil: null,                                   // Profil
   aliments: [],                                   // [Aliment]
   categories: CATEGORIES_DEFAUT.slice(),          // [string]
-  journal: {date: isoJour(), entrees: []},        // Journée en cours
+  journal: {date: isoJour(), entrees: [], libre: false},  // Journée en cours
   historique: {},                                 // { "AAAA-MM-JJ": Journée }
   poids: {},                                      // { "AAAA-MM-JJ": kg }
   modeles: [],                                    // [{id, nom, repas, entrees:[Entrée]}]
@@ -1839,8 +1892,15 @@ function majEntete(){
   // Récompense : l'anneau vire au vert dans la zone, avec un battement au moment
   // où on y entre. Rien ne bouge si le lecteur a demandé moins d'animations.
   const carte = $('#j-carte');
-  const atteint = c.kcal > 0 && part >= 0.93 && part <= 1.07;
-  const depasse = part > 1.07;
+  const libre = !!ETAT.journal.libre;
+  const atteint = !libre && c.kcal > 0 && part >= 0.93 && part <= 1.07;
+  const depasse = !libre && part > 1.07;
+  carte.classList.toggle('libre', libre);
+  if(libre){
+    $('#j-reste-titre').textContent = 'Journée libre';
+    $('#j-reste').textContent = fmt(Math.round(t.kcal));
+    $('#j-reste-sous').textContent = 'comptée sans jugement, cible ' + fmt(c.kcal) + ' kcal';
+  }
   if(atteint && !carte.classList.contains('atteint')){
     carte.classList.add('felicite');
     setTimeout(function(){ carte.classList.remove('felicite'); }, 700);
@@ -1865,6 +1925,9 @@ function majEntete(){
   const nbLignes = ETAT.journal.entrees.length;
   $('#j-compte').textContent = nbLignes === 0 ? 'aucun aliment saisi'
     : nbLignes + (nbLignes > 1 ? ' aliments saisis' : ' aliment saisi');
+
+  const puceLibre = $('#j-libre');
+  puceLibre.hidden = !ETAT.journal.libre;
 
   const serie = serieEnCours();
   const puceSerie = $('#j-serie');
@@ -1910,6 +1973,7 @@ function alimentsFrequents(nombre){
   Object.keys(ETAT.historique).forEach(function(d){
     if(d < debut) return;
     (ETAT.historique[d].entrees || []).forEach(function(e){
+      if(e.libre) return;
       const c = compte[e.alimentId] || (compte[e.alimentId] = {n:0, quantite:e.quantite, uniteIndex:e.uniteIndex || 0});
       c.n++;
       c.quantite = e.quantite;          // la plus récente fait foi
@@ -1957,6 +2021,12 @@ function rendreRecap(){
         '<button class="menu-repas" data-repas="' + rp.cle + '" aria-label="Actions pour ' + esc(rp.label) + '">···</button>' +
       '</div>';
     liste.forEach(function(e){
+      if(e.libre){
+        html += '<button class="repas-l" data-libre="' + esc(e.id) + '">' +
+          '<span class="n">' + esc(e.nom) + '<span class="q">estimation</span></span>' +
+          '<span class="nb k">' + fmt(Math.round(e.kcal || 0)) + '</span></button>';
+        return;
+      }
       const a = INDEX[e.alimentId];
       if(!a) return;
       const n = Calculs.nutriments(e, a);
@@ -2285,6 +2355,8 @@ function brancherJournal(){
     if(ev.target.closest('[data-modeles]')){ modaleModeles(); return; }
     const mr = ev.target.closest('[data-repas]');
     if(mr){ menuRepas(mr.dataset.repas); return; }
+    const lib = ev.target.closest('[data-libre]');
+    if(lib){ repasLibre(lib.dataset.libre); return; }
     const l = ev.target.closest('[data-entree]');
     if(l) ficheEntree(l.dataset.entree);
   });
@@ -2320,7 +2392,8 @@ function enregistrerJournee(){
     date: ETAT.journal.date,
     entrees: JSON.parse(JSON.stringify(ETAT.journal.entrees)),
     totaux: {kcal:t.kcal, prot:t.prot, gluc:t.gluc, lip:t.lip, fibres:t.fibres},
-    ciblesDuJour: Object.assign({}, ciblesCourantes())
+    ciblesDuJour: Object.assign({}, ciblesCourantes()),
+    libre: !!ETAT.journal.libre
   };
   sauver('historique');
   majEntete();
@@ -2339,6 +2412,7 @@ function copierLaVeille(){
 
 function viderJournal(){
   ETAT.journal.entrees = [];
+  ETAT.journal.libre = false;
   sauver('journal');
   rendreListeJournal(); majEntete(); rendreRecap();
   toast('Journal vidé.');
@@ -2347,6 +2421,9 @@ function viderJournal(){
 function menuJournal(){
   const corps =
     '<div class="pile">' +
+      '<button class="btn primaire" data-m="libre">Ajouter un repas non pesé</button>' +
+      '<button class="btn" data-m="jour-libre">' +
+        (ETAT.journal.libre ? 'Ne plus marquer comme jour libre' : 'Marquer comme jour libre') + '</button>' +
       '<button class="btn" data-m="veille">Copier la journée d’hier</button>' +
       '<button class="btn" data-m="ajouter">Ajouter un aliment à ma liste</button>' +
       '<button class="btn" data-m="modeles">Mes repas enregistrés</button>' +
@@ -2358,6 +2435,15 @@ function menuJournal(){
     const b = ev.target.closest('[data-m]');
     if(!b) return;
     fermerModale();
+    if(b.dataset.m === 'libre') repasLibre(null);
+    if(b.dataset.m === 'jour-libre'){
+      ETAT.journal.libre = !ETAT.journal.libre;
+      sauver('journal');
+      majEntete(); rendreAlerte();
+      toast(ETAT.journal.libre
+        ? 'Journée libre. Les calories sont comptées, la cible est mise de côté.'
+        : 'Journée redevenue normale.');
+    }
     if(b.dataset.m === 'veille') copierLaVeille();
     if(b.dataset.m === 'vider') viderJournal();
     if(b.dataset.m === 'ajouter') formulaireAliment(null);
@@ -3093,6 +3179,136 @@ function editeurRepas(source){
   });
 }
 
+
+/* =========================================================================
+   8 quinquies. REPAS NON PESÉ
+   Restaurant, fast-food, apéro : on ne connaît pas les grammages. Plutôt
+   qu'une journée trouée, on pose une estimation assumée, ajustable, et on
+   passe à autre chose. Mieux vaut un chiffre approché qu'un blanc.
+   ========================================================================= */
+function repasLibre(idExistant){
+  const existante = idExistant
+    ? ETAT.journal.entrees.filter(function(e){ return e.libre && e.id === idExistant; })[0]
+    : null;
+
+  const b = existante
+    ? JSON.parse(JSON.stringify(existante))
+    : {id: uid('lib'), libre: true, nom: '', kcal: 0, prot: 0, gluc: 0, lip: 0, fibres: 0, repas: repasParDefaut()};
+
+  const mod = ouvrirModale(existante ? 'Modifier l’estimation' : 'Repas non pesé',
+    '<p class="entrefilet">Choisissez ce qui ressemble le plus, puis ajustez. ' +
+      'Ce sont des ordres de grandeur, pas des mesures — et c’est très largement mieux que de ne rien noter.</p>' +
+    '<div class="choix-libres" data-choix>' +
+      ESTIMATIONS_LIBRES.map(function(x, i){
+        return '<button type="button" data-e="' + i + '">' +
+          '<span class="n">' + esc(x.nom) + '</span>' +
+          '<span class="kc">' + fmt(x.kcal) + ' kcal</span></button>';
+      }).join('') +
+    '</div>' +
+    '<label class="champ"><span>Nom</span>' +
+      '<input type="text" data-nom value="' + esc(b.nom) + '" placeholder="Restaurant avec Paul"></label>' +
+    '<div class="champ"><span>Calories estimées</span>' +
+      '<div class="saisie-libre">' +
+        '<button class="pas" data-pas="-1" aria-label="Retirer 50 kcal">−</button>' +
+        '<input class="qte" type="text" inputmode="numeric" data-kcal value="' + (b.kcal || '') + '" placeholder="0">' +
+        '<button class="pas" data-pas="1" aria-label="Ajouter 50 kcal">+</button>' +
+        '<span class="tres-muet" style="font-size:12.5px">kcal</span>' +
+      '</div></div>' +
+    '<div class="champ"><span>Moment</span><div class="segments" data-slot>' +
+      REPAS.map(function(r){
+        return '<button type="button" data-v="' + r.cle + '" aria-pressed="' + (b.repas === r.cle) + '">' +
+          esc(r.court) + '</button>';
+      }).join('') + '</div></div>' +
+    '<div class="totaux-repas" data-apercu></div>',
+    (existante ? '<button class="btn danger" data-retirer>Retirer</button>' : '<button class="btn" data-fermer>Annuler</button>') +
+    '<button class="btn primaire" data-valider>' + (existante ? 'Enregistrer' : 'Ajouter au journal') + '</button>');
+
+  /** Les macros suivent les calories, dans la proportion du modèle choisi. */
+  function repartir(kcal){
+    const base = b.modele != null ? ESTIMATIONS_LIBRES[b.modele] : null;
+    if(base && base.kcal > 0){
+      const f = kcal / base.kcal;
+      b.prot = Math.round(base.prot * f);
+      b.gluc = Math.round(base.gluc * f);
+      b.lip = Math.round(base.lip * f);
+    }else{
+      // Sans modèle : répartition moyenne d'un repas de restaurant.
+      b.prot = Math.round(kcal * 0.18 / 4);
+      b.gluc = Math.round(kcal * 0.44 / 4);
+      b.lip = Math.round(kcal * 0.38 / 9);
+    }
+    b.kcal = kcal;
+  }
+
+  function majApercu(){
+    $('[data-apercu]', mod).innerHTML =
+      '<div><span class="nb">' + fmt(Math.round(b.kcal)) + '</span> <span class="tres-muet">kcal</span></div>' +
+      '<div style="display:flex;gap:10px;font-family:\'IBM Plex Mono\',monospace;font-size:11.5px">' +
+        '<span style="color:var(--prot)">P ' + fmt(b.prot) + '</span>' +
+        '<span style="color:var(--gluc)">G ' + fmt(b.gluc) + '</span>' +
+        '<span style="color:var(--lip)">L ' + fmt(b.lip) + '</span></div>';
+  }
+  majApercu();
+
+  mod.addEventListener('click', function(ev){
+    const choix = ev.target.closest('[data-choix] button');
+    if(choix){
+      const i = Number(choix.dataset.e);
+      const x = ESTIMATIONS_LIBRES[i];
+      $$('[data-choix] button', mod).forEach(function(z){ z.classList.toggle('actif', z === choix); });
+      b.modele = i;
+      if(!$('[data-nom]', mod).value.trim()) $('[data-nom]', mod).value = x.nom;
+      repartir(x.kcal);
+      $('[data-kcal]', mod).value = x.kcal;
+      majApercu();
+      return;
+    }
+    const pas = ev.target.closest('[data-pas]');
+    if(pas){
+      const champ = $('[data-kcal]', mod);
+      let v = num(champ.value) + 50 * Number(pas.dataset.pas);
+      if(v < 0) v = 0;
+      champ.value = v || '';
+      repartir(v); majApercu();
+      return;
+    }
+    const seg = ev.target.closest('[data-slot] button');
+    if(seg){
+      $$('[data-slot] button', mod).forEach(function(z){ z.setAttribute('aria-pressed', String(z === seg)); });
+      b.repas = seg.dataset.v;
+      return;
+    }
+    if(ev.target.closest('[data-retirer]')){
+      ETAT.journal.entrees = ETAT.journal.entrees.filter(function(e){ return e.id !== b.id; });
+      sauver('journal');
+      fermerModale();
+      majEntete(); rendreRecap();
+      toast('Estimation retirée.');
+      return;
+    }
+    if(!ev.target.closest('[data-valider]')) return;
+
+    repartir(num($('[data-kcal]', mod).value));
+    if(b.kcal <= 0){ toast('Indiquez une estimation en calories.'); return; }
+    b.nom = $('[data-nom]', mod).value.trim() || 'Repas non pesé';
+
+    if(existante){
+      Object.keys(b).forEach(function(k){ existante[k] = b[k]; });
+    }else{
+      ETAT.journal.entrees.push(b);
+    }
+    sauver('journal');
+    fermerModale();
+    majEntete(); rendreRecap(); rendreListeJournal();
+    toast(existante ? 'Estimation mise à jour.' : b.nom + ' ajouté · ' + fmt(Math.round(b.kcal)) + ' kcal.');
+  });
+
+  $('[data-kcal]', mod).addEventListener('input', function(){
+    repartir(num(this.value));
+    majApercu();
+  });
+}
+
 /* ---------- Formulaire d'aliment ---------- */
 function formulaireAliment(aliment, prerempli){
   const est_modif = !!aliment;
@@ -3523,10 +3739,11 @@ function rendreCalendrier(){
     const cible = (jour.ciblesDuJour && jour.ciblesDuJour.kcal) || cibleGlobale;
     const r = Calculs.repartition(t);
     cases +=
-      '<button class="case notee ' + classeEcart(t.kcal || 0, cible) + (estAujourdhui ? ' aujourdhui' : '') + '" data-jour="' + iso + '" ' +
+      '<button class="case notee ' + (jour.libre ? 'libre' : classeEcart(t.kcal || 0, cible)) +
+        (estAujourdhui ? ' aujourdhui' : '') + '" data-jour="' + iso + '" ' +
         'aria-label="' + esc(libelleLong(iso) + ' : ' + Math.round(t.kcal || 0) + ' kcal') + '">' +
         '<span class="j">' + j + '</span>' +
-        '<span class="nb k">' + fmt(Math.round(t.kcal || 0)) + '</span>' +
+        '<span class="nb k">' + String(Math.round(t.kcal || 0)) + '</span>' +
         '<span class="mini">' +
           '<span class="seg-prot" style="width:' + r.prot.toFixed(1) + '%"></span>' +
           '<span class="seg-gluc" style="width:' + r.gluc.toFixed(1) + '%"></span>' +
@@ -3558,6 +3775,10 @@ function ficheJour(iso){
   const r = Calculs.repartition(t);
 
   const lignes = (j.entrees || []).map(function(e){
+    if(e.libre){
+      return '<div class="l"><span>' + esc(e.nom) + '<br><span class="q">estimation</span></span>' +
+        '<span class="nb">' + fmt(Math.round(e.kcal || 0)) + '</span></div>';
+    }
     const a = INDEX[e.alimentId];
     if(!a) return '<div class="l"><span class="tres-muet">Aliment supprimé</span><span class="q">—</span></div>';
     const n = Calculs.nutriments(e, a);
@@ -3590,12 +3811,13 @@ function ficheJour(iso){
     '<div><div class="etiq" style="margin-bottom:4px">' + (j.entrees || []).length + ' aliments</div>' +
       '<div class="detail-liste">' + (lignes || '<div class="l"><span class="tres-muet">Journée vide</span></div>') + '</div></div>';
 
-  const mod = ouvrirModale(libelleLong(iso), corps,
+  const mod = ouvrirModale(libelleLong(iso) + (j.libre ? ' · jour libre' : ''), corps,
     '<button class="btn danger" data-suppr>Supprimer</button><button class="btn primaire" data-charger>Charger la journée</button>');
 
   mod.addEventListener('click', function(ev){
     if(ev.target.closest('[data-charger]')){
       ETAT.journal.entrees = JSON.parse(JSON.stringify(j.entrees || []));
+      ETAT.journal.libre = !!j.libre;
       sauver('journal');
       fermerModale();
       allerA('journal');
@@ -4071,7 +4293,8 @@ function confirmerBaseExemple(){
       // Avec près de 300 aliments, on replie les catégories : le journal reste
       // un sommaire lisible, et la recherche donne l'accès direct.
       ETAT.categories.forEach(function(c){ ETAT.ui.repliees[c] = true; });
-      reindexer(); oublierCouleurs(); sauver('aliments'); sauver('categories'); sauver('ui');
+      ETAT.ui.baseChargee = true;
+      reindexer(); oublierCouleurs(); sauver('aliments'); sauver('categories'); sauver('ui'); sauver('ui');
       rendreTout();
       toast(nouveaux.length + ' aliments ajoutés.');
     });
@@ -4122,7 +4345,7 @@ function verifierJour(){
     };
     sauver('historique');
   }
-  ETAT.journal = {date: auj, entrees: []};
+  ETAT.journal = {date: auj, entrees: [], libre: false};
   sauver('journal');
   return true;
 }
@@ -4183,11 +4406,20 @@ async function amorcer(){
     }
   });
   if(!Array.isArray(ETAT.categories) || !ETAT.categories.length) ETAT.categories = CATEGORIES_DEFAUT.slice();
-  if(!ETAT.journal || !ETAT.journal.date) ETAT.journal = {date: isoJour(), entrees: []};
+  if(!ETAT.journal || !ETAT.journal.date) ETAT.journal = {date: isoJour(), entrees: [], libre: false};
   if(!ETAT.historique || typeof ETAT.historique !== 'object') ETAT.historique = {};
   if(!ETAT.poids || typeof ETAT.poids !== 'object') ETAT.poids = {};
   if(!Array.isArray(ETAT.modeles)) ETAT.modeles = [];
   if(!ETAT.ui.rappel) ETAT.ui.rappel = {actif:false, heure:21};
+
+  // Premier lancement : la base est là d'emblée. Personne ne devrait avoir à
+  // cliquer sur « charger » pour qu'une app de suivi serve à quelque chose.
+  if(!ETAT.aliments.length && !ETAT.ui.baseChargee){
+    ETAT.aliments = baseExemple();
+    ETAT.categories.forEach(function(c){ ETAT.ui.repliees[c] = true; });
+    ETAT.ui.baseChargee = true;
+    sauver('aliments'); sauver('ui');
+  }
 
   reindexer();
   verifierJour();
