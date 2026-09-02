@@ -1,12 +1,12 @@
 /* =========================================================================
-   Macro Carnet — service worker
+   Miam — service worker
    Rôle : rendre l'app ouvrable sans réseau, sans jamais servir une version
    périmée quand la connexion est là.
    Stratégie : réseau d'abord pour la page (les mises à jour arrivent tout de
-   suite), cache d'abord pour les icônes. Rien du domaine des polices ni
-   d'Open Food Facts n'est mis en cache.
+   suite), cache d'abord pour les icônes. Les polices sont embarquées dans la
+   page : il n'y a rien à mettre en cache pour elles. Open Food Facts, jamais.
    ========================================================================= */
-const VERSION = 'macro-carnet-v15';
+const VERSION = 'miam-v20';
 const RESSOURCES = [
   './',
   './index.html',
@@ -42,7 +42,8 @@ self.addEventListener('fetch', function(ev){
 
   const url = new URL(req.url);
   const memeOrigine = url.origin === self.location.origin;
-  if(!memeOrigine) return;                    // polices, Open Food Facts : on laisse passer
+
+  if(!memeOrigine) return;                    // Open Food Facts : on laisse passer
 
   // La page elle-même : réseau d'abord, cache en secours hors ligne.
   if(req.mode === 'navigate'){
